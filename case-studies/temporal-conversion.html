@@ -1,0 +1,416 @@
+<title>From datetime | None to TemporalResult — a design iteration log</title>
+<style>
+  :root {
+    --paper:#F3F4F7; --card:#FFFFFF; --ink:#191D29; --muted:#5B6274;
+    --faint:#878DA0; --line:#DEE2EB; --line-strong:#CDD3DF;
+    --accent:#A2680F; --accent-ink:#7A4E0B; --accent-soft:#EEE1C8;
+    --frict:#A4472F; --good:#357355; --shadow:rgba(24,29,45,.07);
+    --font-display:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+    --font-body:ui-sans-serif,system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --font-mono:ui-monospace,"SF Mono","JetBrains Mono","Cascadia Code",Menlo,Consolas,monospace;
+    --measure:68ch;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --paper:#0F1117; --card:#171A23; --ink:#E7E9F1; --muted:#9AA0B4;
+      --faint:#6E7488; --line:#252A37; --line-strong:#333A4B;
+      --accent:#D89B44; --accent-ink:#EEBE76; --accent-soft:#2A2416;
+      --frict:#D67C64; --good:#63A984; --shadow:rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"]{
+    --paper:#0F1117; --card:#171A23; --ink:#E7E9F1; --muted:#9AA0B4;
+    --faint:#6E7488; --line:#252A37; --line-strong:#333A4B;
+    --accent:#D89B44; --accent-ink:#EEBE76; --accent-soft:#2A2416;
+    --frict:#D67C64; --good:#63A984; --shadow:rgba(0,0,0,.4);
+  }
+  :root[data-theme="light"]{
+    --paper:#F3F4F7; --card:#FFFFFF; --ink:#191D29; --muted:#5B6274;
+    --faint:#878DA0; --line:#DEE2EB; --line-strong:#CDD3DF;
+    --accent:#A2680F; --accent-ink:#7A4E0B; --accent-soft:#EEE1C8;
+    --frict:#A4472F; --good:#357355; --shadow:rgba(24,29,45,.07);
+  }
+
+  *{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0; background:var(--paper); color:var(--ink);
+    font-family:var(--font-body); font-size:17px; line-height:1.62;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+  }
+  .wrap{max-width:850px; margin:0 auto; padding:clamp(28px,5vw,72px) clamp(18px,5vw,40px) 96px}
+  code{
+    font-family:var(--font-mono); font-size:.85em;
+    background:color-mix(in srgb, var(--accent-soft) 55%, transparent);
+    color:var(--ink); padding:.08em .34em; border-radius:4px;
+    border:1px solid color-mix(in srgb, var(--line-strong) 60%, transparent);
+    white-space:nowrap;
+  }
+  em{font-style:italic; color:inherit}
+  a{color:var(--accent-ink); text-decoration:underline; text-decoration-thickness:1px;
+    text-underline-offset:2px; text-decoration-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+  a:hover{text-decoration-color:var(--accent)}
+
+  /* ---- header ---- */
+  header{margin-bottom:8px}
+  .kicker{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.14em;
+    text-transform:uppercase; color:var(--accent-ink); font-weight:600;
+    display:flex; align-items:center; gap:12px; margin-bottom:22px;
+  }
+  .kicker::after{content:""; height:1px; flex:1; background:var(--line-strong)}
+  h1{
+    font-family:var(--font-display); font-weight:600; font-size:clamp(30px,5.4vw,46px);
+    line-height:1.08; letter-spacing:-.012em; margin:0 0 8px; text-wrap:balance;
+  }
+  h1 .mono{font-family:var(--font-mono); font-weight:600; font-size:.8em; letter-spacing:-.01em}
+  h1 .arr{color:var(--accent); font-family:var(--font-mono); padding:0 .1em}
+  .standfirst{
+    font-family:var(--font-display); font-size:clamp(18px,2.4vw,21px); font-style:italic;
+    color:var(--muted); max-width:62ch; margin:14px 0 0; line-height:1.5;
+  }
+
+  /* ---- context ---- */
+  .context{margin-top:38px}
+  .ctx-grid{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:16px}
+  .ctx-item{background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:20px 22px; box-shadow:0 1px 2px var(--shadow)}
+  .ctx-item.wide{grid-column:1 / -1}
+  .ctx-item h3{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.11em;
+    text-transform:uppercase; color:var(--accent-ink); margin:0 0 10px; font-weight:600}
+  .ctx-item p{margin:0; font-size:15.5px; line-height:1.6; color:var(--ink)}
+  .ctx-item p + p{margin-top:10px}
+
+  .final{
+    margin-top:16px; border:1px solid var(--line); background:var(--card);
+    border-radius:14px; padding:20px 22px; box-shadow:0 1px 2px var(--shadow);
+  }
+  .final h3{
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.16em; text-transform:uppercase;
+    color:var(--faint); margin:0 0 10px; font-weight:600;
+  }
+  .final p{margin:0; max-width:var(--measure); font-size:15.5px}
+  .final .em{color:var(--accent-ink); font-weight:600}
+
+  /* ---- legend ---- */
+  .legend{
+    display:flex; flex-wrap:wrap; gap:8px 10px; margin:30px 0 4px;
+    font-size:13.5px; color:var(--muted);
+  }
+  .legend .lg{display:inline-flex; align-items:center; gap:7px; padding:4px 11px 4px 8px;
+    border:1px solid var(--line); border-radius:999px; background:var(--card)}
+  .dot{width:8px; height:8px; border-radius:50%; flex:none}
+  .d-landed{background:var(--faint)} .d-frict{background:var(--frict)}
+  .d-move{background:var(--accent)} .d-result{background:var(--good)}
+  .legend b{font-weight:600; color:var(--ink)}
+
+  /* ---- timeline ---- */
+  .timeline{position:relative; margin-top:30px}
+  .timeline::before{content:""; position:absolute; left:18px; top:6px; bottom:34px;
+    width:2px; background:linear-gradient(var(--line-strong),var(--line)); border-radius:2px}
+  .phase{position:relative; margin:0 0 8px; padding:30px 0 4px 52px}
+  .phase:first-child{padding-top:6px}
+  .phase-diamond{position:absolute; left:11px; top:38px; width:16px; height:16px;
+    transform:rotate(45deg); background:var(--paper); border:2px solid var(--accent)}
+  .phase:first-child .phase-diamond{top:14px}
+  .phase-kicker{font-family:var(--font-mono); font-size:11.5px; letter-spacing:.15em;
+    text-transform:uppercase; color:var(--accent-ink); font-weight:600}
+  .phase h2{font-family:var(--font-display); font-weight:600; font-size:23px;
+    letter-spacing:-.01em; margin:3px 0 0; text-wrap:balance}
+  .phase h2 .note{font-family:var(--font-body); font-style:italic; font-weight:400;
+    font-size:15px; color:var(--muted); margin-left:2px}
+
+  .step{position:relative; padding-left:52px; margin:16px 0}
+  .marker{position:absolute; left:0; top:20px; width:38px; height:38px; border-radius:50%;
+    background:var(--card); border:2px solid var(--accent);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-weight:600; font-size:15px; color:var(--accent-ink);
+    box-shadow:0 0 0 5px var(--paper); z-index:1; font-variant-numeric:tabular-nums}
+  .card{background:var(--card); border:1px solid var(--line); border-radius:14px;
+    padding:18px 22px 8px; box-shadow:0 1px 2px var(--shadow); transition:border-color .18s, transform .18s}
+  .card:hover{border-color:var(--line-strong); transform:translateY(-1px)}
+  .card h3{font-family:var(--font-display); font-weight:600; font-size:20px;
+    margin:0 0 8px; letter-spacing:-.008em; line-height:1.25; text-wrap:balance}
+  .lead{font-family:var(--font-display); font-style:italic; font-size:16.5px; line-height:1.5;
+    color:var(--muted); margin:0 0 14px; max-width:var(--measure);
+    padding-bottom:13px; border-bottom:1px solid var(--line)}
+
+  .beats{margin:0; display:flex; flex-direction:column; gap:12px}
+  .beat{display:grid; grid-template-columns:76px 1fr; gap:14px; align-items:baseline}
+  .beat dt{font-family:var(--font-mono); font-size:10.5px; letter-spacing:.11em;
+    text-transform:uppercase; font-weight:600; padding-top:3px}
+  .beat dd{margin:0; max-width:var(--measure)}
+  .b-landed{color:var(--faint)} .b-frict{color:var(--frict)}
+  .b-move{color:var(--accent-ink)} .b-result{color:var(--good)}
+  .beat:not(:last-child){border-bottom:1px solid color-mix(in srgb,var(--line) 55%,transparent); padding-bottom:12px}
+
+  /* ---- closing ---- */
+  .converge{margin-top:56px; padding:34px 0 0; border-top:2px solid var(--line-strong)}
+  .converge > .kicker{margin-bottom:10px}
+  .converge h2{font-family:var(--font-display); font-weight:600; font-size:26px; margin:0 0 22px; letter-spacing:-.01em}
+  .patterns{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:16px; counter-reset:p}
+  .patterns li{position:relative; padding-left:46px; max-width:70ch}
+  .patterns li::before{counter-increment:p; content:counter(p); position:absolute; left:0; top:-2px;
+    width:30px; height:30px; border-radius:8px; background:var(--accent-soft); color:var(--accent-ink);
+    border:1px solid color-mix(in srgb,var(--accent) 30%,transparent);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--font-mono); font-weight:600; font-size:14px}
+  .patterns b{font-weight:600}
+  .coda{margin-top:26px; font-family:var(--font-display); font-style:italic; font-size:19px;
+    color:var(--ink); max-width:64ch; line-height:1.5; border-left:3px solid var(--accent); padding-left:18px}
+
+  /* ---- reference ---- */
+  .reference{margin-top:52px; padding-top:34px; border-top:2px solid var(--line-strong)}
+  .reference h2{font-family:var(--font-display); font-weight:600; font-size:22px; margin:6px 0 18px}
+  .glossary{display:grid; grid-template-columns:1fr 1fr; gap:14px 26px; margin:0 0 30px}
+  .term{border-left:2px solid var(--accent-soft); padding-left:14px}
+  .term dt{font-family:var(--font-mono); font-size:13px; font-weight:600; color:var(--ink); margin-bottom:2px}
+  .term dd{margin:0; font-size:14.5px; line-height:1.5; color:var(--muted)}
+  .sources{columns:2; column-gap:32px; margin:0; padding:0; list-style:none; font-size:14.5px}
+  .sources li{break-inside:avoid; padding:5px 0; line-height:1.4}
+  .sources .s-lab{color:var(--faint)}
+
+  footer{margin-top:52px; padding-top:20px; border-top:1px solid var(--line);
+    display:flex; flex-wrap:wrap; gap:6px 18px; font-family:var(--font-mono);
+    font-size:12px; color:var(--faint); letter-spacing:.02em}
+  footer b{color:var(--muted); font-weight:600}
+
+  @media (max-width:620px){
+    body{font-size:16px}
+    .ctx-grid{grid-template-columns:1fr}
+    .glossary,.sources{grid-template-columns:1fr; columns:1}
+    .beat{grid-template-columns:1fr; gap:2px}
+    .beat dt{padding-top:0}
+    .phase{padding-left:44px} .step{padding-left:44px}
+    .marker{width:34px; height:34px; font-size:14px}
+    .timeline::before{left:16px}
+    .phase-diamond{left:9px}
+  }
+  @media (prefers-reduced-motion:no-preference){
+    .step,.final,.phase,.ctx-item{animation:rise .5s cubic-bezier(.2,.7,.3,1) both}
+    @keyframes rise{from{opacity:0; transform:translateY(8px)} to{opacity:1; transform:none}}
+  }
+  :focus-visible{outline:2px solid var(--accent); outline-offset:3px; border-radius:4px}
+</style>
+
+<div class="wrap">
+  <header>
+    <div class="kicker">covjson-msgspec · issue #12 · iteration log</div>
+    <h1>From <span class="mono">datetime | None</span> <span class="arr">→</span> <span class="mono">TemporalResult</span></h1>
+    <p class="standfirst">How a small feature — turning a date string into a usable value — was designed by iteration: where each step landed, the friction it hit, and the move that got us to the next one.</p>
+  </header>
+
+  <section class="context">
+    <div class="ctx-grid">
+      <div class="ctx-item">
+        <h3>What's being built</h3>
+        <p><a href="https://covjson.org/">CoverageJSON</a> is a JSON format for spatiotemporal data — weather grids, sensor time series, forecast trajectories. A <em>coverage</em> has a <em>domain</em> (its axes: longitude <code>x</code>, latitude <code>y</code>, height <code>z</code>, time <code>t</code>) and <em>ranges</em> (the data values over that domain). <a href="https://github.com/chuckwondo/covjson-msgspec">covjson-msgspec</a> is a fast, fully-typed Python library for reading and writing it, built on <a href="https://jcristharif.com/msgspec/">msgspec</a>.</p>
+      </div>
+      <div class="ctx-item">
+        <h3>The feature (issue #12)</h3>
+        <p>On the time axis, values are <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a> strings like <code>"2018"</code> or <code>"2020-01-01T00:00:00Z"</code>. The library stored them verbatim — <em>byte-faithful</em>, never altering the input — which is safe but did nothing more: it couldn't hand you a real Python <code>datetime</code>, and it never noticed a broken value like <code>"2010-13-99"</code>. The task was to add both, without giving up the faithful storage.</p>
+      </div>
+      <div class="ctx-item wide">
+        <h3>Why it's worth writing down</h3>
+        <p>The rival library <a href="https://github.com/KNMI/covjson-pydantic">covjson-pydantic</a> solved the same problem the opposite way: it forces every time value into a <code>datetime</code>, which <a href="https://github.com/KNMI/covjson-pydantic/issues/34">silently corrupts</a> the ones that don't fit (a bare year like <code>"2010"</code> becomes a wrong instant). Avoiding that trap took real design care — and the interesting part is <em>how</em>. What follows is a dozen rounds of pushback, review, and naming that turned a plausible first idea into a genuinely better one, and improved parts of the codebase that had nothing to do with time.</p>
+      </div>
+    </div>
+    <div class="final">
+      <h3>Where it ended up</h3>
+      <p><code>resolve(str) → TemporalResult = Moment | Unrepresentable | Malformed</code>: instead of returning a value <em>or nothing</em>, the converter returns <em>exactly one of three typed outcomes</em>, so the reason is never lost. <code>to_datetime</code> is a one-line convenience over it; an opt-in <code>temporal.lexical-form</code> <span class="em">warning</span> flags bad values; and the work surfaced a codebase-wide <span class="em">Result-vs-Report</span> naming convention.</p>
+    </div>
+
+    <div class="legend" aria-label="Each step has four beats">
+      <span class="lg"><span class="dot d-landed"></span><b>Landed</b>&nbsp;the state we were in</span>
+      <span class="lg"><span class="dot d-frict"></span><b>Friction</b>&nbsp;what was wrong</span>
+      <span class="lg"><span class="dot d-move"></span><b>Move</b>&nbsp;what we applied, &amp; why</span>
+      <span class="lg"><span class="dot d-result"></span><b>Result</b>&nbsp;the new state</span>
+    </div>
+  </section>
+
+  <div class="timeline" id="tl"></div>
+
+  <section class="converge">
+    <div class="kicker">What made it converge</div>
+    <h2>Four patterns did the real work</h2>
+    <ol class="patterns">
+      <li><b>Pushback beat the defaults, repeatedly.</b> The maintainer declined several of my "good enough" answers for better ones: the Result type (over a plain value-or-nothing), the <code>TemporalResult</code>/<code>Report</code> reversal, and catching a premature "this is settled." Design by friction, not by first draft.</li>
+      <li><b>The pedantic passes caught a <em>shipped</em> bug, not just style.</b> The most important fix — a validation set to "error" that should have been "warning" — was wrong <em>behavior</em>, and it traced back to bad information I had given during planning. Reviewing against the actual sources (not just re-reading the prose) is what surfaced it.</li>
+      <li><b>Naming pressure found a latent improvement.</b> Bikeshedding one new type's name exposed that two <em>existing</em> types were misnamed. The fix (a <code>Result</code>-vs-<code>Report</code> rule) improved the whole codebase, not just the new module.</li>
+      <li><b>The codebase's existing grain pointed the way.</b> The library had recently learned to model errors as typed values rather than exceptions. That made the Result type the <em>obvious</em> answer once it was proposed — the culture already there did half the design work.</li>
+    </ol>
+    <p class="coda">The outcome wasn't just an implementation of one issue. It was that, plus a naming convention, a corrected decision record, and a validation severity that finally matches what the spec actually says.</p>
+  </section>
+
+  <section class="reference">
+    <div class="kicker">Terms, in one line</div>
+    <h2>Groundwork</h2>
+    <dl class="glossary">
+      <div class="term"><dt>byte-faithful</dt><dd>Reading a document and writing it back reproduces the input exactly; the model never rewrites what it stored.</dd></div>
+      <div class="term"><dt>option type</dt><dd>A result that is either a value or <code>None</code>. Simple, but "nothing" can't say <em>why</em> there's no value.</dd></div>
+      <div class="term"><dt>Result / sum type</dt><dd>A value that is <a href="https://en.wikipedia.org/wiki/Tagged_union">exactly one of several typed cases</a> — the shape of Rust's <a href="https://doc.rust-lang.org/std/result/">Result</a>. Each case can carry its own data, so the reason is preserved.</dd></div>
+      <div class="term"><dt>MUST vs SHOULD</dt><dd><a href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a> requirement levels: MUST is mandatory (a violation is an error), SHOULD is recommended (a violation is a warning).</dd></div>
+      <div class="term"><dt>ISO 8601 forms</dt><dd>The permitted ways to write a date/time as a string — a year, a year-month, a full timestamp, and more. The spec allows five for calendar time.</dd></div>
+      <div class="term"><dt>ADR</dt><dd>An <a href="https://adr.github.io/">Architecture Decision Record</a> — a short, durable note capturing a design decision and why it was made.</dd></div>
+    </dl>
+    <div class="kicker">Sources &amp; further reading</div>
+    <ul class="sources">
+      <li><span class="s-lab">Spec ·</span> <a href="https://covjson.org/">CoverageJSON</a> and the <a href="https://github.com/covjson/specification/blob/master/spec.md">specification</a> (temporal values: section 5.2)</li>
+      <li><span class="s-lab">Library ·</span> <a href="https://github.com/chuckwondo/covjson-msgspec">covjson-msgspec</a>, built on <a href="https://jcristharif.com/msgspec/">msgspec</a></li>
+      <li><span class="s-lab">Contrast ·</span> <a href="https://github.com/KNMI/covjson-pydantic">covjson-pydantic</a> and its <a href="https://github.com/KNMI/covjson-pydantic/issues/34">datetime-corruption bug</a></li>
+      <li><span class="s-lab">Standards ·</span> <a href="https://en.wikipedia.org/wiki/ISO_8601">ISO 8601</a>, <a href="https://www.rfc-editor.org/rfc/rfc2119">RFC 2119</a></li>
+      <li><span class="s-lab">Concepts ·</span> <a href="https://doc.rust-lang.org/std/result/">Rust Result</a>, <a href="https://en.wikipedia.org/wiki/Tagged_union">tagged unions</a>, <a href="https://adr.github.io/">ADRs</a></li>
+      <li><span class="s-lab">Python ·</span> <a href="https://docs.python.org/3/library/datetime.html">datetime</a> (years 1–9999), <a href="https://unidata.github.io/cftime/">cftime</a> (deep-time calendars)</li>
+    </ul>
+  </section>
+
+  <footer>
+    <span><b>merged</b> PR #60</span>
+    <span><b>records</b> ADR-0008 · ADR-0007 (amended)</span>
+    <span><b>follow-ups</b> #61 · #62</span>
+    <span><b>result</b> 17 steps · 1 satisfying solution</span>
+  </footer>
+</div>
+
+<script>
+  const phases = [
+    { k:"Phase 1", name:"Choosing the work", steps:[
+      { n:1, t:"#12 over #14", ctx:"Two features were left in the release milestone. Picking well meant choosing the one that was both cheaper to build and would compound with work just finished.", b:[
+        ["Landed","Two candidates remained: opt-in temporal conversion (#12), and a separate bridge that would describe the library's types to API tooling (#14)."],
+        ["Move","Chose #12. It touches only the core (no web-framework or extra-dependency surface), and it *reuses machinery merged days earlier* — the library had just learned to model validation findings and fetch failures as typed values. That same shape would turn out to be exactly what temporal conversion needed."],
+        ["Result","Work begins on #12, with the “errors as typed values” culture already in mind. That is not a coincidence you'll want to remember by step 5."],
+      ]},
+    ]},
+    { k:"Phase 2", name:"The converter's shape", note:"the central iteration", steps:[
+      { n:2, t:"Start: value, or nothing", ctx:"The first question is the whole feature in miniature: when you ask the library to turn a time string into a real datetime, what should it hand back?", b:[
+        ["Landed","The obvious answer: an *option type*, `to_datetime(str) -> datetime | None` — you get a `datetime`, or `None` when it can't. Open sub-question: what about *reduced-precision* forms like `\"2020\"` (a whole year, no month or day) or `\"2020-06\"` (a month)?"],
+        ["Friction","`None` can only say *“no value.”* It can't say *why*. A value that is perfectly legal in the spec but simply too big for Python would look identical to outright garbage — the caller can't tell them apart."],
+        ["Move","Rather than pick a flavor, paused to ask how these awkward values are handled *in the real world*."],
+        ["Result","A requirements probe instead of a premature API choice."],
+      ]},
+      { n:3, t:"Probe: the values Python can't hold", ctx:"Some time strings are perfectly legal yet impossible for Python to represent — and understanding who actually hits them decided the whole contract.", b:[
+        ["Landed","The question “what do we return for `\"+102020\"` or `\"0000\"`?” ISO 8601 allows *expanded years* (a sign and extra digits, for dates far in the past or future) and year zero."],
+        ["Friction","Python's built-in [`datetime`](https://docs.python.org/3/library/datetime.html) only spans years 1 through 9999. Those values are *spec-valid* but unrepresentable."],
+        ["Move","Established that nobody forces such values into a stdlib `datetime`. They keep the raw string (which the library already preserves faithfully) or reach for [`cftime`](https://unidata.github.io/cftime/), a library built for deep-time and climate calendars — one this project's data-export path already falls back to. So “can't produce a `datetime`” is a normal, expected outcome, not a failure."],
+        ["Result","Clear requirements. But then I overreached."],
+      ]},
+      { n:4, t:"My overreach, corrected", ctx:"A moment of the maintainer catching me getting ahead of the shared decision — and untangling two ideas I'd fused together.", b:[
+        ["Landed","I announced “out-of-range returns `None`, settled,” and narrowed the discussion to just the reduced-precision detail."],
+        ["Friction","That hadn't been agreed. And I'd quietly conflated two different jobs: the *validator* (does this document follow the spec?) and the *converter* (can I turn this string into a `datetime`?). I'd also mis-cited the spec as demanding these forms."],
+        ["Move","Separated the two cleanly. The validator judges *conformance* — a malformed value is a finding to report. The converter judges *representability* — an out-of-range value simply can't become a `datetime`. Different questions, different answers."],
+        ["Result","The design space was honest again, with the real choice exposed rather than assumed."],
+      ]},
+      { n:5, t:"The pivot: a Result, not an option", ctx:"The turning point. The maintainer proposed a shape that dissolved the remaining questions all at once.", b:[
+        ["Landed","Still stuck choosing how the converter should *fail*: return `None`, or raise an exception? Both throw information away."],
+        ["Move","*The maintainer proposed a Result type* — “so we don't lose info in the error cases.” Instead of value-or-nothing, the converter returns [one of several typed cases](https://en.wikipedia.org/wiki/Tagged_union) (the shape of Rust's [`Result`](https://doc.rust-lang.org/std/result/)): `resolve() -> Moment | Unrepresentable | Malformed`. This *unified every open question*. A bare year became a `Moment` that carries both a filled-in date *and* a label saying “year precision” — so nothing is fabricated. A too-big value became `Unrepresentable`; garbage became `Malformed` — each keeping its reason as data. The old `to_datetime` shrank to a two-line convenience on top, and the validator reused the very same parse. One source of truth, three consumers."],
+        ["Result","The core design was settled — and better than either option I had offered."],
+      ]},
+    ]},
+    { k:"Phase 3", name:"Hardening the plan", steps:[
+      { n:6, t:"Where the check runs", ctx:"A recurring architecture question: validate the instant a document loads, or only when asked?", b:[
+        ["Landed","Should “is this a well-formed time value?” run automatically when a document is parsed?"],
+        ["Move","No — it runs only in an *opt-in* `validate()` pass. Reasons: whether a value is even *meant* to be temporal depends on other parts of the document (not visible when a single value is constructed); the check is proportional to how much data there is; and rejecting at load time would break the faithful-storage promise (you couldn't load an imperfect real-world document to inspect or repair it). Parsing stays permissive; judgment is a separate, deliberate step."],
+        ["Result","The check is opt-in; loading a document never fails on content."],
+      ]},
+      { n:7, t:"Strict form, and cutting an over-build", ctx:"A deep read of the plan caught both a latent bug and a piece of needless machinery before a line was written.", b:[
+        ["Landed","A draft parser that leaned on a calendar library for leap-year math and accepted times without a timezone."],
+        ["Friction","Two problems surfaced. Python's date parser *rejects the expanded-year forms outright*, so the naive approach would have crashed on exactly the values we'd just discussed. And the calendar-library dependency was solving a problem we didn't have."],
+        ["Move","Split the parsing by form — handle the simple forms directly, and lean on Python's own parser only for the ones it already validates (month, day, leap years, timezone). *Deleted the calendar dependency* entirely. Chose the *strict* reading: a time-of-day must carry a timezone, matching the spec."],
+        ["Result","A parser that is both correct and smaller."],
+      ]},
+    ]},
+    { k:"Phase 4", name:"Build, then the lazy pass", steps:[
+      { n:8, t:"Implemented and green", ctx:"The first working version, with the full test and type-checking suite passing.", b:[
+        ["Landed","The new module, the validation check, tests, a decision record, and doc updates — all green (689 tests, plus linting and two strict type-checkers)."],
+        ["Result","A working first cut, ready to be made leaner and then scrutinized."],
+      ]},
+      { n:9, t:"Delete what doesn't earn its place", ctx:"A deliberate simplification pass, asking of each helper: does this need to exist?", b:[
+        ["Landed","Two small private helpers: one wrapping a standard-library function, one holding a single branch used in a single place."],
+        ["Friction","The wrapper reimplemented something the standard library already does *and didn't even make the calling code shorter*; its test tested the standard library, not our logic."],
+        ["Move","Deleted the wrapper (call the standard function directly) and inlined the single-use branch."],
+        ["Result","Thirty fewer lines, identical behavior."],
+      ]},
+    ]},
+    { k:"Phase 5", name:"The pedantic pass", note:"the catch that mattered", steps:[
+      { n:10, t:"“Error” was wrong; it's a “warning”", ctx:"The single most valuable catch of the whole effort — and it fixed shipped behavior, not prose.", b:[
+        ["Landed","The new check flagged bad values as *errors*, on my stated reasoning that “the spec says these forms are mandatory.”"],
+        ["Friction","That reasoning was *false*, and checking the actual sources proved it. The spec ([section 5.2](https://github.com/covjson/specification/blob/master/spec.md)) says these forms *SHOULD* be used, not *MUST* — and the difference is load-bearing. In [RFC 2119](https://www.rfc-editor.org/rfc/rfc2119) terms, a SHOULD violation is a *warning*, not an error. The project's own prior decision record had already written exactly that rule — and even used “a temporal value outside ISO 8601 form” as its example of a warning."],
+        ["Move","Changed the severity to *warning* (the codebase's first), softened the wording, and corrected the reasoning. This was a real behavior fix, traced straight back to bad information I'd supplied during planning."],
+        ["Result","The check now matches the spec's actual force and the project's own recorded decision."],
+      ]},
+      { n:11, t:"The Unicode-digit bug", ctx:"A subtle correctness hole that only a careful eye (or a very international dataset) would find.", b:[
+        ["Landed","The pattern used to recognize a four-digit year, written as `\\d{4}`."],
+        ["Friction","In Python, `\\d` matches *any* Unicode digit — Arabic-Indic, Devanagari, and so on — and the number parser accepts them too. So a “year” written in Eastern Arabic numerals was wrongly accepted as valid."],
+        ["Move","Restricted the patterns to ASCII digits, which is all ISO 8601 permits."],
+        ["Result","Correct: only `0`–`9` count as digits."],
+      ]},
+      { n:12, t:"Getting the citation right", ctx:"Small, but it's the difference between a reference a reader can follow and one that misleads.", b:[
+        ["Landed","The code and docs cited the temporal rules as “section 9.5.2.”"],
+        ["Friction","That is the numbering from a different edition of the standard; the specification this project actually links to numbers it *5.2*."],
+        ["Move","Corrected every reference to “Spec 5.2.”"],
+        ["Result","Citations a reader can actually follow."],
+      ]},
+    ]},
+    { k:"Phase 6", name:"Convention polish", steps:[
+      { n:13, t:"The small, exacting fixes", ctx:"The unglamorous layer of consistency that separates “works” from “belongs here.”", b:[
+        ["Landed","New prose that drifted from the project's house style: dashes where colons were the rule, missing commas, lines a few characters too long."],
+        ["Move","Brought each into line with the established conventions — the kind of detail that keeps a codebase feeling like one hand wrote it."],
+        ["Result","Prose indistinguishable from the surrounding code."],
+      ]},
+    ]},
+    { k:"Phase 7", name:"The naming arc", note:"bikeshedding that improved the whole codebase", steps:[
+      { n:14, t:"Finding the right noun", ctx:"Naming the three outcomes turned into a genuine design conversation — because a good name has to tell you what the thing is.", b:[
+        ["Landed","Working names: `Resolved` for the family of outcomes, `Instant` for the success case."],
+        ["Friction","`Resolved` implies success, but two of the three outcomes are failures. `Instant` suggests an *exact* point in time — wrong for a value that might only name a year — and it collides with a well-known type of the same name elsewhere."],
+        ["Move","Walked the alternatives and rejected them for concrete reasons: `Resolution` reads as *image/grid resolution* in a data library; `Point` is already a shape in this very spec; `Value` clashes with a field name. Landed on *`Moment`* — soft enough to cover a fuzzy year, and colliding with nothing."],
+        ["Result","`Moment` for the success case. The name for the *family* was still open — and about to expose something bigger."],
+      ]},
+      { n:15, t:"The reversal: two existing types were misnamed", ctx:"Bikeshedding one name surfaced a mistake that had nothing to do with this feature — and fixing it improved the whole library.", b:[
+        ["Landed","The maintainer liked `TemporalResult` for the family, but asked how it squared with two *existing* types named `...Result`."],
+        ["Friction","Those two aren't “one of several outcomes” at all. Each is a *record* that bundles a value *together with* a list of problems it tolerated — a fundamentally different shape. The `Result` suffix was on the wrong kind of type."],
+        ["Move","Established a rule: a `Result` is a *one-of* choice (like the new `TemporalResult`); a *value-plus-problems* record is a `Report`. Renamed the two existing types accordingly and recorded the convention in a decision record."],
+        ["Result","A naming rule that now applies library-wide. Bikeshedding one type improved *three*."],
+      ]},
+      { n:16, t:"The rule pays off in everyday code", ctx:"A convention is only worth it if it makes ordinary reading easier — and this one does, right down to variable names.", b:[
+        ["Landed","Local variables named `result` that actually held one of the newly-renamed `Report` values."],
+        ["Move","Renamed those to `report`, keeping `result` only for the true one-of type."],
+        ["Result","Now a variable's name tells you its shape at a glance: `result` is a one-of choice, `report` is a value-plus-problems record."],
+      ]},
+    ]},
+    { k:"Phase 8", name:"Shipping", steps:[
+      { n:17, t:"Two commits, then out the door", ctx:"Landing the work as clean, reviewable history rather than one undifferentiated blob.", b:[
+        ["Move","Split into two self-contained commits — the feature, then the naming refactor — arranged so each one passes its tests on its own (so future debugging can bisect cleanly). Opened the pull request (merged), and filed two follow-up issues for the deferred ideas."],
+        ["Result","Done — and a paper trail that explains itself."],
+      ]},
+    ]},
+  ];
+
+  function fmt(s){
+    const codes=[];
+    s=s.replace(/`([^`]+)`/g,(m,c)=>{codes.push(c);return "%%C"+(codes.length-1)+"%%";});
+    s=s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    s=s.replace(/\*([^*]+)\*/g,"<em>$1</em>");
+    s=s.replace(/\[([^\]]+)\]\(([^)]+)\)/g,'<a href="$2" target="_blank" rel="noopener">$1</a>');
+    s=s.replace(/%%C(\d+)%%/g,(m,i)=>{
+      const c=codes[+i].replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+      return "<code>"+c+"</code>";
+    });
+    return s;
+  }
+  const cls={Landed:"landed",Friction:"frict",Move:"move",Result:"result"};
+  const tl=document.getElementById("tl");
+  tl.innerHTML=phases.map(p=>{
+    const steps=p.steps.map(st=>{
+      const lead=st.ctx?'<p class="lead">'+fmt(st.ctx)+'</p>':"";
+      const beats=st.b.map(([lab,txt])=>
+        '<div class="beat"><dt class="b-'+cls[lab]+'">'+lab+'</dt><dd>'+fmt(txt)+'</dd></div>'
+      ).join("");
+      return '<div class="step"><div class="marker">'+st.n+'</div>'+
+        '<div class="card"><h3>'+fmt(st.t)+'</h3>'+lead+'<dl class="beats">'+beats+'</dl></div></div>';
+    }).join("");
+    const note=p.note?' <span class="note">('+p.note+')</span>':"";
+    return '<section class="phase"><span class="phase-diamond"></span>'+
+      '<span class="phase-kicker">'+p.k+'</span>'+
+      '<h2>'+p.name+note+'</h2>'+steps+'</section>';
+  }).join("");
+</script>

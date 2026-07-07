@@ -1,18 +1,27 @@
 # claude-skills
 
-Personal [Claude Code](https://claude.com/claude-code) skills — versioned here so
+Personal [Claude Code](https://claude.com/claude-code) skills, versioned here so
 they're durable and portable across machines, and symlinked into `~/.claude/skills/`
 so edits in this repo are live immediately.
 
 ## Skills
 
-- **[plumb](plumb/SKILL.md)** — a structural / design-integrity review and
+- **[plumb](plumb/SKILL.md)** -- a structural / design-integrity review and
   design-time guide. Reviews a diff, plan, or design for *shape* (are outcomes
   modeled as values? do names encode shape? is it decoupled?), at the altitude
   above `ponytail-review` (over-engineering) and `code-review` (bugs). Principles
   are called *soundings*; the all-clear is "Plumb is true." **Status: work in
-  progress** — a draft superset of candidate soundings; see
+  progress**, a draft superset of candidate soundings; see
   [plumb/REFINEMENT.md](plumb/REFINEMENT.md) for the tightening plan.
+
+## Case studies
+
+Worked examples the skills were distilled from.
+
+- **[temporal-conversion](case-studies/temporal-conversion.md)** -- the design
+  iteration log (covjson-msgspec #12) that seeded plumb. A visual version is
+  published as a Claude artifact; the HTML source lives beside the markdown for
+  redeploying or editing.
 
 ## How it's wired
 
