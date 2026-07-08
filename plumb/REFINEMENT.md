@@ -21,6 +21,13 @@ covjson-specific.*
 - **Proportional-response sounding is spec-agnostic:** verify the governing source
   if one exists; else follow the project's own stated requirements; match the
   strength of the response to the strength of the requirement.
+- **Boundary-sharpening is a standing lens:** sharpen each *sounding's* boundary and
+  the *skill's* overall boundary to avoid *unnecessary* overlap with the arena
+  (ponytail, code-review, and external neighbors). **Some overlap is acceptable** —
+  if avoiding it would weaken a sounding or plumb's overall impact, keep it and
+  *name* it (a `[combine?]` marker, or a **Boundary:** line in the sounding). Cut the
+  accidental overlap; keep the load-bearing kind. Prior art & neighbor analysis lives
+  in [LANDSCAPE.md](LANDSCAPE.md), a living snapshot kept fresh as plumb evolves.
 
 ## Candidate superset (pre-tighten, ~19)
 
@@ -160,6 +167,28 @@ each run drove into the skill.*
   near-unconditional; opening for extension is conditional and ponytail-bounded), so
   fusing them would blur a proportional-response (sounding 12) distinction. That
   merge stays parked for the DI-cluster tightening — see the seams/DI cluster note.
+
+- **2026-07-08 — landscape scan & boundary-sharpening (not a review run).** Swept the
+  public skills ecosystem for prior art / neighbors (per "are we reinventing the
+  wheel?"). Findings recorded in **[LANDSCAPE.md](LANDSCAPE.md)** (new living snapshot).
+  Verdict: not reinventing it — one adjacent *review* skill exists (NTCoding
+  `lightweight-design-analysis`, clean-code/OO/DDD), differing from plumb on **method**
+  (dimension-completeness vs leverage-ranking), **stance** (no plumb-line vs judge-
+  against-ideal), and **breadth** (6 soundings — 7, 11–16 — the OO tradition doesn't
+  reach; that fidelity/decision-cost cluster is the moat). This drove four changes:
+  (1) **Frontmatter re-led** — moved leverage-ranking + judge-against-ideal to the
+  front so the router no longer opens with "make illegal states unrepresentable," the
+  phrase bucket-1 skills own. (2) **Sounding 2 gained a Boundary line** — states plumb
+  takes the errors-as-values side and where the fail-fast/throw seam sits, resolving the
+  rival-tradition tension with NTCoding's "fail-fast, throw." (3) **Candidate sounding
+  17 "Locality of behavior"** minted from NTCoding's feature-envy detector, carrying a
+  `[combine? with 9, 10]` marker (its kernel — behavior-with-its-data, GRASP Information
+  Expert — sits at the cohesion/encapsulation intersection; merge-or-keep deferred to
+  the tightening pass). (4) **Boundary-sharpening added as a Locked decision** (standing
+  lens; some overlap is acceptable if load-bearing — cut only the accidental kind).
+  **Bears on the tightening pass:** sounding 17 is a fresh merge/split candidate to
+  judge with the "independently violable?" criterion; LANDSCAPE.md's ❌-gap column is
+  the distinctness evidence for keeping 7 and 11–16 through the combine pass.
 
 ## Artifacts in scratchpad (ephemeral — relocate with the skill)
 

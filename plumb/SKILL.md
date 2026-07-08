@@ -1,16 +1,21 @@
 ---
 name: plumb
 description: >-
-  Structural design review and design-time checklist for whether code is modeled
-  with the right SHAPE (not whether it works, which is code-review, nor whether
-  it is minimal, which is ponytail-review). Judges a diff, a plan, or a described
-  design against principled "soundings": make illegal states unrepresentable;
-  model outcomes as typed values; handle every case; names that encode a type's
-  shape; one source of truth; a functional core with effects injected at the edges;
-  faithful lossless data; low
+  Structural design review that ranks findings by leverage — the single most
+  load-bearing change first, measured by tracing a flaw to what consumes it
+  downstream — and judges a diff, plan, or described design against the principle
+  itself rather than the surrounding code, so conforming to a bad established
+  pattern is itself a finding. Asks whether the code has the right SHAPE (not
+  whether it works, which is code-review, nor whether it is minimal, which is
+  ponytail-review). Probes against principled "soundings": make illegal states
+  unrepresentable; model outcomes as typed values; handle every case; names that
+  encode a type's shape; one source of truth; a functional core with effects
+  injected at the edges (sans-IO / ports-and-adapters); faithful lossless
+  round-tripping data; low
   coupling; cohesion; encapsulation; checks in the right tier; proportional
   response grounded in the real source; symmetry; a trivial common path over a
-  complete core; reversibility; and hunting the breaking edge. Works on a
+  complete core; reversibility (one-way vs two-way doors); and hunting the
+  breaking edge. Works on a
   greenfield repo (nothing to conform to) and a brownfield one (where the
   established pattern may itself be the fault to push against). Use when reviewing
   structure/modeling, or when designing a new type, module, API, or check and you
@@ -73,7 +78,11 @@ carrying its own payload; errors are values, with an opt-in raise confined to th
 edge. **Smell:** `X | None`, a bare bool, or an exception where the *reason*
 matters; two distinct situations collapsed into one `None`. **Move:** name the
 outcomes as typed cases; keep the rich result as truth, add a thin convenience
-for the common path.
+for the common path. **Boundary:** this takes the *errors-as-values* side; a
+fail-fast/throw house style is a different tradition, not a violation — plumb's
+position is that the raise belongs at the *edge* over a typed core, not that
+exceptions are banned. Where a codebase is deliberately fail-fast, name the seam
+(where the value becomes a raise), don't relitigate the philosophy.
 
 ### 3. Totality: handle every case  `[combine? with 2]`
 Every input and every variant is handled; adding a case *forces* the update
@@ -203,6 +212,18 @@ non-ASCII, empty/`None`, reduced-precision, adversarial. **Smell:** an assumptio
 ("a 4-digit ASCII year", "it fits in a datetime") with no case testing its
 boundary. **Move:** name the assumption; find the *legal* input that breaks it; add
 the case.
+
+### 17. Locality of behavior: keep behavior with its data  `[combine? with 9, 10]`
+Behavior lives with the data it operates on; a method that reads another object's
+fields more than its own belongs on *that* object (feature envy). **Smell:** a
+method calling many getters on one collaborator and few on `self`; logic that
+reaches across a boundary to assemble what the other side should compute and expose.
+**Move:** move the behavior to the data (tell-don't-ask); or, if the data is a plain
+value, compose a function over it beside its definition. **Boundary:** adjacent to
+cohesion (9, *one* concern per unit) and encapsulation (10, hide representation) but
+distinct — this is the method-*placement* face of the same pull (GRASP *Information
+Expert* / *Tell, Don't Ask*). Harvested from the clean-code rubric; the
+`[combine?]` marker defers merge-or-keep to the tightening pass.
 
 ## Output
 

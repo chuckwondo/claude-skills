@@ -12,7 +12,8 @@ so edits in this repo are live immediately.
   above `ponytail-review` (over-engineering) and `code-review` (bugs). Principles
   are called *soundings*; the all-clear is "Plumb is true." **Status: work in
   progress**, a draft superset of candidate soundings; see
-  [plumb/REFINEMENT.md](plumb/REFINEMENT.md) for the tightening plan.
+  [plumb/REFINEMENT.md](plumb/REFINEMENT.md) for the tightening plan and
+  [plumb/LANDSCAPE.md](plumb/LANDSCAPE.md) for prior art & neighboring skills.
 
 ## Case studies
 
