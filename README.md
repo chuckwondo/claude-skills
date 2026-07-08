@@ -15,6 +15,23 @@ so edits in this repo are live immediately.
   [plumb/REFINEMENT.md](plumb/REFINEMENT.md) for the tightening plan and
   [plumb/LANDSCAPE.md](plumb/LANDSCAPE.md) for prior art & neighboring skills.
 
+### Python CI
+
+Narrow, single-purpose skills for a Python library's GitHub CI. Kept as distinct
+skills (not one broad "python-ci" skill) so each has a sharp trigger; if the
+family grows, they can be bundled into a distributable plugin later.
+
+- **[uv-minimum-versions](uv-minimum-versions/SKILL.md)** -- choose and *verify*
+  a library's dependency lower bounds (floors) as a deliberate, tested
+  compatibility contract: the floor is the lowest version that provides the APIs
+  you use *and* ships a wheel on your Python floor, proven by a blocking `uv
+  --resolution lowest-direct` CI leg on the floor Python. Covers the four traps
+  (wheels vs `requires-python`; siblings pinning a dep up; "arbitrary" is not
+  "lower it"; lockfile churn) and the Dependabot `lockfile-only` / ADR policy
+  layer. Distilled from
+  [uv-minimum-versions/case-study.md](uv-minimum-versions/case-study.md)
+  (covjson-msgspec #65).
+
 ## Case studies
 
 Worked examples the skills were distilled from.
@@ -43,6 +60,7 @@ git clone <this-repo> ~/src/chuckwondo/claude-skills
 cd ~/src/chuckwondo/claude-skills
 mkdir -p ~/.claude/skills
 ln -s "$PWD/plumb" ~/.claude/skills/plumb
+ln -s "$PWD/uv-minimum-versions" ~/.claude/skills/uv-minimum-versions
 ```
 
 Once a skill stabilizes, it can graduate to a distributable Claude Code **plugin**
