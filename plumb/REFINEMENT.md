@@ -53,7 +53,8 @@ Grouped into the clusters that emerged — these groups are the seams for mergin
 ### This round's verdicts on the eight proposed additions
 
 - **Add standalone:** functional core / imperative shell (split out of the old "one
-  source of truth"); immutability; testability-without-mocks; sound typing.
+  source of truth") **— DONE 2026-07-08, now live sounding 6**; immutability;
+  testability-without-mocks; sound typing.
 - **Merge:** "smaller composable pure functions" → into compose + cohesion +
   purity; "completeness" → umbrella over totality + symmetry.
 - **Defer:** simplicity → `ponytail-review` (total overlap).
@@ -96,6 +97,69 @@ the why.
    plumb = the operational review/guide. Each references the other.
 5. **Optional, once stable:** split into `plumb-review` / `plumb-guide` entry points
    (mirroring the ponytail family) if the two modes want separate triggers.
+
+## Dogfood log
+
+*Real review-mode runs, per step 2. Track what fired, what co-fired, and what
+each run drove into the skill.*
+
+- **2026-07-07 — covjson-msgspec `feat/temporal`** (temporal.py + the
+  Result/Report rename). Fired: **15** (headline — a year-0000 date mislabeled
+  `Unrepresentable` instead of `Malformed`; found only by *running* `resolve` and
+  comparing a differential twin, `0000-13-01` vs `2020-13-01`, not by reading the
+  type or docstring, both of which *claimed* correctness), **1** (`Moment` permits
+  naive+`SECOND` — real, but parked: sole trusted constructor upholds it), **5**
+  (`resolve` vs the three bridge parsers can diverge — deferred in ADR, sharpened
+  the note). **Co-fire: 4 + 15 on the headline** — a name/type that lies, surfaced
+  by a breaking edge. Its leverage came entirely from the *downstream trace*: the
+  mislabel defeats `validate(check_values=True)`, which is what promoted it from
+  nit to net. **Drove:** the "measure leverage by tracing to the consumer /
+  fix-vs-park" Working note — one trace resolved both #1 (fix) and `Moment` (park).
+  **New signal for the tightening pass:** plumb *affirming* a sound decision (the
+  Result/Report split, sounding 4) was valuable output, not filler; the output
+  format absorbed it as an "Affirmed true:" line with no spec change needed —
+  worth explicitly sanctioning affirmations when the combine pass rewrites Output.
+  **Also drove (from the follow-up exchange, not the run itself):** the "expand
+  the load-bearing findings" Output rule. The parked `Moment` finding, left as a
+  terse line, prompted a request to explain it; the illuminating answer's *shape*
+  (concrete instance → failure scenario → why-the-fix-is-wrong) became the
+  required expansion for the top finding and every park verdict. Note the
+  provenance signal: a *park* verdict is the likeliest thing to trigger "explain
+  that," so it earns the depth even when its leverage is low.
+
+- **2026-07-08 — sourced enrichment of sounding 5 (not a review run).** Folded the
+  I/O-decoupling lineage the user surfaced into sounding 5 (functional core):
+  named the three altitudes (*functional core / imperative shell* as the general
+  statement, *sans-IO* as its I/O specialization, *ports & adapters* as its
+  architectural face); generalized the smell across effects (clock/RNG/env/global
+  singleton/framework, not only I/O) with the BYO-transport case demoted to the
+  *vivid special case* (baking in `requests`/`httpx`/`aiohttp` forces that dep on
+  every consumer and welds logic to sync XOR async); move = *compute, never
+  perform*, inject the effect as a value/capability; attached a *Lineage &
+  sources* list (sans-IO how-to +
+  firezone; Bernhardt "Boundaries" + FC/IS screencast + Google Testing Blog
+  2025-10; Seemann ports-and-adapters). **Bears on Open question 1 and the §53
+  "add FC/IS standalone" verdict:** the enrichment's mass tipped this from parked
+  to done — **SPLIT EXECUTED the same session (see the next entry)**: FC/IS is now
+  its own sounding 6, and sounding 5 is DRY/reuse only.
+
+- **2026-07-08 — split executed (Option A).** Acted on the tension the enrichment
+  surfaced: separated the two ideas fused in the old sounding 5. Sounding 5 is now
+  **DRY/reuse only** ("one source of truth; compose"); the functional-core/effects
+  material became its own **sounding 6, "Functional core; effects at the edges"**
+  (carrying the FC/IS + sans-IO + ports-&-adapters lineage and the *Lineage &
+  sources* list). Renumbered former 6–15 → 7–16 and fixed the `[combine?]` cross-
+  refs (5↔6 now co-flagged) — so any pre-2026-07-08 sounding number ≥6 (e.g. in the
+  dogfood log) is +1 under the new scheme. Rationale (for the tightening pass): the
+  two are **independently violable** (a repeated formula in a pure module = DRY
+  only; an inline `datetime.now()` in a used-once fn = functional-core only) and the
+  fused title needed an "and" — a cohesion (sounding 9) smell in plumb itself.
+  **Chose the narrow split (effects only), NOT the wider "seams at the edges"
+  merge** that would also absorb *open-for-extension* (policy-injection): the two DI
+  faces share a fix mechanism but differ in *strength* (pushing effects out is
+  near-unconditional; opening for extension is conditional and ponytail-bounded), so
+  fusing them would blur a proportional-response (sounding 12) distinction. That
+  merge stays parked for the DI-cluster tightening — see the seams/DI cluster note.
 
 ## Artifacts in scratchpad (ephemeral — relocate with the skill)
 
