@@ -283,3 +283,8 @@ that most shape this solution.
   layering — inject the check instead" is.
 - When a sounding doesn't apply, say so briefly; don't manufacture a finding to
   fill it.
+- Run plumb at both altitudes — on the *plan* before code, and again on the *diff*
+  after. They are complementary, not redundant: the two passes catch different
+  flaws. (On #14 the plan-review's headline was a host-app naming collision; the
+  diff-review's was a one-source-of-truth drift that only existed once code was
+  written.) Each pass earns its keep.

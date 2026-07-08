@@ -190,6 +190,42 @@ each run drove into the skill.*
   judge with the "independently violable?" criterion; LANDSCAPE.md's ❌-gap column is
   the distinctness evidence for keeping 7 and 11–16 through the combine pass.
 
+- **2026-07-08 — covjson-msgspec #14 plan** (OpenAPI schema bridge; review mode on
+  the *implementation plan*, before any code). Fired: **16 + 1** (headline — a
+  host-app component-name collision: `component_schemas()` emits generically-named
+  components (`Parameter`, `Unit`, `Domain`) that `dict.update`-merge into a host
+  app's `components.schemas` and silently clobber a same-named host schema; found by
+  tracing the merge to the real consumer, a titiler-style host with its own
+  `Parameter`). This was the plan's OWN open question, parked as "we'll name them to
+  avoid collisions" — plumb refused the park and promoted it to must-fix. **1 + 4**
+  (untyped `schema_ref(type)` could mint a `$ref` to an unregistered component).
+  **Affirmed:** 6 (pure core / thin adapter), 14 (trivial path over complete core),
+  12 (version claims verified against the FastAPI / msgspec sources). **Drove (into
+  the work, not the skill):** namespace every component under one
+  `_REF_TEMPLATE` / `_NAMESPACE` constant (illegal state → unrepresentable, 1; also
+  a single source of truth, 5); type `schema_ref` to `type[CoverageJSON]`.
+  **Signal:** plumb on a *plan* caught a design flaw before code existed, so the
+  namespacing / typing landed in the first implementation pass instead of as
+  code-review churn.
+
+- **2026-07-08 — covjson-msgspec #14 implementation** (review mode on the diff).
+  Fired: **5** (headline — `_ROOT_TYPES` re-lists the `CoverageJSON` union
+  membership; found by tracing the drift: a future 6th union member would be
+  silently omitted by `component_schemas()` AND `schema_ref` (now typed to the
+  union) would then mint a dangling `$ref` for it — reopening the exact door the
+  plan-review closed — and the new exact-surface *test* would not catch it, being
+  pinned to the same hand-list). **Drove:** `_ROOT_TYPES = get_args(CoverageJSON)`
+  (the union becomes the single source), plus a bonus low-coupling (8) win
+  (schema.py imports only the union, not each member). **Parked 5/16:** `schema_ref`
+  derives the component name via `type.__name__` while `component_schemas` uses
+  msgspec's key — two derivations that agree for our non-generic structs and are
+  pinned by the parametrized test; real but parkable. **Affirmed:** 6, 1.
+  **Signal:** the diff-review's headline (5, one source of truth) was a *different*
+  sounding than the plan-review's (16 + 1) — evidence the two altitudes are
+  complementary; folded into a Working note ("run plumb at both altitudes"). Also:
+  sounding 6, split out earlier this same session, carried real weight in both #14
+  runs — the split earned its keep immediately.
+
 ## Artifacts in scratchpad (ephemeral — relocate with the skill)
 
 - `plumb-SKILL.md` — the working draft (15 soundings + folding notes).
