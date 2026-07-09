@@ -346,3 +346,59 @@ without churning it.*
   signal* — a thorough plan-review front-loading the fixes so the diff-review is
   confirmatory (covjson-msgspec #69 above; titiler #44 here). Two projects, one day:
   corroboration, noted not re-derived.
+
+- **2026-07-09 — covjson-msgspec #18 plan + artifact iteration** (the
+  covjson-pydantic benchmark harness; review mode on the *design plan*, then a
+  long user-driven refinement of the rendered artifact — the log's first run on
+  a **measurement/comparison artifact** rather than library modeling).
+
+  *Plan run.* Fired: headline **co-fire 16 + 13 + 12** — the operation matrix
+  measured the fairness story on one side only (msgspec structural `decode` vs
+  pydantic's fused decode+validate+datetime), so the assumption
+  "decode-vs-decode is fair" had no case testing its boundary (16), the
+  comparison was asymmetric (13), and the number would read as the foregone
+  conclusion the issue's own methodology warns against (12). Leverage from the
+  trace: the headline would claim a pure speed win while a real slice of
+  pydantic's cost is datetime parsing msgspec merely *deferred*. **Drove the
+  design:** a cumulative msgspec ladder up to `decode +
+  validate(check_values=True) + to_datetime(t)`, the only honest like-for-like,
+  the datetime rung conditional on a temporal axis. Also **5** (render
+  `results.md` *from* the one result structure → the two artifacts can't drift),
+  **2** (a non-measured cell is an explicit `Skipped(reason)`, never an omitted
+  row), **15** (`results.json` is a #22-facing contract → document its schema).
+
+  *Artifact iteration (soundings firing outside the formal run, user-driven).*
+  **13 recurred, un-propagated** — the plan-pass fixed the asymmetry in the
+  *decode* ladder but the identical one in *round-trip* (msgspec structural
+  decode+encode vs pydantic full decode+dump) survived; caught by eye, fixed
+  with two round-trip anchors mirroring the decode ladder. **12 marathon** on
+  the validation-conformance scorecard: (a) an asserted claim ("pydantic doesn't
+  check value-vs-dataType") was *false* — a verify-against-source violation in
+  the wielder's own output, caught only when the user demanded empirical proof;
+  (b) the "is malformed-temporal a warning?" challenge exposed the scorecard
+  grading a **SHOULD** (Spec 5.2) as if MUST and marking pydantic's hard-reject
+  *compliant* — fixed by grading every row by requirement level (MUST→error,
+  SHOULD→warn) and re-marking pydantic's SHOULD-overreach. **7** — probe
+  failures render the library's *verbatim* raised exception (`raises <Type>:
+  <message>`), not a paraphrase; **2** — the null reverse-direction stated
+  explicitly, `n/a` (not-applicable) kept distinct from `raises` (rejected).
+
+  **New signals for the tightening pass:** (1) *A symmetry (13) fix must
+  propagate to sibling operations.* The plan-pass scoped the fix to where the
+  flaw was spotted (decode); the same structure in round-trip survived because
+  it was one line in the plan and its internal asymmetry only became salient
+  once written out. Candidate Working-note: when a fix is "make comparison X
+  fair," apply it to every sibling sharing the structure — the fix's blast
+  radius is a leverage question too. A third flavor of both-altitudes: plan
+  caught the class, use exposed an un-propagated member. (2) *Sounding 12's
+  verify-facet turned on the wielder.* The reviewed artifact was mine, and I
+  repeatedly asserted pydantic/spec behavior from memory with the user as the
+  12-enforcer — reinforces that "verify, don't assert" binds the reviewer's own
+  claims, not only the code's. (3) *First run on a comparison/measurement
+  artifact*, whose entire value is honest, verified, proportional claims —
+  sounding 12 *is* the artifact's correctness condition, not a side-check; every
+  scorecard cell is a spec-conformance claim, so MUST/SHOULD grading (12) and
+  verbatim errors (7) were load-bearing. (4) *16 fired on the benchmark's own
+  fairness assumption*, not on a code input — the breaking-edge probe applies to
+  a *methodology's* hidden assumption ("this comparison is like-for-like") the
+  same way it applies to a parser's.
