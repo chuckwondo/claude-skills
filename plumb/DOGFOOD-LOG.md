@@ -217,3 +217,54 @@ without churning it.*
   (12's verify-against-the-source facet, the same forcing-function role noted in
   #37) — a reminder that 12 operates whenever a spec claim is made, not only inside
   a review.
+
+- **2026-07-09 — titiler-covjson #44 plan** (`/position` Point-domain slice; review
+  mode on the plan — and the log's first **re-review of a plan plumb had already
+  reviewed once**, 2026-07-08, after a blocker-merge gap). Fired: headline **co-fire
+  7 + 1** — the plan enshrined a phantom `(bands, 1)` axis on `PointInput.data` (a point
+  sample is one-scalar-per-band = `(bands,)`); leverage from the downstream trace: the
+  unfaithful shape forces a converter reshape, a `shape[1] == 1` guard, a *load-bearing
+  warning comment* ("don't simplify this away"), and a `(2, 3)` test case — four
+  consequences of one invented axis. The kicker: this **overturned first-pass finding
+  2**, whose own empirical note ("`data[i]` on a 1-D array returns a bare `float32` for
+  an unmasked band") was *correct but mis-diagnosed* — it concluded "keep `(bands, 1)`"
+  when the real cause was integer-indexing, and a *slice* `data[i : i + 1].reshape(())`
+  yields a proper 0-D `MaskedArray` on the honest `(bands,)` shape. Caught only by
+  **running the counterfactual probe** (index vs slice, masked/unmasked, float/int), not
+  by re-reading the note. **16 + 1** — `_parse_point_wkt` admits non-finite coords
+  (`float("nan")`/`float("inf")`/overflow `float("1e400")` all parse), and a NaN
+  coordinate serializes to a silent `"values":[null]` axis (verified by constructing
+  `ValuesAxis` + dumping) → a dishonest 200; the parse boundary must yield a *trusted*
+  `Position`. **5 + 13** — `_resolve_read_bands` should return `tuple[BandInfo, ...]`
+  uniformly (build BandInfo for the expression case too) so both `_build_*_input`
+  collapse to one call shape and become true mirrors. **5** — `reject_vertical_selection`
+  reject-on-truthiness so a valueless `?z=` is absent, matching the codebase's
+  empty-is-absent convention. **3 + 15** — keep each commit green: the `CoverageInput`
+  union flip belongs with the modeler arm, not the `PointInput` definition, else
+  `assert_never` is red between commits. **Affirmed:** the plan's spine — a real
+  `GridInput | PointInput` union with exhaustive `match` (3), a dep-free `Position`
+  value type (1/6), a pure modeler with WKT parsing confined to the shell (6), heavy
+  symmetry with `/bbox` (13).
+
+  **New signals for the tightening pass:** (1) *First logged re-review of the same
+  plan, and it flipped a prior headline.* A finding is itself falsifiable by a later
+  pass — and what caught the mis-diagnosis was **empirical discipline applied to the
+  proposed fix, not only the design under review**: the first pass ran a probe but
+  stopped at "the crash happens" without testing whether an alternative indexing avoids
+  it. Argues for a Working-note nuance: when a fix is "keep shape X to avoid crash Y,"
+  hunt the breaking edge (16) on *your own fix* — verify the counterfactual (does an
+  alternative avoid Y without X?), not just that Y occurs. (2) *Faithfulness (7) as a
+  headline* — new for the log (prior headlines: 4, 5, 15, 16, and 3 on #69), co-firing
+  with 1 the way earlier runs coupled 1↔5 / 3↔5. Candidate heuristic: **a comment that
+  *defends* a shape is evidence the shape is unfaithful** — the "don't simplify this
+  away" warning was the tell that the trailing axis shouldn't exist. (3) *Both-altitudes
+  note, new angle:* both passes were plan-altitude (not plan-vs-diff), yet the second
+  still found what the first missed — because the first pass's *verification* was
+  incomplete, not because the altitude differed. Distinct from the #14/#37 "plan vs diff
+  catch different flaws" signal: this is "same altitude, stricter empirical discipline
+  catches a mis-diagnosis," so re-review value isn't only altitude-switching. (4)
+  *NaN-coordinate routing nuance:* #69 routed a NaN-coordinate walk to **code-review**;
+  here the same class stayed in **plumb** because the assumption lived in the
+  parse-*boundary*'s shape (a `Position` that promises trusted values but doesn't,
+  sounding 1), not in a downstream value check. Rule of thumb: NaN-in-values →
+  code-review; NaN-admitted-by-a-boundary-that-claims-to-produce-trusted-values → plumb.
