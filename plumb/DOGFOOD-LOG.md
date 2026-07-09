@@ -161,3 +161,59 @@ without churning it.*
   rule — "can't cite it" was itself the finding that drove opening the spec; worth
   naming 12's dual role (grade proportionally **and** go verify) if the combine pass
   touches it.
+
+- **2026-07-09 — covjson-msgspec #69 plan** (monotonic primitive-axis MUST
+  validation; review mode on the design plan, after a long interactive design
+  conversation, before any code). Fired: headline **co-fire 3 + 5** — the default
+  checker's "which reference system orders, and how" was split across two
+  mechanisms (`temporal_coordinates` for the temporal case, an `isinstance(system,
+  (Geographic|Projected|Vertical)CRS)` chain for numeric) with an implicit
+  `else: skip`, i.e. a non-total classification. Leverage from the downstream
+  trace: a future *ordered* `ReferenceSystem` variant added to the union falls
+  through the isinstance chain, is silently classed "skip", and a genuinely
+  non-monotonic numeric axis passes `validate(check_values=True, mode="raise")`
+  with no error AND no compiler nudge — a silent false-negative on a spec MUST.
+  **Drove the design:** one total `_ordering_kind(system) -> Literal["numeric",
+  "temporal"] | None`, exhaustive `match` + `assert_never`, which also became the
+  single code home for the ADR's ordering registry (the 5 half) and forced the
+  standard-calendar gate *inside* the classifier (a mirror hazard the trace
+  surfaced: a non-standard-calendar `TemporalRS` would otherwise be fed to the
+  Gregorian `resolve` and silently mis-compared). **15 + 9** on the
+  `AxisOrderChecker(values, system)` signature — a public one-way door, resolved
+  by the *cohesion* argument (the seam's one concern is coordinate-value ordering,
+  so it takes `values`, not the whole `Axis`; bounds-ordering is a separate future
+  check) and recorded as a deliberate door in the ADR rather than widened
+  speculatively. **12** (mild) — the RS-ordering classification is our
+  *interpretation* of §6.1.2's "natural ordering", not verbatim spec; drove an ADR
+  framing note (cite 6.1.2, don't present it as a quoted enumeration). **5** again
+  — the coord→system index duplicated xarray's private `_coordinate_systems`;
+  since `_bridging.py` was already being opened for `is_standard_calendar`, drove
+  lifting `coordinate_systems` there now (two consumers) and migrating xarray off
+  its private copy. **Affirmed:** 6 (the injected-seam-with-shell-resolved-default
+  *is* the design's spine — done well, so plumb's value shifted inward to the
+  totality/purity of the injected default's internals), 11 (O(n) scan gated in
+  `check_values`, not `__post_init__`), 14 (trivial default under `check_values`,
+  strict via `require_monotonic(strict=True)`, full override via the seam), 7
+  (temporal compare via `resolve`, no stored datetimes). Routed the `bool`-is-`int`
+  and NaN-coordinate walk edges to code-review by name.
+
+  **New signals for the tightening pass:** (1) *Plumb earned its keep on a
+  heavily-deliberated plan.* The seam shape, its naming
+  (`AxisOrderChecker`/`axis_order_checker`/`require_monotonic`), the `int | None`
+  return, even the `None`-sentinel default had already been argued out over many
+  rounds of interactive design — all *local* decisions — yet none surfaced the
+  *global* totality/one-source gap that plumb's union-growth trace caught. Evidence
+  that plan-altitude plumb is not redundant with careful iterative design; they
+  optimize different scopes. (2) *Sounding 3 (totality) as a headline* is a first
+  for the log (prior headlines: 4, 5, 12, 15, 16), and it co-fired with 5 the same
+  way #14's runs coupled 1↔5 — "add a case → silently skipped" is a totality smell
+  whose *leverage* is a one-source-of-truth drift; worth watching whether 3 and 5
+  should be cross-flagged. (3) *When DI (6) is already done well, plumb's yield
+  moves inward* — from "should this be injected?" to "is the injected default's
+  core total and single-sourced?"; the flaw lived inside the well-chosen seam's
+  default, not in the seam decision. (4) *Sounding 12 fired twice, once outside the
+  formal run*: before the /plumb invocation, the user challenged a spec section
+  number (our 6.1.1 vs the OGC HTML's 9.6.1.1), forcing an actual spec.md fetch
+  (12's verify-against-the-source facet, the same forcing-function role noted in
+  #37) — a reminder that 12 operates whenever a spec claim is made, not only inside
+  a review.
