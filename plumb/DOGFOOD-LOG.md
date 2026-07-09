@@ -268,3 +268,43 @@ without churning it.*
   parse-*boundary*'s shape (a `Position` that promises trusted values but doesn't,
   sounding 1), not in a downstream value check. Rule of thumb: NaN-in-values →
   code-review; NaN-admitted-by-a-boundary-that-claims-to-produce-trusted-values → plumb.
+
+- **2026-07-09 — covjson-msgspec #69 diff review** (the monotonic-axis feature as
+  implemented; review mode on the diff, AFTER the earlier #69 *plan* review and AFTER an
+  xhigh *code*-review that found + fixed a NaN-coordinate edge). Outcome: **net "Plumb is
+  true."** The plan-pass's load-bearing fixes all landed in code and hold — **affirmed:**
+  3 (`_ordering_kind` present and total, `assert_never` over the real `ReferenceSystem`
+  union), 5 (`coordinate_systems` lifted to `_bridging`, xarray migrated off its private
+  copy), 6 (pure check, the ordering policy injected as a seam), 11 (O(n) scan gated in
+  `check_values`), 15 (the `(values, system)` one-way-door signature kept narrow). The
+  single live finding was a **6-vs-5 wash:** the seam's default (`None →
+  require_monotonic()`) resolves at the *leaf* (`_axis_monotonic_issues`, once per
+  domain) rather than the *edge* (`validate`, once per call) the plan's wording implied.
+  Traced to the consumer: **no wrong output** — the only cost is a per-coverage closure
+  rebuild inside a `CoverageCollection`, nanoseconds against the O(total values) scan.
+  Parked as a wash because edge resolution *can't cleanly deliver* the sounding-6 purity
+  win: `_axis_monotonic_issues` must keep a `None` fallback for its own direct doctest
+  regardless, so moving resolution to `validate` only *adds a second* site (a sounding-5
+  cost) for a negligible gain. Two tiny parks: 1 (the `keyed` "mutually comparable"
+  invariant lives in the docstring, not the type — but a single trusted caller upholds
+  it) and 2 (`_temporal_keys` returns `None` = "declined to order" vs `[]` = "trivially
+  ordered" — distinct honest meanings, no consumer conflates them).
+
+  **New signals for the tightening pass:** (1) *A thorough plan-review can front-load the
+  structural fixes so the diff-review is confirmatory, not corrective.* This is the
+  **complement** of the #14/#37 "plan vs diff catch *different* flaws" signal: there each
+  pass earned its keep by finding a distinct defect; here the diff-pass came back
+  essentially clean *because* the plan-pass was thorough (`_ordering_kind`, the dedup, the
+  seam signature were all designed and then implemented faithfully). "Diff-review returned
+  Plumb-is-true" is itself a positive signal about plan-review thoroughness, not a wasted
+  pass — worth naming so a clean diff-pass isn't read as "plumb found nothing, skip it
+  next time." (2) *A finding can resolve to "the code is right, the plan/narrative was
+  wrong."* The diff-review caught the implementation deviating from the plan's stated
+  shape ("resolve once in the shell"), then judged the deviation an **improvement** (the
+  doctest-direct-call convention forced the cleaner single-site leaf form), so the
+  resolution was to correct the design doc's mental model, not the code — plumb judging
+  the artifact against the *ideal* (its core stance) vindicated the implementation over
+  its own plan. Distinct from every prior entry where a drift-from-plan was a regression
+  to fix. (3) *Skill-partition confirmed again* (per #37's sequencing note): diff-plumb
+  ran after code-review and its NaN fix, correctly left the NaN in code-review's lane, and
+  stayed structural — the two skills partitioned cleanly with no double-coverage.
