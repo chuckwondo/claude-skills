@@ -308,3 +308,41 @@ without churning it.*
   to fix. (3) *Skill-partition confirmed again* (per #37's sequencing note): diff-plumb
   ran after code-review and its NaN fix, correctly left the NaN in code-review's lane, and
   stayed structural — the two skills partitioned cleanly with no double-coverage.
+
+- **2026-07-09 — titiler-covjson #44 diff, commit 1** (the Point input layer; review
+  mode on the staged diff, the complement to the same-day #44 *plan* re-review earlier
+  in this log, run after the code plus an interleaved ponytail-review and code-review).
+  **Verdict: Plumb is true** — the plan re-review had already caught the one load-bearing
+  shape issue (the `(bands,)` flip) and it landed faithfully, so this pass produced one
+  park plus affirmations, no fix. **Headline park (4 / 1 / 13)** — `GridInput.bounds:
+  tuple[float,float,float,float]` vs the diff's new `PointInput.position: Position`: the
+  diff models Point's location as a named value type with no empty state, while the
+  sibling models its extent as a bare 4-tuple whose `(west,south,east,north)` order is
+  positional convention (`(minx,maxx,miny,maxy)` is equally constructible — a
+  sounding-1/4 smell). The park flags the **incumbent** `bounds`, not the diff; the move
+  is "make `bounds` a value type to match," deferred as out-of-scope (internal, two-way
+  door, tested). **Affirmed:** 7 (`data = point.array` at `(bands,)`, no reshape — the
+  plan headline, built as designed); **5** (`_require_crs` is now the single home for CRS
+  resolution, message via `type(source).__name__`, shared by both converters); 1 + 11
+  (`Position` has no empty state; checks at the construction tier); 6 + 8 (rio-tiler under
+  `TYPE_CHECKING`, pure converters). Deferred by name: the `crs or source.crs` truthiness
+  edge → code-review; the trimmed converter surface → the deliberate ponytail cut.
+
+  **New signals for the tightening pass:** (1) *A diff that introduces a BETTER shape than
+  its sibling yields a park that flags the sibling, not the diff.* "Judge against the
+  ideal, not the incumbent" produced a **precedent-setting** park: the diff did the right
+  thing (`Position`), which by contrast marks the older `bounds` 4-tuple as the weaker
+  modeling. The move is never "make the diff worse to match the incumbent"; it is "the
+  incumbent should adopt the diff's shape," parked when out-of-scope. A park whose subject
+  is a *different line than the diff touched* is a distinct verdict shape worth naming.
+  (2) *Sounding 5 at diff altitude, opposite polarity to #14.* The affirmed `_require_crs`
+  is a one-source-of-truth structure that did NOT exist at plan time — it emerged from the
+  interleaved code-review's dedup finding. #14's diff-run CAUGHT a one-source-of-truth
+  *drift* that only existed once code was written; here the diff-run *affirmed* a
+  one-source-of-truth structure that only existed post-code. Same axis (5 at diff
+  altitude), inverse polarity (drift-caught vs structure-affirmed) — evidence that
+  post-plan structure introduced by sibling reviews is exactly what a diff-pass is
+  positioned to judge. (3) *Second same-day instance of the entry-directly-above's
+  signal* — a thorough plan-review front-loading the fixes so the diff-review is
+  confirmatory (covjson-msgspec #69 above; titiler #44 here). Two projects, one day:
+  corroboration, noted not re-derived.
