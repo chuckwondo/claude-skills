@@ -402,3 +402,107 @@ without churning it.*
   fairness assumption*, not on a code input — the breaking-edge probe applies to
   a *methodology's* hidden assumption ("this comparison is like-for-like") the
   same way it applies to a parser's.
+
+- **2026-07-10 — covjson-msgspec #77 plan + diff** (model the five
+  `CoverageCollection`-inheritance members with `msgspec.UNSET` instead of
+  `X | None`, so decode rejects a spec-forbidden `null` and "omitted" stops
+  aliasing "explicit null"; two runs, both altitudes — plan-review inside plan
+  mode, diff-review after implementation + an xhigh code-review).
+
+  *Plan run.* Fired: headline **3 + 1** — the `is None`→`is UNSET` swaps in
+  `_resolve` and the missing-parameters check assume the five fields are never
+  runtime-`None`, but `msgspec.Struct.__init__` doesn't type-check construction,
+  so `None` stays *representable* though the annotation forbids it; a smuggled
+  `None` skips the "absent" branch it used to hit (e.g. falls into the
+  parameter-group validator, which expects a dict). Leverage from the trace: no
+  consumer can *reach* the bad state except a mis-constructor, and strict
+  mypy/basedpyright forbid every internal `None`-construction — so the finding is
+  real-but-guarded, discharged by naming the invariant + its typecheck guarantor
+  (do NOT write `is UNSET or is None`, which re-merges the two states the change
+  exists to separate). **12** — the entire reject-`null` decision rests on "the
+  spec forbids `null` here"; flagged as assert-from-memory, which forced an
+  actual spec.md fetch (§6.4/§6.5: members typed object/string/array, inheritance
+  on *absence*, `null` nowhere permitted) before the ADR could cite it. **16** —
+  a present-empty `{}` must *suppress* inheritance (it is not absence); untested.
+  **Drove:** the load-bearing-invariant callout + guarantor in the plan, the
+  ADR's spec-citation requirement, and the `{}`-suppression test. **Affirmed:**
+  11 (reject-`null` is tier-1 decode typing, not a `validate()` job — a `null`
+  for an object-typed field is a field-*type* mismatch, the same class as
+  `"parameters": 5`), 7 (reject over silently coercing `null`→absent).
+
+  *Implementation confirmed the plan headline mechanically.* The totality (3)
+  prediction was discharged not by hand-enumeration but by the *typechecker* —
+  mypy named the missed consumers (`_validate_ranges`, `_member_domain_type_
+  issues`) — and by the *corpus*: a "normalize at the boundary" fix
+  (`parameters or None`) silently collapsed present-empty `{}`→`None`, defeating
+  `range-without-parameter`; the negative fixture caught it, and the fix narrowed
+  to `None if parameters is UNSET else parameters` (a **7** faithfulness save
+  *inside* the normalization). A latent *wrong plan instruction* neither the plan
+  nor the plan-review caught — "the `self.<field> is not None` guards can stay" —
+  surfaced only at implementation, because `UNSET is not None` is `True` (an
+  inverted-guard bug the type-checker can't see but reasoning did).
+
+  *Diff run (after implementation + an xhigh code-review that returned clean).*
+  Fired: headline **5 + 16** — the diff carries five UNSET-handling idioms
+  (`is UNSET`, `X or None`, `None if is UNSET else X`, bare truthiness,
+  `X or UNSET`), and two are *not* interchangeable: `_resolve`'s explicit
+  `is UNSET` **cannot** be "simplified" to `if not coverage.parameters`, because
+  a present empty `{}`/`()` is falsy yet is not absence — the swap silently
+  reinstates the graft-on-empty bug the change exists to kill. Surfaced by
+  probing the breaking edge (present-empty vs absent). **Drove:** a comment
+  pinning why truthiness is wrong **and** promoting the `{}`-suppression test into
+  a comprehensive, labeled *regression tripwire* (`parameters={}` *and*
+  `parameter_groups=()`), verified to *fail* the instant `_resolve` uses
+  truthiness. **Affirmed:** 11, 7, 6 (`effective_domain_type` as the projection
+  that contains `UnsetType`, never leaking it to a `str | None` consumer), 13
+  (xarray's `or UNSET` on construct / `or None` on read — a clean symmetric
+  normalization pair).
+
+  **New signals for the tightening pass:** (1) *"Make illegal states
+  unrepresentable" (1) can be UNREACHABLE — and when it is, the strongest
+  available guard is an enforcing test, not a comment.* Asked "can we guard the
+  truthiness-regression more robustly than a comment?", the honest answer is a
+  gradient — type-level (make `if not x` a type error) > test (fails on the
+  regression) > comment (informs) — with the top rung *closed here* because
+  `UnsetType.__bool__` is `False` (truthiness is type-clean) and the sentinel
+  can't be swapped (msgspec needs `UNSET`). So the guard dropped to a *test*,
+  which *enforces* where a comment only *informs*. Candidate Working-note: when
+  sounding 1's ideal is unreachable, don't settle at a comment — reach for the
+  test that pins the invariant. (2) *Not every idiom-repetition is a
+  one-source-of-truth (5) violation.* The five UNSET idioms *looked* like a 5
+  smell, and a unifying `_omitted()` predicate was considered — then **correctly
+  declined**, because the variants encode *different decisions* (`or None`
+  deliberately collapses `{}`; `None if is UNSET else x` preserves it), so a
+  shared helper would *flatten* the load-bearing distinction. Refines 5:
+  distinguish "the same knowledge in N places" (dedup) from "similar-looking
+  idioms encoding different semantics" (pin with a test, don't merge). (3) *A
+  totality (3) finding at plan altitude is discharged by the typechecker + tests,
+  not by enumeration* — and the discharging step can itself introduce a
+  faithfulness (7) regression (the `{}`-collapse) that only the corpus catches,
+  so "normalize the retyped value at each boundary" is a move to audit per-site,
+  not apply reflexively. (4) *Both-altitudes, the #14/#37 "distinct flaws"
+  flavor, not #69's "confirmatory":* plan caught the invariant/citation/scope;
+  diff caught the idiom-consistency/regression-guard — a genuinely different
+  defect, so the diff-pass earned its keep. Wrinkle: the plan carried a *wrong*
+  instruction the plan-review missed (the `is not None` guards), caught only when
+  implementation forced the type-checker to speak — a reminder that plan-review
+  judges the plan's *stated shape*, and some errors are only legible once code
+  exists.
+
+  **Candidate refinement (sounding 5), from signal (2).** Sounding 5 currently
+  reads any repeated decision as a dedup target, but this run's *decline* shows a
+  false-positive class it should name explicitly. Proposed **Boundary** line for
+  5 (mirroring the Boundary line sounding 2 carries): *"Repetition of a **shape**
+  is not automatically a 5 violation. Before extracting, ask whether the repeated
+  sites encode the **same** decision or **different** ones: `parameters or None`
+  (collapse empty→absent) and `None if x is UNSET else x` (preserve empty) look
+  alike but decide oppositely on `{}`, so a shared helper would **flatten** that
+  load-bearing distinction. Dedup 'the same knowledge in N places'; leave
+  'similar-looking idioms encoding different semantics' alone, and pin each with a
+  test. The tell: could one helper serve every site **without** a parameter that
+  re-encodes the very difference? If not, it is not one source of truth — it is N
+  sources wearing the same coat, and merging them hides a decision."* This also
+  sharpens the split between 5 (genuine single-source) and the *guard* mechanism:
+  where variation is intentional, the invariant is pinned by a **test** (signal 1's
+  gradient), not by a helper. Merge-or-keep deferred to the combine pass; flag it
+  next to the existing `[combine? with 6, 14]` marker on 5.
