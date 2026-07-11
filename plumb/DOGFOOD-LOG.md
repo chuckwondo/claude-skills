@@ -506,3 +506,191 @@ without churning it.*
   where variation is intentional, the invariant is pinned by a **test** (signal 1's
   gradient), not by a helper. Merge-or-keep deferred to the combine pass; flag it
   next to the existing `[combine? with 6, 14]` marker on 5.
+
+- **2026-07-11 — covjson-msgspec #21 documentation plan** (the contributor-docs /
+  single-sourcing architecture: `CONTRIBUTING.md` as the crisp contributor
+  one-stop, design tenets in `docs/design/tenets.md`, ADRs canonical for specific
+  decisions, a slimmed `CLAUDE.md` spine that `@import`s the human files, the docs
+  site for orientation / concepts / design narrative). **Plan altitude, and a
+  first for this log: the reviewed artifact is a *documentation information
+  architecture*, not code — a system of Markdown files and canonical homes.** The
+  soundings transferred cleanly: "types" became "canonical files"; "make illegal
+  states unrepresentable" became "don't let one fact have two canonical homes that
+  can drift"; coupling / cohesion / right-tier / reversibility read straight
+  across.
+
+  **Headline — co-fire 12 + 8, and 12 turned on the review *itself*.** The whole
+  design cantilevered off Claude Code's `@import`. Per sounding 12 ("verified
+  against it and cited, never asserted from memory"), I *fetched the Claude Code
+  memory docs before ranking findings* rather than assert `@import`'s behaviour —
+  and the verification **changed the findings, it did not merely confirm them**.
+  It (a) *dissolved* a wrongly-framed candidate headline (my first instinct,
+  "moving conventions out of CLAUDE.md weakens their authority", was false:
+  imported content loads with **equal** authority to inline), and (b) *surfaced
+  the true headline, invisible until the mechanism was checked*: `@import` **loads
+  the target in full and does not reduce context**, and the docs' own guidance is
+  that **longer instructions reduce adherence**. So making a warm, human-verbose
+  `CONTRIBUTING.md` the canonical file `CLAUDE.md` imports **trades agent
+  adherence for human friendliness** — the two audiences pull opposite directions
+  on the *same bytes* (a coupling / cohesion smell, 8/9: one artifact, two
+  consumers, conflicting requirements). Concrete instance: today's
+  `CLAUDE.md#conventions` is terse and specific; a human guide wraps each rule in
+  welcome prose; `@import`ed wholesale it bloats the launch context. Failure
+  scenario: `CONTRIBUTING.md` grows to a friendly ~400 lines, imported past the
+  ~200-line adherence budget, and the agent follows the conventions *less*
+  reliably than today — the single-source win silently costs enforcement, with
+  nothing warning you.
+
+  **The fix was co-produced with the reviewee.** My adherence-finding alone
+  pointed at "just keep `CONTRIBUTING.md` crisp", which the user correctly
+  countered *loses the deeper reasoning a human needs* (this repo's conventions
+  already carry real rationale, e.g., the two-underscore private-module passage).
+  The synthesis is the **two-layer split**: a **crisp layer** (one-line rule /
+  principle-plus-implication tenet, `@import`ed, lean for adherence and scannable
+  by humans) over a **deep layer** (the multi-paragraph "why", canonical in the
+  rendered docs, *linked not imported*). Single-source per layer: the *rule* is
+  stated once, the *reasoning* once, linked. Neither pole alone produced it.
+
+  **Second finding — 5 applied unevenly.** The design single-sourced conventions /
+  tenets fastidiously but left **orientation triplicated** (README + CLAUDE.md +
+  docs) — its own core principle, unapplied to its most multi-homed content.
+  *Sharpened while folding:* "orientation" was itself **three conflated things** —
+  the *pitch* (→ README), the *code module map* (→ CONTRIBUTING.md), the
+  *data-model concepts* (→ docs) — and only the act of assigning *one* canonical
+  home forced the decomposition. **Third — 9/4, a fuzzy seam:** rules-vs-tenets has
+  no decidable boundary ("build from small composable functions" is both),
+  inviting the duplication the design fights; move = state the split test (a
+  *tenet* explains why and is cited by the design docs; a *convention* is a
+  do/don't a reviewer checks). **Parked — 5:** the install/extras matrix restates
+  `pyproject.toml` (low leverage, named as a choice, not an oversight).
+  **Affirmed:** **5** done right where it matters most — the API reference is
+  *generated from the docstrings*, not restated; **15** — the whole thing is a
+  two-way door (Markdown, `mv` + fix links), which *routed the "is three rounds of
+  IA refinement over-care" question to ponytail-review by name* rather than
+  manufacturing a plumb finding.
+
+  **New signals for the tightening pass:**
+  (1) **Plumb runs at non-code altitude.** A documentation / instruction-file
+  architecture is squarely in scope; the soundings are about *structure and
+  modeling of any knowledge-artifact system*, not code specifically. Candidate:
+  sanction "docs / config / instruction architectures" explicitly, with the
+  illegal-state analog spelled out ("one fact, two canonical homes that can
+  drift").
+  (2) **Sounding 12 can turn on the review itself, and the verification can
+  *invert the ranking*, not just confirm a claim.** Checking `@import` dissolved a
+  false top-finding and surfaced the real one that was invisible beforehand.
+  Candidate Working-note: *when a design cantilevers off an external mechanism's
+  behaviour, verify that mechanism before ranking; the verification is not
+  due-diligence garnish — it can change what the headline is.* Strongest instance
+  yet of "the largest wins come from an assumption left unverified".
+  (3) **A finding's *resolution* can be co-produced with the reviewee**, and the
+  synthesis beats either pole. The two-layer model came from the collision of the
+  reviewer's adherence-concern and the reviewee's human-depth counter-concern.
+  Mirrors the temporal run's "a park invites 'explain that'" provenance, one level
+  up: here a *proposed fix* invited a counter-concern that *improved* it.
+  Candidate Output note: a proposed fix (not only a park) is a legitimate
+  reopening point; hold the fix loosely enough to let the reviewee's constraint
+  reshape it.
+  (4) **When a structural design's integrity rests on using a mechanism one
+  specific way, that discipline is part of the design and must be stated.** The
+  two-layer split *only holds* if deep-layer pointers are plain Markdown links
+  (inert at launch), never `@path` (which recursively imports, up to four hops,
+  reloading the deep layer). A syntactic rule ("@import vs link") became a
+  first-class design constraint. Candidate: a structural finding may carry a
+  *usage-discipline rider*; name it, don't leave it implicit.
+  (5) **Applying a single-source (5) fix is itself a decomposition exercise:**
+  "what is the *one* thing?" repeatedly reveals it was several (orientation →
+  pitch / map / concepts surfaced only under the pressure of naming one home).
+
+  **Pending diff pass.** Plan altitude only. The complementary diff run on the
+  eventual docs PR should probe whether the disciplines survived implementation:
+  did any deep-layer pointer accidentally use `@`; did `CONTRIBUTING.md` stay crisp
+  under the ~200-line budget; did the rules-vs-tenets test get applied
+  consistently. Expect the #14/#37 "distinct flaws" flavour (plan caught the
+  architecture; diff would catch the discipline-drift).
+
+- **2026-07-10/11 — zarr-python full structural audit** (review mode on a large
+  **third-party / upstream** codebase — a *first* for this log; every prior entry
+  is the wielder's own greenfield covjson-msgspec/titiler. 40k LOC, mature,
+  multi-author, brownfield; multi-session, spanning released `main` @ `13279cac`
+  (== upstream zarr-developers main, verified same SHA) plus two active PRs
+  #3885/#4049). **The "judge against the ideal, not the incumbent; conforming to
+  bad precedent is itself a finding" stance did the heavy lifting** — the keystone
+  (an `ArrayV3Metadata` DTO that runs the codec pipeline and reaches into
+  `ShardingCodec` via lazy import) is an *established, load-bearing* pattern a
+  conform-to-the-codebase review passes; plumb flagged it, and the code's own TODO
+  agreed.
+
+  Fired (main): headline **8 + 9 + 17** (metadata DTO → concrete codec, coupling
+  cycle papered by a lazy import + feature-envy); **13 + 12 cross-sibling** (the
+  "great find", below); **5** (NaN-safe `__eq__`/`__hash__` copy-pasted across
+  both metadata classes; a codec-parse function triplicated); **6 + 11 + 15**
+  (rectilinear grid reads global config inside a frozen `__post_init__` on the
+  read path, and mints an unreleased RLE wire format — a two-way door about to
+  become one-way); **1 + 10** (`ConsolidatedMetadata` `frozen=True` but its dict
+  is mutated in place). **indexing.py returned essentially "Plumb is true"** — the
+  selection types are structural unions resolved by *nominal accessor dispatch*
+  (`OIndex`/`VIndex`/`BlockIndex` + an `Indexer` protocol), the right shape for
+  numpy's inherent value-type ambiguity; **declined to manufacture** a sum-type
+  finding to fill the file.
+
+  **Headline (G1) — co-fire 13 + 12, cross-sibling-against-spec.**
+  `GroupMetadata.from_dict` lacks the v3 `must_understand` extra-fields handling
+  that its sibling `ArrayV3Metadata.from_dict` has, so a spec-legal v3 group
+  carrying a `must_understand:false` extension **crashes** (`TypeError`). Leverage
+  from the downstream trace: external blast radius (any v3 group with an extension,
+  written by *any* implementation, is unopenable here) atop a violated spec MUST —
+  and it is **invisible reviewing either class alone**. Confirmed empirically
+  (3-line repro → `TypeError`) and against upstream (same SHA). **Drove (into the
+  work):** the finding + repro + fix (share the allowed-extra-fields logic across
+  Array/Group metadata). **Affirmed:** dtype sum-types + boundary TypeGuards
+  (1/2/4); `Array` as a pure sync shell over the async core (6); the error/warning
+  taxonomy (2/12); and in PR #3885 the `chunk_utils` shared per-chunk compute core
+  (5/6 done well — read/write *twins* parameterized by `decode`/`encode`
+  callables, so sync/async can't drift), which moved plumb's yield *inward* to two
+  seams (Finding A: `chunk_utils` leaf lazy-imports UP into the pipeline — 8;
+  Finding B: the batch orchestrator branches `isinstance(pipeline, Fused…)` instead
+  of taking an injected strategy the way its own per-chunk layer does — 8/9/3).
+
+  **New signals for the tightening pass:**
+  (1) **First third-party / brownfield-at-scale run — "judge against the ideal" is
+  load-bearing here in a way greenfield can't exercise.** On greenfield the
+  incumbent is usually absent; here the incumbent pattern often *is* the fault, and
+  a self-flagging TODO is *corroboration*, not a reason to defer. Candidate:
+  sanction external/brownfield audit explicitly in scope.
+  (2) **A new co-fire shape: 13 × 12 across *sibling types*.** Prior 13 fired
+  within one artifact (a decoder with no encoder; an asymmetric comparison). G1 is
+  13 across two independently-written siblings diffed against a shared external
+  authority (12). The reusable move: *when two types implement the same external
+  rule, diff them against the rule, not just against each other* — the asymmetry is
+  invisible per-class. Candidate 12↔13 cross-flag.
+  (3) **Sounding 12 must bind the review's OWN substrate: pin the revision under
+  review.** The run's real process failure — I asserted findings, then made a
+  *wrong* hedge ("may not be upstream") because I had not pinned the exact
+  branch/SHA. "Fork vs upstream" changes a finding's blast radius completely (G1 as
+  a fork-only nit vs an upstream spec bug). Candidate Working-note: *a review
+  finding is incomplete without the exact source revision it is against* — extend
+  12's "cite the source, never assert from memory" from the spec to the **code
+  under review**. Strongest actionable skill gap this audit produced.
+  (4) **Check the tracker before ranking a finding "dead" / low-leverage.** A
+  code-only scan flagged `ChunkTransform` as stranded/deletable; the issue tracker
+  (#3720 roadmap, an 8-PR plan by a core maintainer) showed it is live, championed
+  *foundation* awaiting its consumer PR — the "delete it" call was exactly
+  backwards. Extends the "measure leverage by tracing to the consumer" Working note:
+  on a codebase mid-migration the consumer may be a **future** one, visible only in
+  the tracker. Leverage is a function of *trajectory*, not just current structure.
+  (5) **"Contained" ≠ "right shape": a containment affirmation (6/8) can
+  rubber-stamp a design whose *existence* is the question.** A first-pass verdict
+  ("the sync bridge is a well-contained imperative shell") affirmed *local*
+  containment while the real question was "should the sync path traverse the event
+  loop at all" — the user's push, then a microbenchmark (24.6× / ~171µs pure
+  overhead), reframed it; then 12-verify (the maintainer's own PR had measured the
+  same thing) reframed *again* from "critique" to "correct problem, already
+  championed." Candidate nuance on 6: distinguish "the effect is contained" (local,
+  affirmable) from "should this effect be on this path at all" (architectural) — a
+  clean containment verdict is not a clean architecture verdict.
+
+  **Pending.** Whole audit delivered in chat only (no report file/artifact); the
+  upstream issue/PR for G1 not yet filed. Provenance rider for any future pass:
+  main-branch findings are @ `13279cac`; the #3885/#4049 verdicts (Finding A/B line
+  numbers) are against PR-head branches and will drift.
