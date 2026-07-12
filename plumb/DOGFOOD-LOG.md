@@ -694,3 +694,58 @@ without churning it.*
   upstream issue/PR for G1 not yet filed. Provenance rider for any future pass:
   main-branch findings are @ `13279cac`; the #3885/#4049 verdicts (Finding A/B line
   numbers) are against PR-head branches and will drift.
+
+- **2026-07-12 — covjson-msgspec #74 value-screen + #18 benchmark continuation**
+  (a full working session under **ponytail mode**, plumb *never invoked* — the
+  log's first entry where soundings fired **organically, on live design
+  decisions**, not in a `/plumb` run. Continues the 2026-07-10 #18 artifact entry.)
+
+  *Design-decision 1 — reject the `Raw` alternative (2 + 6 + 7).* User proposed
+  typing `NdArray.values` as `msgspec.Raw` + deferred narrow-decode to push the
+  value-type check to C. Works mechanically, wrong shape: a narrow typed-decode
+  **raises** where `validate()` is an errors-as-values issue stream (2, and 6's
+  "raise confined to the edge"), stopping at the first bad element — defeats
+  validate's "report every mismatch with a pointer" contract *and* #74's own
+  "identical Issue output" acceptance criterion; and it drags strictness **into
+  decode**, breaking permissive/byte-faithful load (7, ADR-0002). Leverage from
+  the downstream trace (the contract + the acceptance test), not the mechanism.
+  **Affirmed the actual design:** the `msgspec.convert` screen as a fast *path*
+  with the per-element scan as fallback keeps the issue stream identical, earning
+  the C-speed win without touching the contract.
+
+  *Design-decision 2 — `values_as()` shape (4 + 6, + 5/7).* "Does the screen give
+  typed accessors for free?" The same convert primitive yields the narrowed tuple,
+  so a `values_as(dtype)` projection is ~free — **but** the narrowing must come
+  from a caller type via `@overload`, else the return is a useless 3-way union (4);
+  it raises, distinct from validate's stream (6/2); faithful union stays stored,
+  precision is an opt-in *view* (5/7 = the "typed projection over a faithful core"
+  tenet, ADR-0004). Filed #89.
+
+  *Benchmark artifact — circularity (5 + 6).* `run.py` hard-coded conclusions about
+  its own output ("grid-large stays slower") — a one-source/circular smell specific
+  to *generated* artifacts: the doc argues against its own numbers the moment they
+  change. Drove the template/data split (pure data-gen → `results.json`; authored
+  prose in `results.template.md`; number-dependent interpretation in README, not the
+  generator) + a compliance-parity layer. Also **5 + 9** — split README (methodology)
+  from results.md (reading), one canonical home per audience (echoes the #21 IA entry).
+
+  **New signals for the tightening pass:**
+  (1) **Plumb fires organically, on a design *decision*, no invocation, under a
+  competing mode.** Two instances (Raw-reject, values_as-shape) from latent triggers
+  ("would that let us…?", "…for free?"). The structural lens self-selected over
+  ponytail/code-review — confirmed from outside, user never named plumb. Candidate:
+  recognize "would X work / does this give us Y for free / better ergonomics for Z"
+  as design-review triggers.
+  (2) **A project's locked tenets ARE soundings instantiated, and one tenet decides
+  multiple proposals.** "Faithful core, precision as opt-in projection" (4/5/6/7) was
+  load-bearing in *both* the Raw-reject and the values_as-shape. When a repo has
+  written its tenets down (ADR-0002/0004, tenets.md), plumb's job is largely "check
+  this proposal against them," and their leverage is that a violation defeats a
+  *documented* contract — maximally citeable (12-adjacent).
+  (3) **Circularity as a generated-artifact (5) smell:** a generator asserting
+  conclusions about its own output. Fix = separate deterministic data-gen from
+  authored interpretation. Extends the 2026-07-10 #18 signal 5 ("render from one
+  structure so they can't drift") one level up: single-source the *claims*, not just
+  the data, and keep them out of the generator.
+  (4) **Same-artifact re-touch across sessions:** the #18 benchmark came back and was
+  driven much harder. A logged artifact isn't "done"; a later session can raise its bar.
