@@ -999,3 +999,80 @@ without churning it.*
   entry-1's "trace to the real source before pronouncing" — a glib "close it" was
   corrected only by reading the two distinct scans (value-vs-`dataType`, done in C
   by #91, vs the still-pure-Python monotonic walk).
+
+- **2026-07-13 — titiler-covjson #41 sub-pixel-thin bbox reject** (two `/plumb`
+  passes, plan + diff, both read "true"; a later `/code-review` caught a
+  mainstream ship-blocker both affirmed past — the log's first *both-altitudes*
+  plumb miss, and a second same-day plumb-miss-caught-by-code-review after #90).
+
+  Context: `/bbox` rejected a box thinner than half a pixel on the same-CRS path
+  but silently served it as a degenerate 1-px strip when the read reprojects
+  (`get_vrt_transform` floors the window to a 1-px minimum). Fix: recover the
+  pre-floor size and reject on both paths — the recovery called
+  `calculate_default_transform` with the **unclamped** dataset bounds.
+
+  *Plan pass (5 headline).* Flagged the reject and the sizing deriving the
+  reprojected resolution from **two computations that can diverge**
+  (`calculate_default_transform` vs `get_vrt_transform`, which clamps
+  WGS84→WebMercator to ±85.06° first). "Resolved" it with a gate (recover only
+  when an axis floored to 1) and **parked the residual as "bounded,
+  safe-direction, confined to floored-to-1 boxes at extreme latitude."**
+
+  *Diff pass (affirm 5/6; new 16).* Affirmed the shape; 16 fired and found a real
+  test-gap (the serve side of the discrimination boundary) — but the *convenient*
+  edge, not the load-bearing one. Verdict: essentially "Plumb is true."
+
+  *The miss (independent code-review correctness finder, single vote).* The
+  divergence is **not** latitude-bounded. `calculate_default_transform` returns a
+  **dataset-wide** resolution; for a global WGS84 raster it is ~8× coarser than
+  the clamped resolution `get_vrt_transform` actually uses, and that one wrong
+  number is applied to **every** box — so an ordinary narrow **equatorial** read
+  of any global dataset in WebMercator gets a false 400. Confirmed end to end
+  (0.25° global dataset, 40 km equatorial box → 400 where `part` serves 1×56).
+  Refixed to measure on the **source pixel grid** (uniform at every latitude),
+  which is what "half a **source** pixel" meant all along.
+
+  **New signals for the tightening pass:**
+  (1) **5 × 16 co-fire: 16 is how you *discharge* a 5-divergence, and skipping
+  its *execution* is the false-negative.** When 5 flags a value derived two ways
+  that can diverge, the rank comes from **constructing the input that maximizes
+  the divergence and running it.** I *named* the clamp assumption in both passes
+  and argued it "bounded/negligible" — that is naming the edge, not hunting it. A
+  parked "bounded / safe-direction" verdict on a 5-divergence is itself the
+  trigger to build the maximizing input. Candidate Working-note: a
+  "bounded/negligible" park is un-earned until that input has been run.
+  (2) **Trace what a value *is*, not just where it flows.** The consumer-trace on
+  5 stopped at "where it's used" (the guard) → "floored-to-1 boxes at extreme
+  latitude." The real trace was into what the value *denotes*: a **dataset-wide
+  average** posing as a **local** resolution — that category error is the whole
+  bug, and re-ranks the finding from park to load-bearing. Extends "measure
+  leverage by tracing to the consumer" with *what quantity the value represents*.
+  (3) **16 can fire, find *an* edge, and still miss the *load-bearing* edge.**
+  The diff pass caught the discrimination-boundary test-gap (a real add) but not
+  the global-dataset edge that attacks the design's stated assumption. Prefer the
+  edge that breaks the assumption the design *rests on* over an adjacent untested
+  branch — the tell is an assumption written into a comment ("acceptable for a
+  degenerate-input guard"), a standing 16 target until an input has tried it.
+  (4) **Self-authored design defeats *reasoned* soundings; only a *run* survives
+  confirmation bias.** Two plumb passes + a separate design stress-test all
+  rationalized the same false "clamp is negligible" claim because the reviewer
+  authored it; one adversarial finder that *built the global dataset* refuted it.
+  When the reviewer is the author/champion, 16's "construct and run" is
+  mandatory, not optional. Sharpens the zarr-audit "'contained' ≠ 'right shape'"
+  signal: there the affirmation was local containment, here "the divergence is
+  bounded," and in both only an *execution* refuted the reasoned affirmation.
+
+  **Pairs with #90 (same day) — two plumb-miss-caught-by-code-review entries,
+  different mechanisms.** #90 missed a *fresh* 5 the diff introduced (it did not
+  sweep the new code per-sounding); this missed a *pre-existing* 16 that both
+  altitudes *named* and neither *ran*. Synthesis: a pass closes a sounding by
+  **argument** — "the fix landed" (#90), "the edge is bounded" (this) — when the
+  real discharge is an **action**: sweep the new code (#90), or construct and run
+  the breaking input (this). "Affirmed" is not "closed."
+
+  **Boundary note (scope, clean).** The false-reject *is* a correctness bug,
+  which plumb defers to code-review — so this is not "plumb should have owned the
+  fix." The narrower signal: 5 correctly named the exact seam and 16 was the
+  right sounding to rank it, but 16 was applied by *argument* instead of
+  *execution*. The gap is depth-of-discharge on a co-fire plumb already surfaced,
+  not a missing sounding.
