@@ -977,3 +977,25 @@ without churning it.*
   modeling one, so plumb stayed in its lane there. The miss was specifically a 5,
   which plumb DOES own: the partition held everywhere except the one 5 plumb
   should have caught.
+
+- **2026-07-13 — covjson-msgspec benchmarking (#97 / #99) — not a review run; one
+  method signal.** No review-mode run this session (benchmark-cell instrumentation
+  + profiling + issue drafting, no design review). Signal worth keeping: **#99**
+  (native-parse `resolve()`'s datetime form via msgspec's C decoder) pre-registers
+  a **differential test locking msgspec's accepted-form space to the ADR-0008
+  contract** as an explicit *acceptance criterion* — msgspec accepts a naive
+  datetime and a lowercase `z` that our spec form rejects, so borrowing its parser
+  silently widens what we accept unless pinned. That is **sounding 16 (hunt the
+  breaking edge) / the differential-twin method** — the same method behind this
+  log's first headline (2026-07-07 year-0000 mislabel, numbered "15" pre-renumber)
+  — now applied **prospectively, written into the issue before code exists**.
+  Extends the #14-plan signal ("plumb-on-a-plan caught a flaw before code"): there
+  plumb-as-reviewer caught it; here the method is baked into how the issue is
+  *specified*, not a review finding. **Bears on the tightening pass:** consider
+  naming an explicit move — *when a plan / issue borrows an external primitive,
+  pre-register the breaking-edge (a differential test pinning the borrowed
+  contract) as an AC* — i.e., sounding 16 as a design-time output, not only a
+  review-time finding. **Secondary (not novel):** the #74 rescope reconfirmed
+  entry-1's "trace to the real source before pronouncing" — a glib "close it" was
+  corrected only by reading the two distinct scans (value-vs-`dataType`, done in C
+  by #91, vs the still-pure-Python monotonic walk).
