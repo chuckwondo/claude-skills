@@ -820,3 +820,97 @@ without churning it.*
   local, so the extraction costs a clean comprehension for a no-drift, no-value
   win. Sharpens the note-and-park test: weigh the fix's *own* structural cost, not
   just risk — a fix that trades a good shape for a DRY nit is worse than the nit.
+
+- **2026-07-13 — covjson-msgspec #94 temporal `resolve()` dispatch** (two `/plumb`
+  passes, plan then diff; a perf-track continuation after #74/#92, and the first
+  entry where a plan-pass 5 finding's fix is to build *less*).
+
+  Context: profiling `validate()` after #74 (value screen) and #92 (`_ptr`
+  deferral) landed surfaced `resolve()` (temporal.py) as the dominant temporal
+  cost. The datetime form, the common case, sat *last* in an ordered five-pattern
+  chain, so every value ran 5 regex `fullmatch`es before matching. A companion
+  micro-opt swaps `\d` for `[0-9]` and drops `re.ASCII` (measured ~7-9% on the
+  datetime `fullmatch`).
+
+  *Plan pass (headline 5 + 15; affirm 16; contingent 4).* The plan proposed a
+  full sign/`T`/length dispatch (branch on `+/-`, then `"T"`, then `len ==
+  4/7/10`), routing each form to one regex. Headline **5**: the dispatch's length
+  literals `4`/`7`/`10` restate the digit-count signature the compiled patterns
+  already own (`_YEAR = [0-9]{4}`, etc.), a second home for each form's shape; the
+  plan's "disjoint signatures" argument proved the two homes *consistent* without
+  noticing they were *two*. The interesting part of the trace: I first leaned
+  "over-built," then tempered it by tracing the reduced-form win more carefully.
+  The datetime form (last in the chain, 5→1) is the whole measured gain, but
+  `date→1` (from 4) and `month→1` (from 3) are *real* for date-only / month-only
+  **bulk** axes, an unshown-but-plausible workload. So the finding landed not as
+  "it's wrong" but as a graded trade: the length branches buy a workload-gated win
+  at the cost of three pattern-coupled literals, so take the one unambiguous
+  high-value discriminator now and defer the rest. **Drove the design:** reshape
+  to a single `"T" in value` fast-path guard (one *semantic* discriminator, "has a
+  time component," not a restated digit count), leaving the reduced chain
+  untouched with its dead `_DATETIME` arm removed; **defer the reduced-form length
+  dispatch behind a measurement** (co-fire **15**, two-way door) until a
+  date/month bulk workload is shown. **16** fired affirmingly: I probed the
+  disjoint-signature claim with the *legal* inputs that would break it (a Unicode
+  minus `−` U+2212, a space separator, a lowercase `t`), and it held, because
+  `[+-]` and the literal `T` are ASCII/uppercase-only, so each still routes to
+  `Malformed` identically. **4** (contingent): the plan's `_year_result` helper
+  was typed `TemporalResult` yet never returns `Malformed` (only `Moment |
+  Unrepresentable`); moot once the guard shape dropped the helper. The
+  `[0-9]`/drop-`re.ASCII` swap is **Plumb-is-true and slightly improves 5**:
+  retiring the flag moves the ASCII intent *into* the pattern rather than
+  splitting it between pattern and flag (a private, two-way-door representation
+  change, 15).
+
+  *Diff pass (verdict: Plumb is true).* The implementation is faithful to the
+  plumbed plan: the `"T"` guard is the sole discriminator, no `len == 4/7/10`
+  crept back, the reduced chain is behavior-identical, and a 20,128-string
+  equivalence fuzz confirms byte-identical output. One **4**-legibility **park**:
+  the year branch's user-requested walrus (`1 <= (year := int(value)) <= 9999`)
+  binds `year` on the condition line but *uses* it one line above in the ternary's
+  then-arm, reading use-before-definition (correct at runtime, since the condition
+  evaluates first). Parked because it was in the **approved plan** (the user asked
+  for walrus where sensible) and is idiomatic: a deliberate wash, the one spot
+  where the walrus is neutral rather than a win, named so it stays a conscious
+  call. Routed to code-review by name: a pre-existing year-truthiness vs
+  date-`is not None` inconsistency the diff didn't introduce.
+
+  **Drove:** the whole implementation followed the plan-pass reshape (guard, not
+  full dispatch). Byte-identical output; the temporal `validate(values)+datetime`
+  rungs dropped 6-11% (resolve micro-bench 2.88 → 1.42 us/value), non-temporal
+  cells flat. Committed; PR #96.
+
+  **New signals for the tightening pass:**
+  (1) **A one-source-of-truth (5) finding whose fix is to build *less*, co-firing
+  with reversibility (15).** Nearly every prior 5 headline drove *extraction* (add
+  a shared home: `_ROOT_TYPES = get_args`, lift `coordinate_systems`,
+  render-from-one-structure). Here 5 fired against a duplication a plan was *about
+  to introduce*, and the fix was subtractive: don't create the second home, take
+  the one semantic discriminator, defer the rest. Candidate Working-note: 5
+  applies to duplication a plan is about to add, not only existing drift, and its
+  move can be "build the smaller shape" rather than a dedup; when the duplicated
+  half buys only a workload-gated win, 5 co-fires with 15 (defer it), and the
+  leverage line is "don't pay a permanent structural cost for an unproven win."
+  (2) **A leverage estimate that *tempered* under tracing, not sharpened.** The
+  first read ("full dispatch is over-built") softened once I traced the
+  reduced-form win concretely (date 4→1 is genuine for date-only bulk). Most log
+  entries show the trace *promoting* a nit to a headline; this one shows it
+  *demoting* a headline to a conscious trade. The inverse of the usual note:
+  tracing to the consumer can reveal the flagged thing is *more* defensible than
+  the first read, and the honest output is then a graded trade ("decide
+  consciously; defer"), not a verdict.
+  (3) **Third confirmatory-diff instance (after #69, #44 commit 1): a thorough
+  plan-pass makes the diff-pass "Plumb is true."** Contrast #92, whose diff-pass
+  found a *higher* bonus sounding. Emerging pattern: when the plan-pass reshape is
+  a *removal* (build less), the diff-pass tends confirmatory, since there is less
+  new structure to grow a dividend or a drift; when it is an *addition* (a new
+  representation, like #92's `()` root), the diff-pass can find a structural
+  dividend. Worth watching whether "subtractive plan fix → confirmatory diff"
+  holds.
+  (4) **A user-accepted style instruction can mint a park the diff-pass should
+  name, not swallow.** The "walrus where sensible" request produced one
+  inverted-read spot; the diff-pass neither manufactured a fix nor passed
+  silently: it parked it, with "it was in the approved plan" as the park
+  rationale. Candidate: a stylistic choice ratified during planning is a
+  legitimate park subject at diff altitude, and its provenance (approved-in-plan,
+  user-requested) is itself the cost-vs-risk line.
