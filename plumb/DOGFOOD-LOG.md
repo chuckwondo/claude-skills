@@ -749,3 +749,74 @@ without churning it.*
   the data, and keep them out of the generator.
   (4) **Same-artifact re-touch across sessions:** the #18 benchmark came back and was
   driven much harder. A logged artifact isn't "done"; a later session can raise its bar.
+
+- **2026-07-12 — covjson-msgspec #92 JSON-Pointer deferral (two `/plumb` passes:
+  plan, then diff — the first entry where the "run at both altitudes" working note
+  is exercised end to end on one feature)**
+
+  Context: `validate()` built a JSON Pointer string at every node of its tree walk
+  (threaded a pre-joined `path: str` down through every check), when a pointer is
+  only needed at `Issue` emit — profiled at ~44% of a conformant call. The fix
+  defers materialization: thread a component tuple, join only at emit.
+
+  *Plan pass (5 + 10, with 7-in-docs).* Headline: the proposed root representation
+  `("",)` (an empty-string first element so `"/".join` reproduces the leading
+  slash) **splits the RFC 6901 format between `_ptr` and a root-seed convention
+  every caller and doctest must know** — the leading slash lives in the sentinel,
+  the separators in `_ptr`. One-source-of-truth move: root `()`, and `_ptr` owns
+  the whole format (`"".join(f"/{esc(t)}"…)`). The trace that set leverage: the
+  sentinel was chosen to preserve "byte-identical doctest output," but the only
+  outputs that differ between the two models are ~25 `#/…` doctests illustrating a
+  shape real `validate()` (seeded `""` → `/…`) **never emits** — Model A was
+  protecting a *fiction* (7 applied to examples, not the data model). Also
+  clarified, off-sounding, that deferral **subsumes** the micro-opt on the hot
+  path (post-defer `_ptr` runs only at emit), so they're one issue at two ambition
+  levels, not alternatives. User folded Model B in before approving.
+
+  *Diff pass (affirm 5/10; new 1; park 5).* The plan fix landed — `_ptr` owns the
+  format, verified against the built hunks. The **new** finding was a bonus the
+  plan pass didn't claim: choosing `()` over `("",)` didn't just centralize the
+  format (5), it **retired the one place an empty-string token was mandatory**, so
+  a mid-path empty reference token (`(*path, "", …)` → a stray `//`) is now
+  **unrepresentable by construction (1)** — a *higher* sounding than the plan
+  pass's headline, visible only once built. Parked (5): `(*path, "coverages", i)`
+  is computed twice, 3 lines apart, in `_validate_collection` — but it can't drift
+  (identical literal tuple-builds, not a derived decision) and the "fix" (bind a
+  `member_path` local) fights the language, since it lives inside a
+  `chain(…) for … in enumerate(…)` genexpr that can't bind a local without
+  unrolling into something clunkier; the fix is uglier than the smell. **Verdict:
+  Plumb is true.**
+
+  **Drove:** the entire implementation followed the plan-pass fix (root `()`,
+  `_ptr`-owns-format, `_escape` leaf). Byte-identical real output (differential
+  across 99 corpus files), `validate()` 2.0×, `validate(check_values)` 1.6×, the
+  temporal `coverage-collection` `validate(values)` rung flipped 0.8× loss → 1.3×
+  win. **Affirmed:** the deferral itself as functional-core (6) — compute
+  components inward, perform the join at the edge. Merged as PR #93.
+
+  **New signals for the tightening pass:**
+  (1) **Two-altitude run, novel shape: the diff pass's headline was a *higher*
+  sounding than the plan pass's, and it was a bonus the plan fix produced without
+  claiming.** Plan headline = 5/10 (where the format-truth lives); diff headline =
+  1 (the chosen representation *also* made an illegal state unrepresentable). This
+  is the cleanest instance yet of the "both altitudes catch different flaws" note,
+  and refines it: the diff pass isn't only "did the fix land + what did writing it
+  expose" — it can find that a plan-pass fix has a *structural dividend* at a
+  sounding the plan never reasoned about. Candidate Working-note: on the diff pass,
+  re-rank the plan fix against *all* soundings, not just the one that motivated it.
+  (2) **The `("",)`-style sentinel is a recurring anti-pattern that fails 5 *and*
+  1 at once, and one representation choice (`()`) fixes both.** A magic in-band
+  root value both splits the format rule (5) and keeps a meaningless token
+  (`""`) representable mid-sequence (1). Candidate: name "in-band sentinel for an
+  empty/root case" as a co-fire 5×1 smell, with "make root the genuinely-empty
+  container + let the operation own the boundary syntax" as the standard move.
+  (3) **Faithfulness (7) has a surface plumb hadn't logged: examples/doctests, not
+  the stored model.** The `#/…` doctests reproduced a pointer shape the code never
+  emits; a data-model fix (root `()`) forced correcting them to `/…`. Candidate:
+  extend 7's reach explicitly to "a runnable example reproduces *real* output" —
+  an unfaithful example is a faithfulness defect even when the model is faithful.
+  (4) **A park whose fix fights the language is a clean park.** The duplicated
+  `(*path, "coverages", i)` — DRY says extract, but a Python genexpr can't bind a
+  local, so the extraction costs a clean comprehension for a no-drift, no-value
+  win. Sharpens the note-and-park test: weigh the fix's *own* structural cost, not
+  just risk — a fix that trades a good shape for a DRY nit is worse than the nit.
