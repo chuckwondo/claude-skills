@@ -914,3 +914,66 @@ without churning it.*
   rationale. Candidate: a stylistic choice ratified during planning is a
   legitimate park subject at diff altitude, and its provenance (approved-in-plan,
   user-requested) is itself the cost-vs-risk line.
+
+- **2026-07-13 — covjson-msgspec #90 resolve-each-temporal-axis-once** (diff
+  altitude only; the plan was a parked, pre-designed plan from a prior session,
+  not re-plumbed this session, so no both-altitudes pair). **Headline: a plumb
+  MISS, caught by a later code-review.**
+
+  Context: `validate(check_values=True)` resolved every temporal string twice per
+  domain; the fix threads a once-resolved map to both value-scans and factors the
+  monotonic policy into a single `_default_break`.
+
+  *Diff pass (verdict at the time: "Plumb is true").* Affirmed 5 (`_default_break`
+  is the single policy home the plan set out to build), 6 (thread resolved *data*,
+  not a memoized callable: functional core), 3 (totality via the exhaustive
+  `_ordering_kind`), 16 (breaking edge: the `coord in domain.axes` short-circuit
+  guard, the `results is None` inline-resolve fallback), 7 (raw strings stay on
+  the model). Noted a bonus 5/efficiency dividend (the change collapses two
+  per-domain `referencing` scans into one) and a dropped-unused-`domain`-param
+  cleanup. Byte-identical output verified over 44 corpus files + a mixed
+  collection.
+
+  **The miss (the signal).** A subsequent code-review (reuse angle, xhigh) found a
+  **5** the plumb diff pass did not: `_resolved_temporal_axes` re-implemented the
+  "standard-calendar temporal system" predicate (`isinstance(system, TemporalRS)
+  and is_standard_calendar(system)`) that `_ordering_kind` already owns, a rule
+  with a fresh second home, exactly plumb's 5 smell ("a rule with several homes
+  that can drift"). The fix is plumb's 5 move verbatim: `_ordering_kind(system) ==
+  "temporal"`. Failure it guards: add a new orderable temporal system to
+  `_ordering_kind` and `_resolved_temporal_axes` silently stops pre-resolving it,
+  losing the dedup: a silent perf drift no test catches. Why plumb missed it: the
+  diff pass anchored on "did the plan's 5 fix LAND?" (yes, `_default_break` is the
+  single home) and did not independently sweep the NEW code for FRESH 5 debt the
+  implementation introduced.
+
+  **New signals for the tightening pass:**
+  (1) **A diff pass can MISS structural debt, not only find dividends: the inverse
+  of #92's signal.** #92's diff pass found a *higher* sounding as a bonus
+  dividend; #90's diff pass MISSED a co-located instance of the SAME sounding it
+  was affirming. Refines the "re-rank the plan fix against all soundings" note:
+  the diff pass must sweep the new code for fresh violations *per sounding*, not
+  stop at "the headline fix is in." Candidate Working-note: AFFIRMING a sounding
+  landed is the cue to hunt that same sounding's OTHER instances in the diff, not
+  to close it out. "The 5 fix landed" and "the diff introduces a new 5" are
+  independent.
+  (2) **"Plumb is true" from a diff pass is not self-certifying: a parallel
+  code-review reuse angle found a 5 plumb owns.** 5 is plumb's turf, yet
+  code-review's *reuse* angle covers the same ground and here caught what plumb
+  missed (redundant coverage that paid off). Sharpen 5's smell list to name the
+  shape missed: **a predicate / classifier re-implemented inline in a new helper
+  instead of calling the existing one** (not just "the same constant in three
+  files"). The tell: a new `isinstance(...) and foo(...)` chain duplicating an
+  existing total classifier.
+  (3) **Diff-only (no plan pass) correlates with the miss.** #90's parked plan was
+  not re-plumbed this session, so there was no plan-altitude pass to catch the
+  predicate choice before code. Weak evidence, but consistent with "the two
+  altitudes catch different things": skipping the plan pass removed one of the two
+  nets.
+
+  **Skill-partition note (clean).** Ponytail-review and code-review both flagged
+  the `_temporal_keys` single-caller wrapper (a simplification); the plumb diff
+  pass correctly did NOT, since that is a granularity / ponytail concern, not a
+  modeling one, so plumb stayed in its lane there. The miss was specifically a 5,
+  which plumb DOES own: the partition held everywhere except the one 5 plumb
+  should have caught.
