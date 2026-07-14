@@ -1129,3 +1129,68 @@ without churning it.*
   win when the action was taken. Reviewer was again the author (self-authored plan,
   self-run review), so it also confirms #41's "only a run survives confirmation bias":
   the reasoned review affirmed the fuzz/guard; the *execution* caught the holes.
+
+- **2026-07-14 — covjson-msgspec #62: plumb reframed an ADR's *argument*, and the
+  run falsified a subagent's code-read.** Plumb-on-plan then implementation, same
+  shape as the #99 entry above, but two new signals. Issue #62 ("route the export
+  bridges' temporal classification through `resolve` for one classifier of
+  record") was settled as decide-not-refactor, recorded in ADR-0015.
+
+  **Plan altitude — fired 5 (headline, *inverted*), 3/16, 12.**
+  - **5 — the headline was the ADR's argument structure, not code.** The plan
+    concluded "don't route," arguing it as "we *declined* to consolidate" (three
+    costs: calendar-blindness, naive→`Malformed` output change, vectorization).
+    5 fired not as "duplication exists, extract it" but as its inverse: the three
+    parsers (`resolve`, `maybe_datetime`, `_parse_times`) have different
+    **codomains** (`Moment|Unrepresentable|Malformed` vs `DatetimeIndex|strings`
+    vs `datetime64|cftime`) — there is *nothing* to unify; the "triplication" is
+    surface similarity ("string in, time out"). Leverage came from the deliverable
+    being an **ADR**: "we chose not to consolidate (cost)" is re-litigable ("but
+    consistency!"); "these are different functions (structural fact)" closes it,
+    and demotes the three costs to *consequences* of the codomain mismatch. **New
+    5 signal (tightening pass):** the "apparent duplication" family now has THREE
+    resolutions — (i) real dup → extract to one home; (ii) real dup taxing a hot
+    path → deliberate dup + enforced differential test (the #99 entry, same repo,
+    one day earlier); (iii) **not dup, different codomains → don't unify, and make
+    the design doc argue from the codomain root, not a cost tradeoff.** Plumb run
+    on the *argument*, not just the code.
+  - **3/16 — the decision was enforced only in prose** (ADR + a code comment). A
+    deliberate divergence (the bridges parse a naive no-`Z` time that `resolve`
+    rejects) with no test is a "hoped-for edit." Move: promote a
+    divergence-pinning test from "optional" to *required* (a change that makes a
+    bridge reject naive input must trip it). **This finding built the instrument
+    the run then used** (below) — the plan-finding and the run-catch are causally
+    linked.
+  - **12 — "confined to non-spec input" asserted from memory.** Gated the ADR
+    claim on *fetching* CoverageJSON §5.2 (same discipline as #99). The fetch
+    (datetime form is `Z` **or** `±HH:MM`) both made the claim faithful *and*
+    **discharged a suspected finding with NO finding**: `_has_spec_timezone`
+    accepting offsets is spec-*correct*, not over-lenient. **New 12 signal: verify
+    can close a suspected finding, not only sharpen a real one.**
+
+  **Run altitude — 16 by execution, third instance, *new provenance*.**
+  - **A subagent's code-read was falsified by running the promoted test.** An
+    Explore agent, reading `with suppress(ValueError, OverflowError):
+    np.array(..., "datetime64[ns]")`, *asserted* "out-of-range → raises → cftime
+    fallback." Running the 3/16-promoted test showed numpy int64-overflow-**wraps**
+    instead of raising (`2300-01-15` → `1715-06-27`, numpy#9956): the suppress
+    catches nothing, the fallback is dead for standard-calendar out-of-range
+    dates, and the bridge silently corrupts them. Filed as its own issue (#109);
+    the ADR consequence was corrected from a reasoned-but-wrong "offset-drop"
+    guess to the verified wrap. **Extends the "only a run survives confirmation
+    bias" note (#41 / #90 / #99):** the false claim came not from the author's
+    reasoning but from an authoritative-sounding **subagent code-trace**. A
+    code-reading, however careful, is still reasoning until run.
+  - **12 extended to a number, again.** The issue's own framing ("dedup the
+    ~287µs `validate`→`to_datetime` double-parse") was falsified by tracing the
+    code: `validate` never double-parses; the 287µs is an API-*composition*
+    artifact. Verify-the-claim held for a *remembered quantitative premise* too
+    (cf. #99's ~3-4x → 1.5x).
+
+  **Synthesis.** #99 logged 5-under-perf → deliberate-dup-plus-test, and
+  16-discharged-by-execution. #62 adds the two inverses: 5 can resolve to "*not*
+  duplication — argue the design doc from the structural root," and
+  16-by-execution catches a **subagent's** false code-read, not only the author's
+  bias. Reviewer was again the author (self-run), so #41's "only a run survives
+  confirmation bias" holds a third time — here against a delegated trace, the most
+  authoritative-feeling form of reasoning.
