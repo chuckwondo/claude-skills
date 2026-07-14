@@ -1,7 +1,7 @@
 # Plumb — landscape & prior art
 
 *A **living snapshot** of publicly available skills that neighbor or overlap plumb.
-Unlike [REFINEMENT.md](REFINEMENT.md) (append-only history of internal changes),
+Unlike [DOGFOOD-LOG.md](DOGFOOD-LOG.md) (the append-only history of runs and changes),
 this file is **overwritten to stay current** — rescan the ecosystem, then update it
 in place. Keep it fresh, accurate, clear, informative.*
 
@@ -180,8 +180,8 @@ When rescanning (on a sounding change, or ~quarterly):
    re-justify the sounding's distinctness.
 3. Re-run the boundary-sharpening principle over any *new* sounding: nearest arena
    coverage + distinct kernel; add a row; mark `[combine?]` if it overlaps.
-4. Overwrite this file in place. Log the *fact of the rescan* (one line) in
-   REFINEMENT.md's changelog; keep the analysis here.
+4. Overwrite this file in place. Log the *fact of the rescan* (one line) in this
+   file's **Changelog** below; keep the analysis above.
 
 ## Changelog
 - **2026-07-08** — initial landscape scan. Established the four buckets, identified

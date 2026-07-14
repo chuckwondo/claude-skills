@@ -47,8 +47,7 @@ Two modes:
 - **Guide** (say "guide" / "before I build") — the soundings as questions to
   answer for the design at hand before writing code.
 
-*Each principle below is a **sounding** (a depth-probe you drop on the design).
-One-word swap if you prefer `gauges`.*
+*Each principle below is a **sounding** (a depth-probe you drop on the design).*
 
 ## What this is NOT
 
@@ -104,7 +103,16 @@ behavior built by composing small, single-purpose pure functions. **Smell:** the
 same decision derived in three places; a rule, formula, or constant with several
 homes that can drift apart; the "check" and "use" paths duplicating logic. **Move:**
 extract the decision once and call it everywhere; compose the whole from named
-parts rather than restating it.
+parts rather than restating it. **Boundary:** repetition of a *shape* is not
+automatically a violation. Before extracting, ask whether the repeated sites encode
+the *same* decision or *different* ones — two idioms can look alike yet decide
+oppositely on an edge (one collapses empty→absent, another preserves it), so a
+shared helper would *flatten* that load-bearing distinction. Dedup "the same
+knowledge in N places"; leave "similar-looking idioms encoding different semantics"
+alone, and pin each with a test. The tell: could one helper serve every site
+*without* a parameter that re-encodes the very difference? If not, it is not one
+source of truth — it is N sources wearing the same coat, and merging them hides a
+decision.
 
 ### 6. Functional core; effects at the edges  `[combine? with 5, 8]`
 A pure core of functions over immutable data, with every effect and impure
@@ -210,8 +218,9 @@ risky bet behind a seam.
 The design is probed with the input that violates its assumption — out-of-range,
 non-ASCII, empty/`None`, reduced-precision, adversarial. **Smell:** an assumption
 ("a 4-digit ASCII year", "it fits in a datetime") with no case testing its
-boundary. **Move:** name the assumption; find the *legal* input that breaks it; add
-the case.
+boundary. **Move:** name the assumption; find the *legal* input that breaks it, then
+**construct and run** it — a "bounded/negligible" verdict is un-earned until that
+input has actually run; add the case.
 
 ### 17. Locality of behavior: keep behavior with its data  `[combine? with 9, 10]`
 Behavior lives with the data it operates on; a method that reads another object's
@@ -288,3 +297,11 @@ that most shape this solution.
   flaws. (On #14 the plan-review's headline was a host-app naming collision; the
   diff-review's was a one-source-of-truth drift that only existed once code was
   written.) Each pass earns its keep.
+- "Affirmed" is not "closed"; a discharge is an action, not an argument. "The fix
+  landed", "the edge is bounded", "it's negligible" are *claims* — discharge them by
+  doing: sweep the new code for a fresh instance of the same sounding (affirming one
+  landed is the cue to hunt its *other* instances, not to close it out), or
+  *construct and run* the breaking input. When you authored what you're reviewing,
+  this is mandatory — a self-authored design rationalizes its own soundings, and only
+  a run survives confirmation bias (a careful code-read, even a subagent's, is still
+  reasoning until run).

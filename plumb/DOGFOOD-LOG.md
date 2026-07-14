@@ -1194,3 +1194,41 @@ without churning it.*
   bias. Reviewer was again the author (self-run), so #41's "only a run survives
   confirmation bias" holds a third time — here against a delegated trace, the most
   authoritative-feeling form of reasoning.
+
+- **2026-07-14 — first landing off the consolidated signal ledger (not a review
+  run).** Built **[TIGHTENING-SIGNALS.md](TIGHTENING-SIGNALS.md)**, a deduplicated
+  harvest of every "New signals for the tightening pass" scattered across this log
+  (Section A = land-ready operating rules ranked by leverage; B = combine dossier,
+  assembled not executed; F = recommended landing order). Then landed the top of that
+  order — the refinements that change *notes*, not the sounding count. **The 19→~10–12
+  combine stays deferred** per REFINEMENT.md's "let usage drive, not armchair debate";
+  this ledger is its input, not its trigger.
+  - **A1 — "'Affirmed' is not 'closed'; discharge is an action, not an argument."**
+    Sharpened sounding **16**'s Move to demand *construct and run* the breaking input
+    ("a 'bounded/negligible' verdict is un-earned until that input has actually run"),
+    and added a Working note generalizing it: affirming a sounding *landed* is the cue
+    to hunt its *other* instances, not close it out; when the reviewer authored the
+    design, running the edge is mandatory (only a run survives confirmation bias — a
+    careful code-read, even a subagent's, is still reasoning until run). Drawn from the
+    only two misses in this log (#90 swept-nothing, #41 named-not-run) and their
+    positive inverses (#99, #62, discharged-by-execution) — the sharpest signal the
+    harvest surfaced, and the one that closes the miss class.
+  - **A4 — sounding 5 Boundary line.** Added the #77-drafted Boundary ("similar-looking
+    idioms encoding *different* decisions are not a 5 violation; pin with a test, don't
+    merge"), **generalized off its covjson-specific `UNSET`/`parameters or None` example**
+    to keep the skill repo-agnostic (per REFINEMENT.md's "plumb is general, not
+    covjson-specific"). The insight is verbatim; only the illustration changed.
+  - **E1/E2 — doc fixes.** Deleted SKILL.md's stale "one-word swap if you prefer
+    `gauges`" line (REFINEMENT.md locks *soundings*, rejects "gauges"). Repointed
+    LANDSCAPE.md's rescan-log step off the nonexistent REFINEMENT.md changelog to this
+    file / its own `## Changelog`, and corrected its line-4 claim that REFINEMENT.md is
+    "append-only history" — REFINEMENT.md is rewrite-in-place; *this* log is the
+    append-only one.
+  - **Deferred (named, not lost):** A2 (both-altitudes sub-cases), A3 (sounding-12
+    verify-the-source riders: pin-the-revision, quantitative-claim, verify-can-close),
+    A5 (unreachable-invariant → enforcing test), and the #90 smell-shape for 5 (a
+    classifier re-implemented inline in a new helper). See TIGHTENING-SIGNALS.md §F.
+  - **How this gets validated:** not by a test — a skill is verified by dogfooding.
+    Watch the next reviews where 16 fires: does the sharpened Move actually force
+    build-and-run instead of a reasoned "bounded"? That is the next log entry, not a
+    green check.
