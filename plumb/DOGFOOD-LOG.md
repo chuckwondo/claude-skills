@@ -979,8 +979,8 @@ without churning it.*
   should have caught.
 
 - **2026-07-13 — covjson-msgspec benchmarking (#97 / #99) — not a review run; one
-  method signal.** No review-mode run this session (benchmark-cell instrumentation
-  + profiling + issue drafting, no design review). Signal worth keeping: **#99**
+  method signal.** No review-mode run this session (benchmark-cell instrumentation,
+  profiling, and issue drafting; no design review). Signal worth keeping: **#99**
   (native-parse `resolve()`'s datetime form via msgspec's C decoder) pre-registers
   a **differential test locking msgspec's accepted-form space to the ADR-0008
   contract** as an explicit *acceptance criterion* — msgspec accepts a naive
@@ -1076,3 +1076,56 @@ without churning it.*
   right sounding to rank it, but 16 was applied by *argument* instead of
   *execution*. The gap is depth-of-discharge on a co-fire plumb already surfaced,
   not a missing sounding.
+
+- **2026-07-13 (later) — covjson-msgspec #99: plumb on the plan, then the run that
+  discharged it.** Extends the same-day "#97/#99 method signal" entry (which predated
+  the review). **Headline: the positive instance of the #90 / titiler-#41 lesson —
+  16 discharged by *execution*, not argument.** Those two logged a 16 *named but not
+  run* (a miss); here the plan-review's 16 findings were **constructed and run**, and
+  execution immediately caught what reasoning had only flagged.
+
+  **Plan altitude (review on the plan) — fired 5 (headline), 16, 4.**
+  - **5 — the spec tz rule gets a second home.** `_has_spec_timezone`'s positional
+    check (`value[-6] in "+-" and value[-3] == ":"`) re-encodes the `_DATETIME` regex
+    tail (`(?:Z|[+-][0-9]{2}:[0-9]{2})`). Trace: a later edit to the offset grammar
+    touches `_DATETIME` (fallback + oracle) but not the guard; the fast path silently
+    diverges. **Why not the obvious fix:** single-sourcing via a hot-path
+    `_SPEC_TZ.search` puts a regex back on the path #99 exists to remove, ~halving the
+    win. Proportional (12) resolution: keep the duplication but make it *deliberate and
+    enforced* (a comment binding the guard to `_DATETIME`'s tail; the fuzz differential
+    as the CI-enforced sync). **New 5-Move signal (tightening pass):** under a perf
+    constraint, 5 resolves to "deliberate duplication + an enforced differential test,"
+    not the reflexive "extract to one home" — single-sourcing is wrong when the single
+    source taxes the hot path.
+  - **16 — the fuzz differential only bites on msgspec-*accepted* inputs** (rejects
+    fall back and equal the oracle by construction; a junk generator passes vacuously).
+    Drove: bias the generator to valid skeletons across the whole tz-designator axis,
+    and assert a `Moment` floor.
+  - **4 — `_resolve_datetime_strict` implies the fast path is looser** (both enforce
+    the same form; they differ in mechanism). Renamed `_resolve_datetime_form`.
+  - **Affirmed 12** (keep-strict grounded by *fetching* CoverageJSON §5.2 verbatim, not
+    memory: it writes `+|-HH:MM`, colon included, so `+0500` → Malformed is faithful;
+    SHOULD → warning); **2 / 7** (union + raw-string faithfulness untouched; a speedup
+    behind a behavior-preserving oracle).
+
+  **Run altitude — 16 discharged by execution paid off twice (why this entry matters).**
+  - **The fuzz-vacuity finding was prophetic.** Building the generator, the differential
+    *immediately* caught a real generator bug: a non-`T` junk string (`"0339"`) reached
+    the oracle, which only classifies `T`-strings. The abstract plan-finding became a
+    caught bug within minutes — because the test was *run*, not reasoned about.
+  - **The breaking edge surfaced a genuine behavior divergence.** A parity spot-check
+    (differential twins, the 16 method) found msgspec *rounds* a sub-microsecond
+    fractional second where `fromisoformat` *truncated* — a real change the plan's "no
+    behavior change" claim had missed. Found by running twins; resolved proportionally
+    (accept + document + pin) and surfaced to the user.
+  - **A quantitative claim, unverified until run (12 extended to a measurement source).**
+    The plan asserted "~3-4x"; the micro-bench corrected it to ~1.5x (it compared *raw*
+    `convert` to *wrapped* `resolve`). 12's "verify the claim against its source" holds
+    for a *number* too.
+
+  **Synthesis with #90 / #41.** Those: 16 *affirmed by argument* → miss. This: 16
+  *discharged by execution* → catch. Same-day confirmation that "'Affirmed' is not
+  'closed'; the discharge is an action" — stated there from misses, shown here from the
+  win when the action was taken. Reviewer was again the author (self-authored plan,
+  self-run review), so it also confirms #41's "only a run survives confirmation bias":
+  the reasoned review affirmed the fuzz/guard; the *execution* caught the holes.
