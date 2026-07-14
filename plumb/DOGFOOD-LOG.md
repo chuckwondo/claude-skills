@@ -1232,3 +1232,64 @@ without churning it.*
     Watch the next reviews where 16 fires: does the sharpened Move actually force
     build-and-run instead of a reasoned "bounded"? That is the next log entry, not a
     green check.
+
+- **2026-07-14 (later) — covjson-msgspec #89 values_as(): the first post-A1-landing
+  run — A1 confirmed, and A1's next frontier exposed by a miss.** Two /plumb passes
+  (plan, diff) plus interleaved ponytail- and code-review on one feature (an opt-in
+  typed-value projection over NdArray's faithful union). This is the entry the
+  2026-07-14 landing asked for ("watch whether the sharpened 16 forces build-and-run").
+
+  *Plan altitude — headline co-fire 2 + 15.* values_as raising `msgspec.ValidationError`
+  vs the library's `CovJSONValidationError` is a public one-way door (15); the same
+  logical failure (value-vs-dataType) otherwise surfaces as two exception types by
+  door (2). Resolved deliberately: keep msgspec.ValidationError (mirrors decode, not
+  the validate pass), named in the docstring + pinned by a test. Affirmed 7/14/5/11/13;
+  whole-struct narrowing (NdArrayFloat/Int/Str) weighed and rejected as reopening the
+  multi-type shape ADR-0004 rejects.
+
+  *Diff altitude — 16 discharged by execution paid off (A1 confirmed).* Running
+  `values_as(float)` on `10**400` produced `SystemError`, NOT the documented
+  ValidationError — a decode-reachable legal input (a bare huge-int JSON literal). A
+  reasoned pass would have said "int->float, fine." Drove: an upstream report
+  (msgspec#1122) + a guard normalizing OverflowError/SystemError to the documented
+  contract, forward-compatible with a fixed msgspec. The over-trigger boundary was
+  also *run* (10**308 converts, 10**309 raises), and the A4 #5-Boundary fired and was
+  discharged by running both idioms (screen keeps `(5,)`, values_as coerces `(5.0,)` --
+  different codomains, not merged; 2nd confirmation after #62). Sibling sweep (5/13):
+  grepped every coercion site, *ran* validate on the huge int to confirm the screen is
+  overflow-safe (keeps int), found to_numpy the one unguarded sibling -> filed #110.
+
+  *The miss (headline signal) — A1's construct-and-run did not reach the TEST.* The
+  diff-review returned "Plumb is true" and affirmed "correct and tested." But the
+  promotion unit test was a FALSE GUARD: `(5, 6.5, None) == (5.0, 6.5, None)` is True
+  in Python, so it passes whether or not the int->float promotion (the projection's
+  whole point) happens. Plumb ran the code's breaking edges but never ran a mutation
+  against the test defending the core behavior. Worse: the *ponytail* pass then
+  asserted "test 1 already pins the promotion" to justify DELETING the parity-pin test
+  -- a false coverage-subsumption claim that survived both plumb and ponytail. Only the
+  independent /code-review (language-pitfall/test-coverage angle) caught it; the fix's
+  own mutation stub ("non-promoted passes new assertion? False") was run only AFTER,
+  proving the technique works and was applied one skill too late.
+
+  **New signals for the tightening pass:**
+  (1) **A1's "construct and run" extends from the behavior claim to the COVERAGE
+  claim.** When plumb affirms "it's tested," that half is itself a claim to discharge
+  by *mutating the behavior and confirming the test fails* -- a false-guard test reads
+  fine; only the mutation-run reveals it. Same root as #41 ("only a run survives
+  confirmation bias"), one level out: not "is the code right" but "does the test catch
+  the code being wrong." Candidate 16/Working-note rider: an "affirmed: tested" verdict
+  is un-earned until a regression mutation has been run against the guarding test.
+  (2) **A coverage-subsumption deletion argument ("X already covers this, delete Y") is
+  a discharge-by-running claim.** The ponytail test-deletion leaned on "test 1 pins
+  promotion," which was false (numeric equality). Before deleting a test on the grounds
+  another subsumes it, run the mutation against the surviving test. Ties the A1 mandate
+  to ponytail-review's deletion calls, not only to affirmations.
+  (3) **Cross-skill dance exposed the blind spot: plumb affirmed -> ponytail deleted on
+  a false premise -> code-review caught.** Test-*validity* is code-review's lane, so the
+  lesson is not "plumb should hunt test bugs" but "plumb must not AFFIRM 'tested' (nor
+  accept a subsumption to justify deletion) without the mutation-run." When plumb makes
+  a coverage claim, it owns discharging it.
+  (4) **First post-A1-landing run = A1 validated by dogfooding, as REFINEMENT.md
+  demands** ("a skill is verified by dogfooding, not a green check"). 16-by-execution
+  caught the SystemError; the A4 Boundary fired and was discharged by a run. The single
+  gap is scope, not soundness: the mandate hadn't yet been pointed at tests.
