@@ -1293,3 +1293,54 @@ without churning it.*
   demands** ("a skill is verified by dogfooding, not a green check"). 16-by-execution
   caught the SystemError; the A4 Boundary fired and was discharged by a run. The single
   gap is scope, not soundness: the mandate hadn't yet been pointed at tests.
+
+- **2026-07-14 (even later) — titiler-covjson /area (#56): plumb's affirmed-decision ×
+  fixed-guard blind spot, caught by /code-review's construct-and-run.** A plumb workflow
+  reviewed the finished /area slice (WKT-polygon zonal reduction → Polygon coverage) and
+  drove four fixes — **A** the pre-read cell ceiling measured the *source* grid,
+  under-counting a reprojected read, so it now measures the *destination* grid feature()
+  produces (5 + 16); **B** extract a shared `_covjson_response` (5); **C** name the
+  read/reduce helpers by output shape (4); **D** thread the reduction stat into each
+  band's description/unit (1 + 5, the dtype-single-source family). Affirmed and parked:
+  permissive geometry (11 + 16 — closure/finiteness are the O(1)-local invariants;
+  simplicity/containment is heavier and `rasterize` tolerates it) and the
+  out-of-bounds/all-nodata → `null` collapse (2/7).
+
+  *The miss (headline).* Fix A closed **one** instance of "the ceiling measures a
+  different extent than feature() reads" — the reproject stretch (source vs destination
+  grid). It left a **sibling** on the *same* guard: `Polygon.bounds` measured only the
+  exterior ring (`rings[0]`), while feature() bounds **all** rings via
+  `rasterio.features.bounds`. The affirmed permissive-geometry decision *explicitly
+  allows* a hole reaching past the exterior — so a 1×1 exterior with a full-extent hole
+  slips the tiny exterior past the pre-read guard and feature() allocates the huge
+  all-rings extent, tripping only the post-read backstop (allocation already happened =
+  the DoS). Two individually-sound plumb outputs — "Fix A: bound the read" and "affirm:
+  geometry stays permissive" — whose **product** is the bug. Plumb ran neither the
+  permissive input through the fixed guard nor a grep of "who else derives the polygon's
+  extent." Caught later the same session, only by the xhigh /code-review's build-and-run
+  of every candidate: a hole-beyond-exterior polygon allocated a 16×16 = 256-cell grid
+  against a 16-cell ceiling (the pre-read guard saw the 1-cell exterior and passed).
+
+  **New signals for the tightening pass:**
+  (1) **A1's sibling-sweep must cross AFFIRMED decisions, not only re-scan for clones of
+  the fix.** #89's sweep grepped every *coercion* site (syntactic siblings of the
+  change). This miss lived at the *intersection* of a fix (5/16, bound the read) and an
+  affirmation (11/16, permissive geometry) — a semantic sibling the clone-grep can't see.
+  Candidate Working-note rider: when a review both *fixes a guard* and *affirms a
+  permissive/faithful decision* (7/11), it must **construct and run the affirmed-permissive
+  input through the fixed guard** — the affirmation and the fix are co-dependent, and their
+  product is where the breaking edge (16) hides.
+  (2) **Sounding 5 governs DERIVED EXTENTS, not just constants and formulas.**
+  `polygon.bounds` and `featureBounds(geometry)` are two derivations of one quantity —
+  the polygon's spatial extent — that *must* agree because one gates a read the other
+  performs. The tell plumb had and skipped: `bounds` read `rings[0]` while the geometry
+  dict handed feature **all** `rings`. Generalizes #89's "grep every coercion site" to
+  "grep every derivation of the load-bearing quantity" — here, every place the read
+  extent is computed.
+  (3) **This is a genuine plumb MISS, not a lane boundary** (contrast #89, where
+  test-validity was rightly code-review's lane). Two sources of truth for a
+  security-load-bearing extent is a textbook sounding-5 drift; plumb owned it and had the
+  exact tool (16's construct-and-run) but never pointed it at the affirmation × fix
+  interaction. The whole-stack payoff: the "only a run survives confirmation bias"
+  mandate now pays out *across* skills — /code-review's discipline of building every
+  candidate is what the self-authored plumb pass most needed and lacked.
