@@ -1344,3 +1344,34 @@ without churning it.*
   interaction. The whole-stack payoff: the "only a run survives confirmation bias"
   mandate now pays out *across* skills — /code-review's discipline of building every
   candidate is what the self-authored plumb pass most needed and lacked.
+
+- **2026-07-15 — titiler-covjson #37 (ADR authoring, plumb not invoked): A1's
+  "construct and run" reaches a prose security *claim*.** No `/plumb` run — #37 records
+  an already-settled decision (dataset open/read failures stay HTTP `500`, overridable
+  per deployment) as ADR-0003 plus a README override recipe. But authoring the ADR
+  reproduced the A1 signal in a medium this log hadn't caught it in: a **security claim
+  written in prose**.
+
+  *Overclaim, closed by a run.* The ADR asserted a flat property — "`500` never leaks
+  existence or authorization" — which reads true from the status-code-oracle argument
+  alone (a uniform `500` is not a 404-vs-500 existence oracle). Running the system to
+  verify the *override recipe* (bad `url` → `500` default, `400` remapped) incidentally
+  falsified the *claim*: the real response body renders the raw exception message into
+  `detail` (`"…: No such file or directory"`), so existence leaks via the **body**, not
+  the status line — and an existing-but-non-raster file (`/etc/hostname`) returned the
+  *same* misleading "No such file or directory", so the body signal is itself noise.
+  Fix: scope the claim to the status code, add a body caveat. The oracle *argument*
+  held; the *unqualified* claim did not, and only the running output showed the gap.
+
+  **New signals for the tightening pass:**
+  (1) **A1 / sounding 16 governs a runtime-behavior claim asserted in prose, not only
+  code, tests, and plans.** #21 put plumb at doc-*architecture* altitude; this is one
+  notch more specific — a doc claiming what the system *does*. The maximizing input for
+  such a claim is *running the system and reading its real output* (the HTTP body here,
+  plus one adversarial-but-valid input, `/etc/hostname`), never re-reading the argument
+  that makes it look true. Candidate: name "a factual/behavioral claim in prose (ADR,
+  README, spec)" as an A1 target, discharged by "run it and read the output."
+  (2) **Positive, self-caught instance (#99 / #62 family), and the discharging run was
+  aimed elsewhere.** The run targeted the override recipe; it surfaced the unrelated
+  affirmed-claim overclaim as a side effect — "run the thing" pays out past the claim it
+  was aimed at. Corroboration that A1 generalizes to a new medium, not a new sounding.
