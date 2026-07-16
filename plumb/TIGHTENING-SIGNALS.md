@@ -31,11 +31,22 @@ rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that r
   and still miss the **load-bearing** one — prefer the edge that breaks the assumption the design
   *rests on* (a claim written into a comment is a standing 16 target) (`#41`); (d) only a run
   survives confirmation bias when the reviewer is the author/champion — extended by `#62` to a
-  **subagent's** authoritative-sounding code-trace (a code-read is still reasoning until run).
+  **subagent's** authoritative-sounding code-trace (a code-read is still reasoning until run);
+  (e) the un-earned verdict runs in **both directions**, and the thing that lies can be a **proxy**
+  rather than an argument — (a)–(d) all argue a concern *away* ("bounded", "the fix landed"), but a
+  stand-in artifact can equally argue one *in*: a hand-built struct substituted for the real
+  `NdArray` overstated a perf payoff by ~5x (1.34x vs the real member's 1.07x) and made a
+  dead idea look worth pursuing, and it was caught by a glaring arithmetic anomaly rather than by
+  method (`07-16`, **not a review run**, author's own miss). The defect is neither optimism nor
+  pessimism about the verdict: it is substituting an argument *or a proxy* for a run of the real
+  thing, whichever way the verdict points.
 - **Proposed target:** sharpen sounding 16's **Move** (SKILL.md:209) to require *construct-and-run*,
-  and add one Working note (SKILL.md:265–290): *"'Affirmed'/'bounded'/'the fix landed' is a claim,
-  not a discharge; the discharge is an action — sweep the new code, or build and run the breaking
-  input — and it is mandatory when you authored what you're reviewing."*
+  and add one Working note (SKILL.md:265–290): *"'Affirmed'/'bounded'/'the fix landed'/'the
+  benchmark says' is a claim, not a discharge; the discharge is an action — sweep the new code,
+  build and run the breaking input, or measure the real artifact rather than a stand-in — and it is
+  mandatory when you authored what you're reviewing. A claim can flatter as readily as it
+  dismisses."* Note the wording must cover **both** directions per sub-rule (e); the narrow
+  "argued it away" framing would not have caught `07-16`.
 
 ### A2. Both-altitudes, sharpened into its sub-cases *(×10, most-developed theme)*
 The existing "run plumb at both altitudes" note (SKILL.md:286–290) is corroborated but under-specified.
