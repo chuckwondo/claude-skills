@@ -77,6 +77,15 @@ Grouped into the clusters that emerged — these groups are the seams for mergin
 4. **Presentation:** grouped-by-cluster vs one flat leverage-ranked list.
 5. **Definition dose:** crisp definition + one-line payoff per sounding + a compact
    cluster reinforcement map — deep collaboration narrative to the CxC companion.
+6. **Sounding 1 — the *layer* of "parse-don't-validate" (from #113).** The sounding
+   assumes untrusted input is parsed into a trusted shape at *decode*. #113 is a
+   counter-case: the faithful stored form is deliberately permissive (a grab-bag
+   core, the structural face of permissive decode / ADR-0002), and illegal states
+   are made unrepresentable at *first consumption* instead, via an opt-in `refine()`
+   projection to clean variants. Decide whether 1 should name the edge as
+   decode-*or*-first-use; doing so reconciles 1 with 7 (faithfulness) and 11
+   (permissive load) where they appear to conflict. See the 2026-07-15 #113 dogfood
+   entry, signal (2).
 
 ## Target end state
 
