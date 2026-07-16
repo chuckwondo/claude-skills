@@ -1,7 +1,7 @@
 # Plumb — tightening-pass signal ledger
 
 *A consolidated, deduplicated harvest of the "New signals for the tightening pass" scattered
-across [DOGFOOD-LOG.md](DOGFOOD-LOG.md) (24 entries, 2026-07-07 → 07-14). The log is the empirical
+across [DOGFOOD-LOG.md](DOGFOOD-LOG.md) (30 entries, 2026-07-07 → 07-16). The log is the empirical
 record; this is the decision-ready index into it. **This file lands nothing** — no soundings
 merged, no SKILL.md edits. It exists so the next pass (and the eventual combine) can act from one
 ranked view instead of re-reading 1200 lines.*
@@ -17,14 +17,16 @@ today's **16**. Corroboration count = distinct entries that produced the signal.
 Well-corroborated signals that change *behavior/notes*, not the sounding count — safe to land into
 SKILL.md whenever green-lit, independent of the combine. Each names a concrete target.
 
-### A1. "Affirmed" is not "closed" — discharge is an action, not an argument *(×4, the sharpest)*
+### A1. "Affirmed" is not "closed" — discharge is an action, not an argument *(×5, the sharpest)*
 The only two logged **misses** were soundings *named but not run*: `#90` (diff pass affirmed the 5
 fix landed, never swept the new code for a *fresh* 5 → code-review caught it) and `#41` (both passes
 *named* the clamp-divergence under 5×16 and argued it "bounded/negligible" → never built the
 maximizing input → code-review caught a false-reject on ordinary equatorial reads). `#99` and `#62`
 are the positive inverse: the same 16 findings **constructed and run**, catching a fractional-second
 rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that reasoning had missed.
-- **Corroboration:** `#90`, `#41`, `#99`, `#62` (all 2026-07-13/14).
+- **Corroboration:** `#90`, `#41`, `#99`, `#62` (all 2026-07-13/14), `#130` (07-16, the positive
+  inverse again and the widest surface yet: four unverified claims in one run, three of them the
+  project's own).
 - **Sub-rules it carries:** (a) affirming a sounding *landed* is the cue to hunt that sounding's
   **other** instances in the diff, not to close it out (`#90`); (b) a "bounded/negligible" park on a
   co-fire is **un-earned** until the maximizing input has been run (`#41`); (c) 16 can find *an* edge
@@ -40,6 +42,18 @@ rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that r
   method (`07-16`, **not a review run**, author's own miss). The defect is neither optimism nor
   pessimism about the verdict: it is substituting an argument *or a proxy* for a run of the real
   thing, whichever way the verdict points.
+  (f) the un-earned claim is often a **citation**, and the document that lies is as likely to be the
+  project's own as the diff's — `#130` ran four to ground in one review: a PR's "§6.1.1 MUST" (the
+  spec says **MAY**, and the wording originated in the project's *own issue*, faithfully transcribed
+  by the contributor), a corpus manifest header asserting it covered "every code" (three short, and
+  unenforced, so it had rotted silently), an ADR README's own "append-only" rule (not the rule the
+  repo actually follows), and the *reviewer's* "44 references" (really 22 insertions/22 deletions,
+  taken from a diffstat skim and caught only by checking before publishing — into the very document
+  about treating the record honestly). Sounding 12 already forbids asserting an authority from
+  memory, so (f) is less a new rule than the **surface** A1 applies to: a citation is a claim, and
+  opening it is the discharge. Distinct from (a)–(e) in that nothing here was a *verdict* or a
+  *measurement*; the lie was a quoted source, and the tests were green throughout because none of it
+  is test-catchable.
 - **Proposed target:** sharpen sounding 16's **Move** (SKILL.md:209) to require *construct-and-run*,
   and add one Working note (SKILL.md:265–290): *"'Affirmed'/'bounded'/'the fix landed'/'the
   benchmark says' is a claim, not a discharge; the discharge is an action — sweep the new code,
@@ -66,7 +80,7 @@ The log has fractured it into distinct, nameable sub-cases:
 - **Proposed target:** expand the SKILL.md:286 note into these bullets, or a short "Two altitudes"
   subsection.
 
-### A3. Sounding 12 = verify the *source*, and let it turn on your own claims *(×9)*
+### A3. Sounding 12 = verify the *source*, and let it turn on your own claims *(×10)*
 12 is doing far more work than "grade proportionally." Documented facets:
 - **Dual role / forcing function:** "can't cite it" is *itself* the finding that forces the fetch
   (`#37`, `#69`, `#77`).
@@ -81,9 +95,21 @@ The log has fractured it into distinct, nameable sub-cases:
   (287µs was an API-composition artifact, not a double-parse).
 - **Verify can *close* a suspected finding, not only sharpen a real one:** `#62` (`_has_spec_timezone`
   is spec-correct, not over-lenient).
-- **Corroboration:** `#37`, `#69`, `#18`, `#77`, `#21`, `zarr`, `#74`, `#99`, `#62`.
+- **Open the source the diff *implements*, not only the authority it names — the over-claim is often
+  UPSTREAM of the diff** (`#130`). 12's Smell list reads as though the reviewee over-claims ("'the
+  spec says MUST' without opening it"), but `#130`'s docstring was *faithful to its source*: the
+  fabricated "§6.1.1 MUST" came from the project's **own issue**, and the outside contributor
+  transcribed it correctly. A diff can conform perfectly to a bad citation — the citation-shaped
+  form of plumb's standing stance that conforming to bad precedent is itself a finding. First logged
+  run whose correct fix-home was an **issue body**. Same run: the manifest header and the ADR
+  README's own rule were likewise unverified project prose, so the rule generalizes past specs to
+  *any* in-repo document a diff or a reviewer leans on.
+- **Corroboration:** `#37`, `#69`, `#18`, `#77`, `#21`, `zarr`, `#74`, `#99`, `#62`, `#130`.
 - **Proposed target:** sounding 12 (SKILL.md:175) — add the pin-the-revision rider and the
-  "quantitative claim vs its measurement" + "verify can close a finding" facets to its Move.
+  "quantitative claim vs its measurement" + "verify can close a finding" facets to its Move, plus
+  the upstream rider: *open the source the diff implements (the issue, the ADR, the header it was
+  written from), not only the external authority it cites; a faithful diff over a false source puts
+  the fix upstream.*
 
 ### A4. Sounding 5 has a resolution *taxonomy* — the reflexive "extract to one home" is one of five
 Sounding 5 is the dominant headline and its fix is *not* always dedup. The log has enumerated five
