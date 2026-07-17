@@ -1,7 +1,7 @@
 # Plumb — tightening-pass signal ledger
 
 *A consolidated, deduplicated harvest of the "New signals for the tightening pass" scattered
-across [DOGFOOD-LOG.md](DOGFOOD-LOG.md) (30 entries, 2026-07-07 → 07-16). The log is the empirical
+across [DOGFOOD-LOG.md](DOGFOOD-LOG.md) (33 entries, 2026-07-07 → 07-17). The log is the empirical
 record; this is the decision-ready index into it. **This file lands nothing** — no soundings
 merged, no SKILL.md edits. It exists so the next pass (and the eventual combine) can act from one
 ranked view instead of re-reading 1200 lines.*
@@ -17,7 +17,7 @@ today's **16**. Corroboration count = distinct entries that produced the signal.
 Well-corroborated signals that change *behavior/notes*, not the sounding count — safe to land into
 SKILL.md whenever green-lit, independent of the combine. Each names a concrete target.
 
-### A1. "Affirmed" is not "closed" — discharge is an action, not an argument *(×5, the sharpest)*
+### A1. "Affirmed" is not "closed" — discharge is an action, not an argument *(×6, the sharpest)*
 The only two logged **misses** were soundings *named but not run*: `#90` (diff pass affirmed the 5
 fix landed, never swept the new code for a *fresh* 5 → code-review caught it) and `#41` (both passes
 *named* the clamp-divergence under 5×16 and argued it "bounded/negligible" → never built the
@@ -26,7 +26,8 @@ are the positive inverse: the same 16 findings **constructed and run**, catching
 rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that reasoning had missed.
 - **Corroboration:** `#90`, `#41`, `#99`, `#62` (all 2026-07-13/14), `#130` (07-16, the positive
   inverse again and the widest surface yet: four unverified claims in one run, three of them the
-  project's own).
+  project's own), `#131` (07-17, under **maximal** pressure: a self-authored plan re-probed three
+  times, every pass falsifying the author's own clean read).
 - **Sub-rules it carries:** (a) affirming a sounding *landed* is the cue to hunt that sounding's
   **other** instances in the diff, not to close it out (`#90`); (b) a "bounded/negligible" park on a
   co-fire is **un-earned** until the maximizing input has been run (`#41`); (c) 16 can find *an* edge
@@ -54,15 +55,21 @@ rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that r
   opening it is the discharge. Distinct from (a)–(e) in that nothing here was a *verdict* or a
   *measurement*; the lie was a quoted source, and the tests were green throughout because none of it
   is test-catchable.
+  (g) construct the breaking input the way it **arrives**, not the way that is convenient: for a
+  decoder or wire type, build the case by *decoding bytes*, since a hand-typed literal can carry
+  runtime types the wire never produces (a decoded `tuple[Any, ...]` with `list` interiors) and hide
+  an edge the literal cannot reach (`#131` pass 3: a "tuple all the way down" polygon check that fired
+  on every legal wire-decoded polygon yet passed an all-tuples literal fixture).
 - **Proposed target:** sharpen sounding 16's **Move** (SKILL.md:209) to require *construct-and-run*,
   and add one Working note (SKILL.md:265–290): *"'Affirmed'/'bounded'/'the fix landed'/'the
   benchmark says' is a claim, not a discharge; the discharge is an action — sweep the new code,
   build and run the breaking input, or measure the real artifact rather than a stand-in — and it is
   mandatory when you authored what you're reviewing. A claim can flatter as readily as it
   dismisses."* Note the wording must cover **both** directions per sub-rule (e); the narrow
-  "argued it away" framing would not have caught `07-16`.
+  "argued it away" framing would not have caught `07-16`. Fold sub-rule (g) into 16's Move as well:
+  for a decoder, build the breaking input by *decoding bytes*, not a hand-typed literal (`#131`).
 
-### A2. Both-altitudes, sharpened into its sub-cases *(×10, most-developed theme)*
+### A2. Both-altitudes, sharpened into its sub-cases *(×11, most-developed theme)*
 The existing "run plumb at both altitudes" note (SKILL.md:286–290) is corroborated but under-specified.
 The log has fractured it into distinct, nameable sub-cases:
 - **Different flaws** (plan vs diff catch genuinely different defects): `#14`, `#37`, `#77`.
@@ -71,12 +78,17 @@ The log has fractured it into distinct, nameable sub-cases:
 - **Diff can find a *higher* bonus sounding** the plan fix produced without claiming it (re-rank the
   landed fix against *all* soundings): `#92` (plan headline 5/10 → diff headline 1).
 - **Diff can *miss* fresh debt the implementation introduced**, the inverse of the above: `#90`.
+- **Same-altitude re-probe finds more** (re-running the *same* pass, not switching altitude, hunts a
+  different breaking edge each time; a clean pass is weak evidence when the reviewer is the author):
+  `#131`, a self-authored plan reviewed three times, surfaced three disjoint failure classes (a
+  spec-depth misread, then `str` duck-typing the arity check, then a wire-vs-literal decode-type), all
+  of which literal-built unit tests would have passed.
 - **Emerging shape:** a *subtractive* plan fix ("build less") → confirmatory diff; an *additive* plan
   fix (new representation) → diff may find a dividend: `#94` vs `#92`.
 - **Sequencing:** run the diff pass *after* code-review and its fixes — a correctness fix can
   introduce structural debt plumb then catches (`#37`); and plan-review judges the plan's *stated
   shape*, so some errors are only legible once code exists (`#77`'s wrong `is not None` instruction).
-- **Corroboration:** `#14`, `#37`, `#69`, `#44`, `#18`, `#77`, `#92`, `#90`, `#94`, `#41`.
+- **Corroboration:** `#14`, `#37`, `#69`, `#44`, `#18`, `#77`, `#92`, `#90`, `#94`, `#41`, `#131`.
 - **Proposed target:** expand the SKILL.md:286 note into these bullets, or a short "Two altitudes"
   subsection.
 
@@ -124,6 +136,33 @@ idioms encoding **different** decisions are not a 5 violation — pin each with 
 regression) > comment (only informs). When the top rung is closed by the language, drop to a test that
 *enforces*, never settle at a comment.
 - **Proposed target:** Working note, or a rider on sounding 1 (SKILL.md:67).
+
+### A6. A park's reason can be *scope*, not unreachability; its discharge is a filed follow-up *(×1, clean)*
+`#129`: the highest-leverage finding was `subset.py`'s bare `IndexError` on the exact input the new
+`validate()` rule flags. It was **reachable** (confirmed by running the *public* `isel()`, not the
+private helper first probed) and load-bearing, yet correctly **parked**: the path to a consumer
+exists, so the current fix-vs-park reason (SKILL.md:281–284) does not apply. It parked because the fix
+lives outside the change's agreed **scope** (`#129` scoped the work to the `validate()` rule; subset's
+repair, drop vs. diagnostic-raise, is a separate decision that may want an ADR). The discharge was a
+**routed, traceable issue (#142)**: an *action* (cf. A1's "a discharge is an action, not an
+argument"), not a note that rots. Distinct from `#44`-commit-1's park, which flagged a better-shape
+contrast on the incumbent sibling; here the subject is a reachable crash and the boundary is scope.
+- **Proposed target:** the fix-vs-park Working note (SKILL.md:280–284): add "out-of-scope, routed to a
+  follow-up" as a third park class beside "unreachable / sole trusted constructor," and state its
+  discharge is a *filed issue* (links A1's discharge-is-an-action rule).
+
+### A7. Measure leverage against the work's *charter*, not only a downstream consumer *(×1, clean)*
+`#129`: every prior headline traced a flaw to what *consumes* it downstream; this one traced the diff
+against the stated goal of the work it closes. `#129`'s own motivation named the `subset` `IndexError`
+as "a poor diagnosis of a malformed document," and the feature shipped only the *detection* half (the
+`validate()` rule), leaving the crash. The leverage question became "does the change deliver its
+charter, or only part of it?" A diff can be structurally *true in what it does* and still
+under-deliver the issue it claims to close, and the half-delivered charter is the finding. Adjacent to
+A3/`#130` but inverted: there the issue the diff *implemented* was the source of a false citation;
+here the issue is the yardstick for *completeness*, not a lie.
+- **Proposed target:** the leverage Working note (SKILL.md:277): add a second trace target beside "what
+  *consumes* it," the work's **charter** (the issue's own motivation). A half-delivered charter is a
+  leverage finding even when the delivered half is flawless.
 
 ---
 
@@ -209,6 +248,11 @@ targets — but activity is very uneven, which is the real input to the combine.
   than manufacturing a plumb finding (`#21` three-rounds-of-IA).
 - Clean deferrals logged where plumb correctly stayed out of ponytail/code-review's lane: `#90`
   (`_temporal_keys` single-caller wrapper), `#69`/`#44`/`#94` (various).
+- **Both-directions handoff, corroborated:** the partition is not a one-way dump. plumb defers a
+  correctness class → code-review finds the leak → the fix rises back to *shared infrastructure*, a
+  structural/altitude win: `#131` (a `TypeError` leak in `coordinate_identifiers` plumb routed away by
+  name, whose shared-`composite_columns` fix was itself the deeper structural improvement),
+  corroborating the `07-15` partition entry on a self-authored diff where plumb found only shape.
 
 **Scope beyond code** (each a distinct altitude plumb transferred to cleanly — for the combine's
 "where does plumb apply" framing): plans before code (`#14`,`#69`,`#99`); a documentation/information
@@ -250,7 +294,9 @@ Ranked by leverage; the first two address the only two logged *misses*, so they 
 3. **A4 — sounding-5 Boundary line** (paste the log's drafted text). Zero authoring cost.
 4. **A3 — sounding-12 verify-the-source riders** (pin-the-revision + quantitative-claim + can-close).
 5. **A5 — sounding-1 unreachable-ideal → test** (small rider or Working note).
-6. **E1/E2 — the two trivial doc fixes** (gauges line; changelog pointer) — land alongside anything.
+6. **A6: park-can-be-scope, discharged as a filed follow-up** (third park class on the fix-vs-park Working note, SKILL.md:280–284). Fresh (×1).
+7. **A7: leverage measured against the charter** (second trace target on the leverage Working note, SKILL.md:277). Fresh (×1).
+8. **E1/E2 — the two trivial doc fixes** (gauges line; changelog pointer) — land alongside anything.
 
 *The combine pass (Section B/C) stays deferred per REFINEMENT.md's "let usage drive, not armchair
 debate" — this ledger is its input, not its trigger.*
