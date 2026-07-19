@@ -34,12 +34,17 @@ family grows, they can be bundled into a distributable plugin later.
 
 ## Case studies
 
-Worked examples the skills were distilled from.
+Worked examples the skills were distilled from. Each lives beside the skill it
+belongs to.
 
-- **[temporal-conversion](case-studies/temporal-conversion.md)** -- the design
-  iteration log (covjson-msgspec #12) that seeded plumb. A visual version is
-  published as a Claude artifact; the HTML source lives beside the markdown for
-  redeploying or editing.
+- **[temporal-conversion](plumb/case-studies/temporal-conversion.md)** (plumb):
+  the design iteration log (covjson-msgspec #12) that seeded plumb. A visual
+  version is published as a Claude artifact; the HTML source lives beside the
+  markdown for redeploying or editing.
+- **[resolve-the-repair](plumb/case-studies/resolve-the-repair.md)** (plumb):
+  how the same "name the repair" test placed one check in two tiers
+  (covjson-msgspec #147), and why resolving the value, not counting the repairs,
+  decided it.
 
 ## How it's wired
 

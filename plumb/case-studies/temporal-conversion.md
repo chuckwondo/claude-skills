@@ -2,7 +2,7 @@
 
 *A design iteration log for covjson-msgspec #12 (opt-in temporal conversion +
 validation). Where each step landed, the friction we hit, what we applied and
-why, and the state it left us in. This is the case study the [plumb](../plumb/SKILL.md)
+why, and the state it left us in. This is the case study the [plumb](../SKILL.md)
 skill was distilled from.*
 
 > Visual version (interactive timeline):
