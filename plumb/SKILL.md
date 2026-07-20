@@ -220,7 +220,14 @@ non-ASCII, empty/`None`, reduced-precision, adversarial. **Smell:** an assumptio
 ("a 4-digit ASCII year", "it fits in a datetime") with no case testing its
 boundary. **Move:** name the assumption; find the *legal* input that breaks it, then
 **construct and run** it — a "bounded/negligible" verdict is un-earned until that
-input has actually run; add the case.
+input has actually run; add the case. The run target is wider than the input under
+review: run the *excluded* case (a green exclusion proves the filter fires, not that
+its stated *reason* holds), the downstream *consumer* (its crash-vs-silent-repair-vs-reject
+profile ranks the rules you plan *before* you write code), and the *check itself* —
+delete a `case` arm to confirm the type-checker goes red, and run the boundary on the
+*oldest supported environment*; a green check never fed a known-red input is unearned.
+Resolve a default to the value it *produces* and run that, not "the default" as an
+abstraction.
 
 ### 17. Locality of behavior: keep behavior with its data  `[combine? with 9, 10]`
 Behavior lives with the data it operates on; a method that reads another object's
@@ -304,4 +311,12 @@ that most shape this solution.
   *construct and run* the breaking input. When you authored what you're reviewing,
   this is mandatory — a self-authored design rationalizes its own soundings, and only
   a run survives confirmation bias (a careful code-read, even a subagent's, is still
-  reasoning until run).
+  reasoning until run). The claim need not be code: a docstring, a narrative `.md` no
+  build executes, a test's own predicate (copied from the code it guards, so blind to
+  that predicate going stale), a `# pragma: no cover` — each is an un-run assertion,
+  and after a decision *reverses*, stale prose is the top risk because nothing compiles
+  it. The discharge must hunt the ground the last sweep *skipped*: re-running the cases
+  already green is confirmation bias in a lab coat. Provenance to plan around: a
+  self-authored design does not reliably run its own claims even when this note says to,
+  so the likeliest real trigger is an external prompt — a reviewer, or the user, who is
+  not the author.

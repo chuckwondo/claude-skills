@@ -1,9 +1,11 @@
 # Plumb — tightening-pass signal ledger
 
 *A consolidated, deduplicated harvest of the "New signals for the tightening pass" scattered
-across [DOGFOOD-LOG.md](DOGFOOD-LOG.md) (33 entries, 2026-07-07 → 07-17). The log is the empirical
-record; this is the decision-ready index into it. **This file lands nothing** — no soundings
-merged, no SKILL.md edits. It exists so the next pass (and the eventual combine) can act from one
+across [DOGFOOD-LOG.md](DOGFOOD-LOG.md) (07-07 → 07-17 fully harvested; the 07-18 → 07-20 entries are
+logged, and their **A1 material** was folded into §A1 by the 2026-07-20 landing — the rest awaits a
+full re-harvest). The log is the empirical record; this is the decision-ready index into it. **The
+edits live in SKILL.md** — this file indexes signals and now tracks their landing status, it does not
+perform them. It exists so the next pass (and the eventual combine) can act from one
 ranked view instead of re-reading 1200 lines.*
 
 *Citations use the log's own shorthand (`#14`, `#37`, `zarr`, `07-07`, …). Sounding numbers are the
@@ -17,7 +19,7 @@ today's **16**. Corroboration count = distinct entries that produced the signal.
 Well-corroborated signals that change *behavior/notes*, not the sounding count — safe to land into
 SKILL.md whenever green-lit, independent of the combine. Each names a concrete target.
 
-### A1. "Affirmed" is not "closed" — discharge is an action, not an argument *(×6, the sharpest)*
+### A1. "Affirmed" is not "closed" — discharge is an action, not an argument *(×15+, the sharpest; landed in two passes)*
 The only two logged **misses** were soundings *named but not run*: `#90` (diff pass affirmed the 5
 fix landed, never swept the new code for a *fresh* 5 → code-review caught it) and `#41` (both passes
 *named* the clamp-divergence under 5×16 and argued it "bounded/negligible" → never built the
@@ -27,7 +29,11 @@ rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that r
 - **Corroboration:** `#90`, `#41`, `#99`, `#62` (all 2026-07-13/14), `#130` (07-16, the positive
   inverse again and the widest surface yet: four unverified claims in one run, three of them the
   project's own), `#131` (07-17, under **maximal** pressure: a self-authored plan re-probed three
-  times, every pass falsifying the author's own clean read).
+  times, every pass falsifying the author's own clean read). **07-18 → 07-20, ×9 more, all
+  self-authored guide/diff runs:** `#65` (over-reached the *resolution* of a correctly-run edge), `#137`
+  and `#138` (run the *excluded* case, and the downstream *consumer* pre-code), `#139` (hunt the
+  un-swept ground), `#109` and `#153` (the verification code and the dependency version-line are
+  themselves un-run claims), `#147` (resolve the value, not its description).
 - **Sub-rules it carries:** (a) affirming a sounding *landed* is the cue to hunt that sounding's
   **other** instances in the diff, not to close it out (`#90`); (b) a "bounded/negligible" park on a
   co-fire is **un-earned** until the maximizing input has been run (`#41`); (c) 16 can find *an* edge
@@ -60,14 +66,36 @@ rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that r
   runtime types the wire never produces (a decoded `tuple[Any, ...]` with `list` interiors) and hide
   an edge the literal cannot reach (`#131` pass 3: a "tuple all the way down" polygon check that fired
   on every legal wire-decoded polygon yet passed an all-tuples literal fixture).
-- **Proposed target:** sharpen sounding 16's **Move** (SKILL.md:209) to require *construct-and-run*,
-  and add one Working note (SKILL.md:265–290): *"'Affirmed'/'bounded'/'the fix landed'/'the
-  benchmark says' is a claim, not a discharge; the discharge is an action — sweep the new code,
-  build and run the breaking input, or measure the real artifact rather than a stand-in — and it is
-  mandatory when you authored what you're reviewing. A claim can flatter as readily as it
-  dismisses."* Note the wording must cover **both** directions per sub-rule (e); the narrow
-  "argued it away" framing would not have caught `07-16`. Fold sub-rule (g) into 16's Move as well:
-  for a decoder, build the breaking input by *decoding bytes*, not a hand-typed literal (`#131`).
+  (h) the run target is **wider than the input under review**: run the *excluded* case (a green
+  exclusion proves the filter fires, not that its stated *reason* holds — a correct filter can carry a
+  false why, `#137`), and run the downstream *consumer*, which already exists and whose
+  crash-vs-silent-repair-vs-reject profile ranks the planned rules by leverage *before* code is written
+  (`#138`, shapely) — this is what makes §16 runnable in guide mode.
+  (i) the discharge hunts the ground the **last sweep skipped**, not the cases already green — a re-run
+  of the affirmed set is confirmation bias in a lab coat (`#139`).
+  (j) §16 turns on the **verification code itself**: in a known-trap domain (int64 datetime overflow,
+  float epsilon, timezone math) the tool reached for to check the boundary is subject to the same trap
+  — the overflow-detector silently overflowed twice before it was right (`#109`).
+  (k) a "better design" verdict is unearned until run on the **oldest supported environment / the whole
+  version line** below a boundary, since a design's viability can live in a dependency version (`#109`,
+  `#153`; ties §7 to the uv-minimum-versions skill as the oracle).
+  (l) the claim run need not be **code**: a docstring, a narrative `.md` nothing executes, a test's
+  predicate copied from the code it guards (blind to that predicate going stale), a `# pragma: no cover`
+  — each an un-run assertion, and stale `.md` prose is the top risk after a decision *reverses* because
+  nothing compiles it (`#147`, `#147-impl`, `#153`).
+  (m) **resolve the value, don't reason about its description** — ADR-0018 reasoned about "the default"
+  as an abstraction and recorded a tier backwards; resolving that default to the concrete `("composite",)`
+  it produces flipped the answer a year later (`#147`).
+  **Provenance across (h)–(m):** the author under-ran in every one; the discharge's real trigger was an
+  *external* prompt (the user's question, the reviewee's principle), corroborating (d) — a self-authored
+  design does not reliably run its own claims even when the skill says to (`#65`, `#109`, `#153`).
+- **Landed (two passes).** First pass (2026-07-14, `e6b540f`): 16's Move sharpened to *construct-and-run*
+  and the "Affirmed is not closed" Working note added (sub-rules a–d + e's both-directions framing).
+  Second pass (2026-07-20): (h)–(m) folded into 16's Move and the same note — the run target is wider
+  than the input (excluded case / consumer / check-itself / oldest environment), the discharge hunts
+  un-swept ground, the claim need not be code, and resolve-the-value-not-its-description. **Still
+  queued:** (f) a citation is a claim (routes through sounding 12) and (g) build the breaking input by
+  *decoding bytes*, not a literal — both harvested pre-07-17, deferred to the next pass.
 
 ### A2. Both-altitudes, sharpened into its sub-cases *(×11, most-developed theme)*
 The existing "run plumb at both altitudes" note (SKILL.md:286–290) is corroborated but under-specified.
@@ -289,7 +317,8 @@ for Z" (`#74`/`#18`).
 Ranked by leverage; the first two address the only two logged *misses*, so they buy the most:
 
 1. **A1 — discharge-is-an-action** (sharpen sounding 16 + one Working note). Highest leverage: closes
-   the miss class directly.
+   the miss class directly. **✔ Landed** in two passes (2026-07-14 a–e, 2026-07-20 h–m); (f) citation
+   and (g) decode-bytes still queued.
 2. **A2 — both-altitudes sub-cases** (expand the SKILL.md:286 note). Cheap, high-corroboration.
 3. **A4 — sounding-5 Boundary line** (paste the log's drafted text). Zero authoring cost.
 4. **A3 — sounding-12 verify-the-source riders** (pin-the-revision + quantitative-claim + can-close).
