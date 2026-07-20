@@ -96,11 +96,18 @@ One focused batch, not forty entries. Goal: populate the empty cells enough to s
 which soundings are bias-suppressed and to make the `Unhomed:` line trigger.
 
 - **Size**: 6 to 10 real `/plumb` runs, review mode.
-- **Target spread** (deliberately hit empty cells): at least 4 languages; at least 3
-  shapes including one `frontend-ui`; at least 5 `poor`; at least 3 non-`self`
-  provenance including at least 2 `generated`; at least 2 `brownfield`; at least 1
-  whole-repo audit on a messy repo (audits exercise the brownfield stance, cf. the zarr
-  entry).
+- **Target spread** (deliberately hit empty cells, and *mix generated with real*): at
+  least 4 languages; at least 3 shapes including one `frontend-ui`; at least 5 `poor`; a
+  **balanced provenance mix**, roughly half `generated` and half real
+  (`external-raw` / `external-reviewed`), so neither the self-plumbed bias nor the
+  LLM-smell bias dominates; at least 2 `brownfield`; at least 1 whole-repo audit on a
+  messy *real* repo (audits exercise the brownfield stance, cf. the zarr entry).
+- **Generated vs real is itself a signal**, not just volume: generated code carries its
+  *own* smell profile (verbose, stringly-typed, God-functions, defensive over-checking)
+  distinct from human bad code (drift, copy-paste divergence, framework anti-patterns,
+  premature abstraction). A coverage-audit candidate that fires hot on `generated` but
+  cold on real repos is suspect as an LLM artifact; one that fires on both is a real
+  gap. Read the `generated` vs `external-raw` columns against each other.
 - **Scope guardrail**: keep most runs to a diff or a small module (whole-repo audits
   are expensive); time-box each.
 - **Log**: the normal entry plus the `Corpus:` and `Unhomed:` lines. Mark the batch so
