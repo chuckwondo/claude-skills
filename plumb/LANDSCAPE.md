@@ -5,7 +5,7 @@ Unlike [DOGFOOD-LOG.md](DOGFOOD-LOG.md) (the append-only history of runs and cha
 this file is **overwritten to stay current**: rescan the ecosystem, then update it
 in place. Keep it fresh, accurate, clear, informative.*
 
-**Last scanned:** 2026-07-08 · **Next rescan:** when a sounding is added/merged, or
+**Last scanned:** 2026-07-20 · **Next rescan:** when a sounding is added/merged, or
 ~quarterly, whichever first.
 
 ---
@@ -138,6 +138,65 @@ OO/clean-code tradition doesn't reach because it optimizes the *class*, not the
 
 ---
 
+## Canon coverage audit (deductive gap-finding)
+
+*The inverse of the overlap map above. Instead of "what does each plumb sounding
+overlap," ask "does plumb have a probe for each principle in the structural-design
+canon?" This is **deductive** gap-finding (walk the catalog, check coverage), immune to
+the dogfood corpus's selection bias (see [CORPUS.md](CORPUS.md)) because it does not
+depend on our code. It **nominates** candidates; adversarial dogfooding **confirms and
+ranks** them by real leverage. Sources: Fowler's code-smell catalog, the type-driven /
+CxC canon (Wlaschin, Hickey, "parse don't validate"), Ousterhout (APOSD), NTCoding's 8
+dimensions.*
+
+**Tier 1: multi-source convergence (act on these first).**
+
+- **Immutability / mutable-data** [Fowler "Mutable Data" · NTCoding "Immutability" · CxC
+  · fires x6 in-log · already sanctioned]. Distinct from sounding 6 (functional core is
+  about *effects*; immutability is about the *data* being unmodifiable after
+  construction). The strongest confirmed gap. → land as a sounding.
+- **Sound typing: no lies to the checker** [NTCoding "Type System" · CxC "the type
+  carries the invariant" · A10 seed · fires x31 but mostly absorbed by 3/16]. Distinct
+  kernel: no `Any` / `cast` / unsound narrow that lets the checker be bypassed. → land,
+  bounded tightly against 3 (totality) and 16 (typechecker-as-validator).
+- **Model the domain with types, not primitives** [Fowler "Primitive Obsession" + "Data
+  Clumps" · Object Calisthenics "wrap primitives" · CxC newtype / smart-constructor]. A
+  bare `str` / `int` / `tuple` where a domain type belongs; a field-group that recurs
+  and wants to be one object. Adjacent to 1 (illegal states) and 4 (names) but a
+  distinct *probe* plumb does not currently name. **The audit's headline finding: this
+  is invisible to the fire-frequency method**, because we already model with types, so
+  we never commit the smell and it never fires; only the deductive walk catches it. →
+  candidate sounding, or a sharp rider on 1.
+
+**Tier 2: single strong source, distinct kernel (watch, adversarial-confirm).**
+
+- **Illegal *transitions* unrepresentable (typestate / state machines)** [CxC]. Sounding
+  1 makes illegal *states* unrepresentable; a machine where an illegal *transition* is
+  representable (calling `.ship()` on an unpaid order) is uncovered. Distinct kernel. →
+  rider on 1, or a new sounding if it fires on stateful code.
+
+**Tier 3: partial coverage, likely fold (not new soundings).**
+
+- **Message chains / Law of Demeter** [Fowler · Object Calisthenics] → a rider on 8
+  (coupling) / 10, not a probe of its own.
+- **Deep vs shallow modules** [Ousterhout] → folds into 14 (trivial common path over a
+  complete core) + 10 (encapsulation).
+- **Anemic domain model** [Fowler · NTCoding] → already covered by 17 (locality of
+  behavior) + 10.
+
+**Confirmed non-gaps (the arena has them; plumb correctly defers or omits).** Simplicity
+/ Speculative Generality / Lazy Element / Long Function → ponytail. Performance →
+off-axis (code-review). Naming, Coupling, Cohesion, Domain Integrity → already soundings
+4 / 8 / 9 / 1.
+
+**Net:** the audit corroborates the two known additions (immutability, sound typing)
+from a second, bias-free direction, adds one genuinely new bias-invisible candidate
+(primitive-obsession / domain-typing), and one distinct-kernel Tier-2 (illegal
+transitions). None is a fire-frequency artifact, so all survive the §C freeze. Promote a
+candidate into TIGHTENING-SIGNALS.md §A once it fires in the adversarial batch.
+
+---
+
 ## Open tensions & harvest
 
 ### Tension: sounding 2: errors-as-values vs fail-fast-throw
@@ -187,3 +246,10 @@ When rescanning (on a sounding change, or ~quarterly):
 - **2026-07-08**: initial landscape scan. Established the four buckets, identified
   NTCoding `lightweight-design-analysis` as the closest prior art, mapped all
   soundings, recorded the sounding-2 tension and the feature-envy harvest.
+- **2026-07-20**: rescan + first canon coverage audit. NTCoding neighbor unchanged
+  (8 dimensions confirmed; it also flags Anemic Domain Model, which maps to sounding
+  17). One new Bucket-1 entrant, a DDD modeling skill (mcpmarket, Hickey / Wlaschin
+  lineage), which does not change the "one review neighbor" verdict. Added the Canon
+  coverage audit section: Tier-1 candidates immutability, sound-typing, and (new,
+  bias-invisible) primitive-obsession / domain-typing; Tier-2 illegal-transitions. The
+  moat gaps (7, 11-16) still hold; no neighbor closed one.
