@@ -115,6 +115,26 @@ which soundings are bias-suppressed and to make the `Unhomed:` line trigger.
 - **Log**: the normal entry plus the `Corpus:` and `Unhomed:` lines. Mark the batch so
   it can be analyzed as a group.
 
+### Batch progress (pilot done 2026-07-20)
+
+| # | Slot | Status |
+|---|---|---|
+| gen 1 | TS/React dashboard | done (pilot) |
+| gen 2 | Java service | todo, next: probes immutability-standalone + testability-without-mocks |
+| gen 3 | Go CLI | todo, sounding 2 / error-values |
+| gen 4 | Rust or C# module | todo |
+| gen 5 | Node/JS backend | todo |
+| real 1 | earthaccess `auth.py` | done (pilot) |
+| real 2 | rasterio (user-named) | todo |
+| real 3 | pydantic (user-named) | todo, acid test for primitive-obsession on well-typed code |
+| real 4 | my pick, non-Python brownfield app | todo |
+| real 5 | my pick, non-Python service | todo |
+
+**Recommended next order:** gen-2 Java, then real-3 pydantic (highest information).
+**Pilot conclusions:** primitive-obsession fired on generated + real (one more real corroboration
+from a §A promotion); sound-typing fired on real; immutability is corpus-dependent (standalone on
+generated, fused into sounding 1 on real OO code). All held out of §A pending the full batch.
+
 ## The analysis output
 
 After the batch, produce a **stratified** fire-frequency table: sounding × provenance
