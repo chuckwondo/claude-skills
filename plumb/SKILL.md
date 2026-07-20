@@ -188,10 +188,23 @@ external authority, the same discipline applies to the project's own stated
 requirements: separate a real requirement from a preference and enforce each
 proportionally. **Smell:** severity or hard-vs-soft chosen by vibes; "the spec says
 MUST" without opening it; a preference enforced as a requirement (over-strict) or a
-requirement left unenforced (under-strict); a constraint invented from nothing.
+requirement left unenforced (under-strict); a constraint invented from nothing; a
+*quantitative* claim ("~3x faster") taken from memory or a diffstat rather than a
+measurement; a field's *type* shaped by the ticket's paraphrase rather than the source;
+a contract reworded to match a known bug.
 **Move:** find the governing source (or the stated requirement); confirm the claim
 *and its strength*; let it pick the response. Absent a governing rule, don't
-manufacture one: the absence of a requirement is information.
+manufacture one: the absence of a requirement is information. Verifying the source is
+wider than grading severity: **pin the exact revision** under review (a finding is
+incomplete without the SHA it is against); check the source's **shape**, not only its
+strength, since a ticket's one-line paraphrase can drop permitted *alternatives* and
+encode a type that false-positives a conformant input; open the source the diff
+**implements** (the issue, ADR, or header it was written from), not only the authority
+it cites, because a faithful diff over a false source puts the fix upstream; and ground
+a contract in its **intended** behavior, rewording it only if the intent itself is
+wrong, never to match a tracked, fixable bug (which enshrines the defect and drifts
+when the fix lands). Verifying can *close* a suspected finding as readily as sharpen a
+real one.
 
 ### 13. Symmetry
 Paired operations exist and mirror each other (encode/decode, to/from, set/get,

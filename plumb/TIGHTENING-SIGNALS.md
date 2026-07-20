@@ -1,9 +1,8 @@
 # Plumb: tightening-pass signal ledger
 
 *A consolidated, deduplicated harvest of the "New signals for the tightening pass" scattered
-across [DOGFOOD-LOG.md](DOGFOOD-LOG.md) (07-07 → 07-17 fully harvested; the 07-18 → 07-20 entries are
-logged, and their **A1 material** was folded into §A1 by the 2026-07-20 landing: the rest awaits a
-full re-harvest). The log is the empirical record; this is the decision-ready index into it. **The
+across [DOGFOOD-LOG.md](DOGFOOD-LOG.md) (fully harvested 07-07 → 07-20). The log is the empirical
+record; this is the decision-ready index into it. **The
 edits live in SKILL.md**: this file indexes signals and now tracks their landing status, it does not
 perform them. It exists so the next pass (and the eventual combine) can act from one
 ranked view instead of re-reading 1200 lines.*
@@ -97,7 +96,7 @@ rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that r
   queued:** (f) a citation is a claim (routes through sounding 12) and (g) build the breaking input by
   *decoding bytes*, not a literal: both harvested pre-07-17, deferred to the next pass.
 
-### A2. Both-altitudes, sharpened into its sub-cases *(×11, most-developed theme)*
+### A2. Both altitudes, now *three* (guide / dialogue / diff), sharpened into sub-cases *(×16, most-developed theme)*
 The existing "run plumb at both altitudes" note (SKILL.md:286–290) is corroborated but under-specified.
 The log has fractured it into distinct, nameable sub-cases:
 - **Different flaws** (plan vs diff catch genuinely different defects): `#14`, `#37`, `#77`.
@@ -116,11 +115,20 @@ The log has fractured it into distinct, nameable sub-cases:
 - **Sequencing:** run the diff pass *after* code-review and its fixes, a correctness fix can
   introduce structural debt plumb then catches (`#37`); and plan-review judges the plan's *stated
   shape*, so some errors are only legible once code exists (`#77`'s wrong `is not None` instruction).
-- **Corroboration:** `#14`, `#37`, `#69`, `#44`, `#18`, `#77`, `#92`, `#90`, `#94`, `#41`, `#131`.
-- **Proposed target:** expand the SKILL.md:286 note into these bullets, or a short "Two altitudes"
-  subsection.
+- **A third altitude, guide mode, and the load-bearing move often lands in the *design dialogue*
+  between the altitudes, not the guide questions themselves** (`#113` the guide→plan→diff sequence;
+  `#147` the tier reversal that reversed ADR-0018 came from the reviewer's pushback *after* the guide
+  pass, not from the guide walk).
+- **Guide → build → diff, each earning its keep on a *different* finding** (`#138`, the first full pair
+  in the log: guide headline = leverage ranked by *running the downstream consumer* pre-code; diff
+  headline = a misdiagnosis only the built code's run exposed; `#139`/`#109`/`#153` the same arc on bug
+  fixes, guide reshaping the ticket before code, the diff hunting the edges the earlier sweep skipped).
+- **Corroboration:** `#14`, `#37`, `#69`, `#44`, `#18`, `#77`, `#92`, `#90`, `#94`, `#41`, `#131`,
+  `#113`, `#65`, `#138`, `#147`, `#147-impl`, `#139`, `#109`, `#153`.
+- **Proposed target:** expand the SKILL.md:286 note into these bullets, or a short "Three altitudes
+  (guide / dialogue / diff)" subsection.
 
-### A3. Sounding 12 = verify the *source*, and let it turn on your own claims *(×10)*
+### A3. Sounding 12 = verify the *source*, and let it turn on your own claims *(×12+)*
 12 is doing far more work than "grade proportionally." Documented facets:
 - **Dual role / forcing function:** "can't cite it" is *itself* the finding that forces the fetch
   (`#37`, `#69`, `#77`).
@@ -144,20 +152,48 @@ The log has fractured it into distinct, nameable sub-cases:
   run whose correct fix-home was an **issue body**. Same run: the manifest header and the ADR
   README's own rule were likewise unverified project prose, so the rule generalizes past specs to
   *any* in-repo document a diff or a reviewer leans on.
-- **Corroboration:** `#37`, `#69`, `#18`, `#77`, `#21`, `zarr`, `#74`, `#99`, `#62`, `#130`.
-- **Proposed target:** sounding 12 (SKILL.md:175), add the pin-the-revision rider and the
-  "quantitative claim vs its measurement" + "verify can close a finding" facets to its Move, plus
-  the upstream rider: *open the source the diff implements (the issue, the ADR, the header it was
-  written from), not only the external authority it cites; a faithful diff over a false source puts
-  the fix upstream.*
+- **The source governs the type's *shape*, not only the response's strength** (`#139`): fetching
+  domain-types.md verbatim showed a composite type permits *alternatives* (`[t,x,y,z]` **or**
+  `[t,x,y]`), which a single `tuple[str, ...]` cannot represent; the issue's one-line paraphrase was a
+  keystroke from being encoded as that single-tuple field, which would have false-positived a
+  conformant 4-D document. 12 is usually invoked for *severity*; here the spec governed the field's
+  *type*. Verify the *shape* against the source, not the ticket's summary of it.
+- **Ground a contract/doc in the *intended* behavior; reword only if the intent itself is wrong**
+  (`#65`): a public description states intent, and a tracked, fixable bug that deviates belongs in the
+  tracker + a pinning test + the implementation-level docstring, not in a reworded contract (rewording
+  enshrines the defect and drifts when the fix lands). Discriminator vs `#37`, where the deviation was
+  a permanent property the design does not intend to fix, so the doc *was* correctly reworded.
+- **Corroboration:** `#37`, `#69`, `#18`, `#77`, `#21`, `zarr`, `#74`, `#99`, `#62`, `#130`, `#139`, `#65`.
+- **✔ Landed (2026-07-20):** into sounding 12's Smell + Move (SKILL.md:183): the pin-the-revision rider; the
+  "quantitative claim vs its measurement" and "verify can *close* a finding" facets; the upstream rider
+  (*open the source the diff implements, the issue / ADR / header it was written from, not only the
+  external authority it cites; a faithful diff over a false source puts the fix upstream*); the
+  **shape** rider (the source governs the field's *type*, not only severity); and the doc-grounding
+  rider (ground a contract in intended behavior, reword only if the intent is wrong).
 
 ### A4. Sounding 5 has a resolution *taxonomy*: the reflexive "extract to one home" is one of five
 Sounding 5 is the dominant headline and its fix is *not* always dedup. The log has enumerated five
 distinct resolutions (kept in Section D below with cites). The single most land-ready piece is the
 **Boundary line** already fully drafted in the log (`#77`, DOGFOOD-LOG.md:492–508): *similar-looking
 idioms encoding **different** decisions are not a 5 violation: pin each with a test, don't merge.*
-- **Proposed target:** add the drafted **Boundary** line to sounding 5 (SKILL.md:101), beside its
-  existing `[combine? with 6, 14]` marker. (Verbatim text is in the log; no authoring needed.)
+- **✔ Landed** (2026-07-14, pass 1): the Boundary line is in sounding 5 (SKILL.md:106), beside its
+  `[combine? with 6, 14]` marker.
+- **New don't-dedup sub-cases (07-18 → 07-19), candidates for a *second* sounding-5 landing** (they
+  join the five in Section D):
+  - **un-driftable constant** (`#142`, `#137`): same decision in N places is dedup debt only if the
+    knowledge can *drift*; a fixed spec constant (`len*2`, the default `(name,)`) written twice is one
+    immutable fact, and a shared helper is a ponytail-1 wrapper, not one-source-of-truth.
+  - **lossy-for-purpose** (`#137`): the tempting shared helper *flattens* a distinction the second
+    consumer needs (`coordinate_identifiers` returns `(name,)` for *both* the violation and the
+    conformant-omitted case, hiding the present-vs-absent distinction the detect exists to draw). A4's
+    "N sources wearing one coat," inverted: the coat is *lossy* for the second reader.
+  - **type-integrity / the sharing *mechanism* is in scope for 5** (`#142`): constructing a domain type
+    to harvest one method, when that forces fabricating its other required fields (a *located* finding
+    with no location), is a type-abuse the "reduce duplication" instinct hides; the duplication is the
+    cheaper honesty. Can trip 4/10.
+  - **false-symmetry lookup** (`#147-impl`): a `{"tuple": 1, "polygon": 2}[dt]` floor dict is one coat
+    over two different sources (present-at-all vs an RFC magic number); split into one message per real
+    requirement, caught at design-of-the-check time.
 
 ### A5. When sounding 1's ideal is *unreachable*, reach for the enforcing test, not a comment *(×1, clean)*
 `#77`: the guard gradient is type-level (make `if not x` a type error) > **test** (fails on the
@@ -165,7 +201,7 @@ regression) > comment (only informs). When the top rung is closed by the languag
 *enforces*, never settle at a comment.
 - **Proposed target:** Working note, or a rider on sounding 1 (SKILL.md:67).
 
-### A6. A park's reason can be *scope*, not unreachability; its discharge is a filed follow-up *(×1, clean)*
+### A6. A park's reason can be *scope*, not unreachability; its discharge is a filed follow-up *(×3)*
 `#129`: the highest-leverage finding was `subset.py`'s bare `IndexError` on the exact input the new
 `validate()` rule flags. It was **reachable** (confirmed by running the *public* `isel()`, not the
 private helper first probed) and load-bearing, yet correctly **parked**: the path to a consumer
@@ -175,6 +211,9 @@ repair, drop vs. diagnostic-raise, is a separate decision that may want an ADR).
 **routed, traceable issue (#142)**: an *action* (cf. A1's "a discharge is an action, not an
 argument"), not a note that rots. Distinct from `#44`-commit-1's park, which flagged a better-shape
 contrast on the incumbent sibling; here the subject is a reachable crash and the boundary is scope.
+- **Corroborated (×3):** `#138` (the diff-review's whole value was one run-surfaced park routed to new
+  issue #147) and `#139` (spun off docs follow-up #151); park-to-filed-issue is now the log's standard
+  park discharge.
 - **Proposed target:** the fix-vs-park Working note (SKILL.md:280–284): add "out-of-scope, routed to a
   follow-up" as a third park class beside "unreachable / sole trusted constructor," and state its
   discharge is a *filed issue* (links A1's discharge-is-an-action rule).
@@ -192,6 +231,41 @@ here the issue is the yardstick for *completeness*, not a lie.
   *consumes* it," the work's **charter** (the issue's own motivation). A half-delivered charter is a
   leverage finding even when the delivered half is flawless.
 
+### A8. A decision that reverses turns prose into lies; grep the prose, ranked by what no build executes *(×3)*
+`#147`/`#147-impl`/`#139`: after a tier reversal (moving a check to construction made an
+omitted-composite state unrepresentable), every doc that *described handling* the now-impossible path
+became a stale contradiction (`concepts.md` asserted the removed guard was "over-strict, removed by
+`#131`," the inverse of the ship). Nothing compiles a stale `.md`, so no checker flags it; a deliberate
+grep of the prose was the only catch. Rank stale-artifact risk by what no build executes: narrative
+`.md` (top) > docstrings (doctested by `pytest --doctest-modules`) > code (typechecked/tested). And a
+reversal invalidates not only docs but *sibling issues* that leaned on the old behavior (`#139`: the
+issue's own Constraints cited a case a same-day merge had just made unreachable), so check a ticket's
+premises against HEAD.
+- **Proposed target:** a Working note under faithfulness / one-source-of-truth, or a rider on sounding
+  7. Adjacent to A3 (a stale doc is an unverified source) and A1(l) (prose is an un-run claim); the
+  distinct core is *a reversal is the trigger, and prose is the least-checked artifact*.
+
+### A9. Run a *sibling* implementation to find the true shape, not only to settle a detail *(×2)*
+`#109`/`#153`: when one path of an N-path design is buggy, run its siblings on the same input *before*
+adopting the buggy path's own proposed fix. `#109`: the issue proposed routing out-of-range dates to
+cftime, but running the *pandas* bridge showed it widens the datetime64 unit instead, revealing Option
+B (widen the unit), a shape neither the issue nor the ADR considered, and reframing the fix from a
+*calendar* matter to a *resolution* one. `#153`: in *guide* mode, a three-line run of the three temporal
+paths side by side falsified the ticket's premise ("the bridges already flatten to naive-UTC") before
+any code. A sibling that already handles the input *names the shape*.
+- **Proposed target:** a Working note, or fold into the guide-mode note (guide mode must *run* the
+  siblings, not reason from the issue). Sharper than A3's "run a neighbor library to settle a detail"
+  (`#139` msgspec): here the sibling reveals the whole design, not a detail.
+
+### A10. Sound narrowing: a predicate stricter than the type it narrows is `TypeGuard`, never `TypeIs` *(×1, clean)*
+`#138`: pushing `_is_polygon_array` from a cast to a type guard, `TypeIs` was *unsound* because the
+predicate is stricter than the narrowed type (it returns False for an empty `()`, which IS a `tuple`),
+so `TypeIs`'s negative-branch narrowing would wrongly strip `tuple` from the else branch; only the
+positive-only `TypeGuard` is correct. A sounding-1 (sound typing) facet: when a predicate narrows a
+type, ask whether it is *stricter* than that type; if so, only a positive-only guard is sound.
+- **Proposed target:** a rider on sounding 1, or a Working note. Niche (×1) but a real soundness trap,
+  not style.
+
 ---
 
 ## B. Combine dossier: merge candidates (assembled, NOT executed)
@@ -203,7 +277,7 @@ its *real* co-fire neighbors (1, 3, 16, 15, 10, 13) are **not** the ones its cur
 
 | Co-fire | What it means | Cites | vs current SKILL.md marker |
 |---|---|---|---|
-| **4 × 16** | a name/type that lies, surfaced by a breaking edge | 07-07 |: |
+| **4 × 16** | a name/type that lies, surfaced by a breaking edge | 07-07 | n/a |
 | **1 × 5** | add a union member → silently omitted; the drift's leverage is one-source | `#14`, `#92` | 5 marks `[6,14]`, not 1 |
 | **3 × 5** | "add a case → silently skipped" totality smell whose leverage is a one-source drift; log says "watch whether 3 and 5 should be cross-flagged" | `#69` | neither marks the other |
 | **7 × 1** | unfaithful shape forces an invented axis + guards + defensive comment | `#44` | matches 7`[1]`, 1`[…,7]` |
@@ -294,38 +368,41 @@ for Z" (`#74`/`#18`).
 
 ---
 
-## E. Doc inconsistencies (noted, not fixed)
+## E. Doc inconsistencies
 
-1. **Stale term-swap.** SKILL.md:51 offers *"One-word swap if you prefer `gauges`"*, but
-   REFINEMENT.md:12 records *soundings* as a **locked decision** and lists "gauges" among the
-   **rejected** names. Delete the swap offer.
-2. **Changelog points at the wrong file.** LANDSCAPE.md:4 calls REFINEMENT.md an *"append-only history
-   of internal changes"* and LANDSCAPE.md:183–184 says to log each rescan *"in REFINEMENT.md's
-   changelog"*, but REFINEMENT.md is rewrite-in-place and has **no `## Changelog`** section; the
-   append-only file is DOGFOOD-LOG.md, and it is **LANDSCAPE.md itself** that carries a `## Changelog`
-   (line 186). Repoint the rescan-logging instruction.
-3. **17 soundings vs a "~19" target with three unlanded additions.** SKILL.md defines exactly **17**
-   numbered soundings. REFINEMENT.md's "eight-additions" verdict (lines 60–68) says *"Add standalone:
-   … immutability; testability-without-mocks; sound typing"*: only the FC/IS split (sounding 6) was
-   marked DONE. So three sanctioned standalone additions are **not reflected in SKILL.md**. Not a bug,
-   but the combine pass starts from 17, not 19: reconcile the target count first.
+1. **✔ Fixed (2026-07-14): stale term-swap.** The "One-word swap if you prefer `gauges`" offer was
+   deleted from SKILL.md; it contradicted REFINEMENT.md's locked *soundings* decision, which lists
+   "gauges" among the rejected names.
+2. **✔ Fixed: changelog pointer.** LANDSCAPE.md now correctly names DOGFOOD-LOG.md as the append-only
+   history (it had called REFINEMENT.md that); REFINEMENT.md is rewrite-in-place with no changelog.
+3. **Open: 17 soundings vs a "~19" target with three unlanded additions.** SKILL.md defines **17**
+   numbered soundings. The original eight-additions round sanctioned three standalone additions not yet
+   in SKILL.md, immutability, testability-without-mocks, and sound typing (now recorded in
+   REFINEMENT.md's "Candidate superset (superseded by the ledger)" section). Not a bug, but the combine
+   starts from 17, not 19: reconcile the target count first.
 
 ---
 
-## F. Recommended landing order (if/when a follow-up pass is green-lit)
+## F. Recommended landing order
 
-Ranked by leverage; the first two address the only two logged *misses*, so they buy the most:
+**✔ Landed:** A1 (two passes, 2026-07-14 a–e + 2026-07-20 h–m; (f) citation and (g) decode-bytes still
+queued) · A3 (sounding-12 verify-the-source riders: pin-revision, shape, upstream, doc-grounding,
+verify-can-close, 2026-07-20) · A4 (sounding-5 Boundary line, 2026-07-14) · E1 + E2 (the two doc fixes,
+2026-07-14).
 
-1. **A1: discharge-is-an-action** (sharpen sounding 16 + one Working note). Highest leverage: closes
-   the miss class directly. **✔ Landed** in two passes (2026-07-14 a–e, 2026-07-20 h–m); (f) citation
-   and (g) decode-bytes still queued.
-2. **A2: both-altitudes sub-cases** (expand the SKILL.md:286 note). Cheap, high-corroboration.
-3. **A4: sounding-5 Boundary line** (paste the log's drafted text). Zero authoring cost.
-4. **A3: sounding-12 verify-the-source riders** (pin-the-revision + quantitative-claim + can-close).
-5. **A5: sounding-1 unreachable-ideal → test** (small rider or Working note).
-6. **A6: park-can-be-scope, discharged as a filed follow-up** (third park class on the fix-vs-park Working note, SKILL.md:280–284). Fresh (×1).
-7. **A7: leverage measured against the charter** (second trace target on the leverage Working note, SKILL.md:277). Fresh (×1).
-8. **E1/E2: the two trivial doc fixes** (gauges line; changelog pointer): land alongside anything.
+**Queued, ranked by leverage:**
+
+1. **A2: three altitudes (guide / dialogue / diff)** (expand the SKILL.md:286 note). Cheap,
+   high-corroboration (×16).
+2. **A8: prose-drift after a reversal** (Working note under faithfulness / one-source-of-truth). ×3.
+3. **A9: run the sibling to find the shape** (Working note, or into the guide-mode note). ×2.
+4. **A5: sounding-1 unreachable-ideal → test** (small rider or Working note). ×1.
+5. **A6: park-can-be-scope, discharged as a filed follow-up** (third park class on the fix-vs-park
+   note, SKILL.md:280–284). ×3.
+6. **A7: leverage measured against the charter** (second trace target on the leverage note,
+   SKILL.md:277). ×1.
+7. **A10: sound narrowing, TypeGuard vs TypeIs** (rider on sounding 1). ×1, niche.
+8. **A1 (f)/(g): citation-is-a-claim + decode-the-bytes** (still queued from the first harvest).
 
 *The combine pass (Section B/C) stays deferred per REFINEMENT.md's "let usage drive, not armchair
-debate": this ledger is its input, not its trigger.*
+debate": this ledger is its input, not its trigger. Reconcile the ~19→17 count (§E3) before combining.*
