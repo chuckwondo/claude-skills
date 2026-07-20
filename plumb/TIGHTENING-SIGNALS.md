@@ -300,6 +300,15 @@ the combine runs.
 
 ## C. Cut / keep evidence (fire-frequency): answers REFINEMENT.md's "which never fire → cut"
 
+> **FROZEN (2026-07-20): do not cut a sounding on this data.** The corpus is one cell
+> (`self-plumbed · clean · python · library`), which is author-pre-corrected, so
+> fire-frequency measures `importance × how often THIS corpus commits the sin`, and the
+> second factor is near zero for the bad-practice soundings (testability-without-mocks
+> fires ~never because we never write mocks). A low count here is as likely to be
+> selection bias as low value. Cut/keep unfreezes once the corpus is representative and
+> fire-frequency can be *stratified* by provenance/quality; see [CORPUS.md](CORPUS.md).
+> Merges (co-fire, §B) are less bias-sensitive but still under-sample the cold region.
+
 **Empirical answer: no sounding *never* fired.** So the naive "cut the dead ones" has no clean
 targets, but activity is very uneven, which is the real input to the combine.
 

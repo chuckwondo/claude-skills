@@ -6,6 +6,13 @@ co-fired, and what each run drove into the skill. Append-only, and deliberately
 separate from REFINEMENT.md's rewrite-in-place design state so the log can grow
 without churning it.*
 
+*New entries carry the `Corpus:` and `Unhomed:` tags defined in
+[CORPUS.md](CORPUS.md), so fire-frequency can be stratified by corpus rather than
+pooled. Review runs before 2026-07-20 are all `self-plumbed · clean · python`, shape
+`library` or `service`, except two: the **zarr-python audit** (`external-reviewed ·
+mixed · python · library · brownfield`) and **PR #130** (`external-raw`, an outside
+contributor's diff). Those two are the only existing non-`self` data.*
+
 - **2026-07-07: covjson-msgspec `feat/temporal`** (temporal.py + the
   Result/Report rename). Fired: **15** (headline, a year-0000 date mislabeled
   `Unrepresentable` instead of `Malformed`; found only by *running* `resolve` and

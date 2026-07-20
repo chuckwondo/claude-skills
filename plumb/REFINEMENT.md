@@ -100,6 +100,8 @@ the why.
 - [DOGFOOD-LOG.md](DOGFOOD-LOG.md): append-only log of real runs and refinement
   actions, kept separate from this rewrite-in-place status doc so it can grow
   without churning it.
+- [CORPUS.md](CORPUS.md): the corpus-representativeness protocol, the `Corpus:` /
+  `Unhomed:` entry tags and the plan for a broader (adversarial) dogfood corpus.
 - [TIGHTENING-SIGNALS.md](TIGHTENING-SIGNALS.md): the consolidated, ranked harvest of
   the log's signals; the decision-ready input to the tightening/combine pass.
 - [LANDSCAPE.md](LANDSCAPE.md): prior-art and neighbor-skill analysis, kept fresh.
