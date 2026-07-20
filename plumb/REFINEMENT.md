@@ -29,43 +29,23 @@ covjson-specific.*
   accidental overlap; keep the load-bearing kind. Prior art & neighbor analysis lives
   in [LANDSCAPE.md](LANDSCAPE.md), a living snapshot kept fresh as plumb evolves.
 
-## Candidate superset (pre-tighten, ~19)
+## Candidate superset (superseded by the ledger)
 
-Grouped into the clusters that emerged: these groups are the seams for merging.
+The pre-dogfood candidate was ~19 soundings, hand-grouped into clusters
+(correct-by-construction; purity & composition; seams / dependency injection;
+structure & boundaries; interface shape; judgment & process) as the armchair seams for
+merging. That grouping is superseded: the **empirical** combine evidence now lives in
+[TIGHTENING-SIGNALS.md](TIGHTENING-SIGNALS.md), §B the observed co-fire dossier, §C
+cut/keep by fire-frequency, §F the landing order. The armchair `[combine?]` markers
+*disagree* with the observed co-fires, so run the combine from the ledger, not the
+clusters.
 
-- **Correct by construction:** make illegal states unrepresentable · model outcomes
-  as values · totality (handle every case) · faithfulness (preserve the input) ·
-  sound typing (types carry the invariants; no `Any`/escape hatches).
-- **Purity & composition:** functional core / imperative shell · favor immutability
-  · one source of truth / compose · testability (design for testing *without*
-  mocks; heavy mocks = a coupling smell).
-- **Seams / dependency injection:** *open for extension*, expose a seam at a real
-  axis of variation so behavior can be swapped without modifying the core
-  (`strategy=`, injected `Fetch`, the deferred `parse_time=`); ships with a default
-  so it's non-breaking. Two faces with functional-core: core doesn't reach *out*
-  (effects injected) / callers can plug *in* (policy injected): candidate to merge
-  the two into one "seams at the edges" sounding. **Explicit boundary with
-  ponytail:** openness fires only when the variation is *real*; speculative
-  flexibility (one implementation, no demand) is ponytail's to cut. (In the temporal
-  work the seam was *deferred* on exactly this test: ponytail won that round.)
-- **Structure & boundaries:** low coupling / clean boundaries · cohesion ·
-  encapsulation · put the check in the right tier.
-- **Interface shape:** names encode shape · trivial common path over a complete
-  core · symmetry (paired operations mirror).
-- **Judgment & process:** proportional response grounded in the real source ·
-  reversibility (know the one-way vs two-way door) · hunt the breaking edge.
-- **Overarching goal (NOT a sounding):** clarity of intent, what the soundings
-  collectively produce.
-
-### This round's verdicts on the eight proposed additions
-
-- **Add standalone:** functional core / imperative shell (split out of the old "one
-  source of truth") **(DONE 2026-07-08, now live sounding 6)**; immutability;
-  testability-without-mocks; sound typing.
-- **Merge:** "smaller composable pure functions" → into compose + cohesion +
-  purity; "completeness" → umbrella over totality + symmetry.
-- **Defer:** simplicity → `ponytail-review` (total overlap).
-- **Reframe:** clarity → plumb's stated *goal*, not a sounding.
+**Settled additions decisions** (the original eight-proposals round): FC/IS split out
+standalone (DONE 2026-07-08, now sounding 6); simplicity deferred to `ponytail-review`;
+clarity reframed as plumb's *goal*, not a sounding. **Still unlanded:** immutability,
+testability-without-mocks, and sound typing were sanctioned as standalone additions but
+are not yet in SKILL.md, which has 17 soundings, not ~19; reconciling that count is the
+combine's first task (ledger §E3).
 
 ## Open questions (the tightening pass)
 
@@ -96,16 +76,16 @@ the why.
 
 ## How to continue (recommended)
 
-1. **Move plumb out of this repo.** It's general, not covjson-specific: it belongs
-   with your personal tooling, next to the Correct-by-Construction guide. Two homes,
-   both useful:
-   - `~/.claude/skills/plumb/SKILL.md`: installs it live so you can actually invoke
-     it (`/plumb`) in any repo. Refinement without dogfooding is guesswork.
-   - a personal skills/notes git repo: the versioned source of truth, alongside CxC.
-2. **Dogfood, then tighten.** Run review mode on a few real diffs and guide mode on
-   a real design. Track which soundings *fire*, which *never* do (cut candidates),
-   which *co-fire* (merge candidates). Let usage drive the final list, not armchair
-   debate.
+1. **Move plumb out of its origin repo. [DONE]** Plumb lives here in
+   `chuckwondo/claude-skills`, the versioned source of truth; `~/.claude/skills/plumb`
+   symlinks to it, so `/plumb` runs live from this repo in any project. Refinement
+   without dogfooding was guesswork, and now it dogfoods live.
+2. **Dogfood, then tighten. [dogfooding done and ongoing]** Review mode has run on
+   many real diffs and guide mode on real designs. Which soundings *fire*, which
+   *never* do (cut candidates), and which *co-fire* (merge candidates) is tracked in
+   [DOGFOOD-LOG.md](DOGFOOD-LOG.md) and harvested into
+   [TIGHTENING-SIGNALS.md](TIGHTENING-SIGNALS.md). Usage drives the final list, not
+   armchair debate. The **tighten** half is the live next step (item 3).
 3. **Do the combine pass** to land ~10–12, then write the definitions, payoffs, and
    reinforcement map.
 4. **Cross-link with Correct by Construction.** Shared DNA (illegal-states, sum
@@ -114,14 +94,14 @@ the why.
 5. **Optional, once stable:** split into `plumb-review` / `plumb-guide` entry points
    (mirroring the ponytail family) if the two modes want separate triggers.
 
-## Dogfood log
+## Files in this skill
 
-Real review-mode runs and what each drove into the skill live in
-[DOGFOOD-LOG.md](DOGFOOD-LOG.md): append-only, kept separate from this
-rewrite-in-place status doc so the log can grow without churning it.
-
-## Artifacts in scratchpad (ephemeral: relocate with the skill)
-
-- `plumb-SKILL.md`: the working draft (15 soundings + folding notes).
-- `plumb-refinement-status.md`: this note.
-- `temporal-iteration-log.md` / `.html`: the case study plumb was distilled from.
+- [SKILL.md](SKILL.md): the live skill (17 soundings + Working notes).
+- [DOGFOOD-LOG.md](DOGFOOD-LOG.md): append-only log of real runs and refinement
+  actions, kept separate from this rewrite-in-place status doc so it can grow
+  without churning it.
+- [TIGHTENING-SIGNALS.md](TIGHTENING-SIGNALS.md): the consolidated, ranked harvest of
+  the log's signals; the decision-ready input to the tightening/combine pass.
+- [LANDSCAPE.md](LANDSCAPE.md): prior-art and neighbor-skill analysis, kept fresh.
+- [case-studies/](case-studies/): the worked examples plumb was distilled from
+  (`temporal-conversion`, `resolve-the-repair`).
