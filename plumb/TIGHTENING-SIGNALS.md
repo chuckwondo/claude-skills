@@ -1,10 +1,10 @@
-# Plumb — tightening-pass signal ledger
+# Plumb: tightening-pass signal ledger
 
 *A consolidated, deduplicated harvest of the "New signals for the tightening pass" scattered
 across [DOGFOOD-LOG.md](DOGFOOD-LOG.md) (07-07 → 07-17 fully harvested; the 07-18 → 07-20 entries are
-logged, and their **A1 material** was folded into §A1 by the 2026-07-20 landing — the rest awaits a
+logged, and their **A1 material** was folded into §A1 by the 2026-07-20 landing: the rest awaits a
 full re-harvest). The log is the empirical record; this is the decision-ready index into it. **The
-edits live in SKILL.md** — this file indexes signals and now tracks their landing status, it does not
+edits live in SKILL.md**: this file indexes signals and now tracks their landing status, it does not
 perform them. It exists so the next pass (and the eventual combine) can act from one
 ranked view instead of re-reading 1200 lines.*
 
@@ -16,10 +16,10 @@ today's **16**. Corroboration count = distinct entries that produced the signal.
 
 ## A. Land-ready operating rules (ranked by leverage)
 
-Well-corroborated signals that change *behavior/notes*, not the sounding count — safe to land into
+Well-corroborated signals that change *behavior/notes*, not the sounding count: safe to land into
 SKILL.md whenever green-lit, independent of the combine. Each names a concrete target.
 
-### A1. "Affirmed" is not "closed" — discharge is an action, not an argument *(×15+, the sharpest; landed in two passes)*
+### A1. "Affirmed" is not "closed": discharge is an action, not an argument *(×15+, the sharpest; landed in two passes)*
 The only two logged **misses** were soundings *named but not run*: `#90` (diff pass affirmed the 5
 fix landed, never swept the new code for a *fresh* 5 → code-review caught it) and `#41` (both passes
 *named* the clamp-divergence under 5×16 and argued it "bounded/negligible" → never built the
@@ -37,12 +37,12 @@ rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that r
 - **Sub-rules it carries:** (a) affirming a sounding *landed* is the cue to hunt that sounding's
   **other** instances in the diff, not to close it out (`#90`); (b) a "bounded/negligible" park on a
   co-fire is **un-earned** until the maximizing input has been run (`#41`); (c) 16 can find *an* edge
-  and still miss the **load-bearing** one — prefer the edge that breaks the assumption the design
+  and still miss the **load-bearing** one: prefer the edge that breaks the assumption the design
   *rests on* (a claim written into a comment is a standing 16 target) (`#41`); (d) only a run
-  survives confirmation bias when the reviewer is the author/champion — extended by `#62` to a
+  survives confirmation bias when the reviewer is the author/champion, extended by `#62` to a
   **subagent's** authoritative-sounding code-trace (a code-read is still reasoning until run);
   (e) the un-earned verdict runs in **both directions**, and the thing that lies can be a **proxy**
-  rather than an argument — (a)–(d) all argue a concern *away* ("bounded", "the fix landed"), but a
+  rather than an argument: (a)–(d) all argue a concern *away* ("bounded", "the fix landed"), but a
   stand-in artifact can equally argue one *in*: a hand-built struct substituted for the real
   `NdArray` overstated a perf payoff by ~5x (1.34x vs the real member's 1.07x) and made a
   dead idea look worth pursuing, and it was caught by a glaring arithmetic anomaly rather than by
@@ -50,12 +50,12 @@ rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that r
   pessimism about the verdict: it is substituting an argument *or a proxy* for a run of the real
   thing, whichever way the verdict points.
   (f) the un-earned claim is often a **citation**, and the document that lies is as likely to be the
-  project's own as the diff's — `#130` ran four to ground in one review: a PR's "§6.1.1 MUST" (the
+  project's own as the diff's: `#130` ran four to ground in one review: a PR's "§6.1.1 MUST" (the
   spec says **MAY**, and the wording originated in the project's *own issue*, faithfully transcribed
   by the contributor), a corpus manifest header asserting it covered "every code" (three short, and
   unenforced, so it had rotted silently), an ADR README's own "append-only" rule (not the rule the
   repo actually follows), and the *reviewer's* "44 references" (really 22 insertions/22 deletions,
-  taken from a diffstat skim and caught only by checking before publishing — into the very document
+  taken from a diffstat skim and caught only by checking before publishing: into the very document
   about treating the record honestly). Sounding 12 already forbids asserting an authority from
   memory, so (f) is less a new rule than the **surface** A1 applies to: a citation is a claim, and
   opening it is the discharge. Distinct from (a)–(e) in that nothing here was a *verdict* or a
@@ -67,41 +67,41 @@ rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that r
   an edge the literal cannot reach (`#131` pass 3: a "tuple all the way down" polygon check that fired
   on every legal wire-decoded polygon yet passed an all-tuples literal fixture).
   (h) the run target is **wider than the input under review**: run the *excluded* case (a green
-  exclusion proves the filter fires, not that its stated *reason* holds — a correct filter can carry a
+  exclusion proves the filter fires, not that its stated *reason* holds: a correct filter can carry a
   false why, `#137`), and run the downstream *consumer*, which already exists and whose
   crash-vs-silent-repair-vs-reject profile ranks the planned rules by leverage *before* code is written
-  (`#138`, shapely) — this is what makes §16 runnable in guide mode.
-  (i) the discharge hunts the ground the **last sweep skipped**, not the cases already green — a re-run
+  (`#138`, shapely): this is what makes §16 runnable in guide mode.
+  (i) the discharge hunts the ground the **last sweep skipped**, not the cases already green: a re-run
   of the affirmed set is confirmation bias in a lab coat (`#139`).
   (j) §16 turns on the **verification code itself**: in a known-trap domain (int64 datetime overflow,
   float epsilon, timezone math) the tool reached for to check the boundary is subject to the same trap
-  — the overflow-detector silently overflowed twice before it was right (`#109`).
+: the overflow-detector silently overflowed twice before it was right (`#109`).
   (k) a "better design" verdict is unearned until run on the **oldest supported environment / the whole
   version line** below a boundary, since a design's viability can live in a dependency version (`#109`,
   `#153`; ties §7 to the uv-minimum-versions skill as the oracle).
   (l) the claim run need not be **code**: a docstring, a narrative `.md` nothing executes, a test's
   predicate copied from the code it guards (blind to that predicate going stale), a `# pragma: no cover`
-  — each an un-run assertion, and stale `.md` prose is the top risk after a decision *reverses* because
+: each an un-run assertion, and stale `.md` prose is the top risk after a decision *reverses* because
   nothing compiles it (`#147`, `#147-impl`, `#153`).
-  (m) **resolve the value, don't reason about its description** — ADR-0018 reasoned about "the default"
+  (m) **resolve the value, don't reason about its description**: ADR-0018 reasoned about "the default"
   as an abstraction and recorded a tier backwards; resolving that default to the concrete `("composite",)`
   it produces flipped the answer a year later (`#147`).
   **Provenance across (h)–(m):** the author under-ran in every one; the discharge's real trigger was an
-  *external* prompt (the user's question, the reviewee's principle), corroborating (d) — a self-authored
+  *external* prompt (the user's question, the reviewee's principle), corroborating (d): a self-authored
   design does not reliably run its own claims even when the skill says to (`#65`, `#109`, `#153`).
 - **Landed (two passes).** First pass (2026-07-14, `e6b540f`): 16's Move sharpened to *construct-and-run*
   and the "Affirmed is not closed" Working note added (sub-rules a–d + e's both-directions framing).
-  Second pass (2026-07-20): (h)–(m) folded into 16's Move and the same note — the run target is wider
+  Second pass (2026-07-20): (h)–(m) folded into 16's Move and the same note, the run target is wider
   than the input (excluded case / consumer / check-itself / oldest environment), the discharge hunts
   un-swept ground, the claim need not be code, and resolve-the-value-not-its-description. **Still
   queued:** (f) a citation is a claim (routes through sounding 12) and (g) build the breaking input by
-  *decoding bytes*, not a literal — both harvested pre-07-17, deferred to the next pass.
+  *decoding bytes*, not a literal: both harvested pre-07-17, deferred to the next pass.
 
 ### A2. Both-altitudes, sharpened into its sub-cases *(×11, most-developed theme)*
 The existing "run plumb at both altitudes" note (SKILL.md:286–290) is corroborated but under-specified.
 The log has fractured it into distinct, nameable sub-cases:
 - **Different flaws** (plan vs diff catch genuinely different defects): `#14`, `#37`, `#77`.
-- **Confirmatory diff = a *positive* signal about plan thoroughness**, not a wasted pass — don't read
+- **Confirmatory diff = a *positive* signal about plan thoroughness**, not a wasted pass: don't read
   a clean diff-pass as "plumb found nothing, skip it": `#69`, `#44` commit 1, `#94`.
 - **Diff can find a *higher* bonus sounding** the plan fix produced without claiming it (re-rank the
   landed fix against *all* soundings): `#92` (plan headline 5/10 → diff headline 1).
@@ -113,7 +113,7 @@ The log has fractured it into distinct, nameable sub-cases:
   of which literal-built unit tests would have passed.
 - **Emerging shape:** a *subtractive* plan fix ("build less") → confirmatory diff; an *additive* plan
   fix (new representation) → diff may find a dividend: `#94` vs `#92`.
-- **Sequencing:** run the diff pass *after* code-review and its fixes — a correctness fix can
+- **Sequencing:** run the diff pass *after* code-review and its fixes, a correctness fix can
   introduce structural debt plumb then catches (`#37`); and plan-review judges the plan's *stated
   shape*, so some errors are only legible once code exists (`#77`'s wrong `is not None` instruction).
 - **Corroboration:** `#14`, `#37`, `#69`, `#44`, `#18`, `#77`, `#92`, `#90`, `#94`, `#41`, `#131`.
@@ -128,34 +128,34 @@ The log has fractured it into distinct, nameable sub-cases:
   (`#18`, `#69`, `#77`).
 - **Can *invert* the ranking, not just confirm:** verifying a mechanism a design cantilevers off
   dissolved a false headline and surfaced the true one (`#21` `@import`).
-- **Bind the review's own substrate — pin the exact source revision/SHA under review** (`zarr`; the
-  log calls this "the strongest actionable skill gap this audit produced" — a finding is incomplete
+- **Bind the review's own substrate: pin the exact source revision/SHA under review** (`zarr`; the
+  log calls this "the strongest actionable skill gap this audit produced": a finding is incomplete
   without the exact revision it is against).
 - **Extends to a *quantitative* claim vs its measurement source:** `#99` ("~3-4x" → 1.5x), `#62`
   (287µs was an API-composition artifact, not a double-parse).
 - **Verify can *close* a suspected finding, not only sharpen a real one:** `#62` (`_has_spec_timezone`
   is spec-correct, not over-lenient).
-- **Open the source the diff *implements*, not only the authority it names — the over-claim is often
+- **Open the source the diff *implements*, not only the authority it names: the over-claim is often
   UPSTREAM of the diff** (`#130`). 12's Smell list reads as though the reviewee over-claims ("'the
   spec says MUST' without opening it"), but `#130`'s docstring was *faithful to its source*: the
   fabricated "§6.1.1 MUST" came from the project's **own issue**, and the outside contributor
-  transcribed it correctly. A diff can conform perfectly to a bad citation — the citation-shaped
+  transcribed it correctly. A diff can conform perfectly to a bad citation: the citation-shaped
   form of plumb's standing stance that conforming to bad precedent is itself a finding. First logged
   run whose correct fix-home was an **issue body**. Same run: the manifest header and the ADR
   README's own rule were likewise unverified project prose, so the rule generalizes past specs to
   *any* in-repo document a diff or a reviewer leans on.
 - **Corroboration:** `#37`, `#69`, `#18`, `#77`, `#21`, `zarr`, `#74`, `#99`, `#62`, `#130`.
-- **Proposed target:** sounding 12 (SKILL.md:175) — add the pin-the-revision rider and the
+- **Proposed target:** sounding 12 (SKILL.md:175), add the pin-the-revision rider and the
   "quantitative claim vs its measurement" + "verify can close a finding" facets to its Move, plus
   the upstream rider: *open the source the diff implements (the issue, the ADR, the header it was
   written from), not only the external authority it cites; a faithful diff over a false source puts
   the fix upstream.*
 
-### A4. Sounding 5 has a resolution *taxonomy* — the reflexive "extract to one home" is one of five
+### A4. Sounding 5 has a resolution *taxonomy*: the reflexive "extract to one home" is one of five
 Sounding 5 is the dominant headline and its fix is *not* always dedup. The log has enumerated five
 distinct resolutions (kept in Section D below with cites). The single most land-ready piece is the
 **Boundary line** already fully drafted in the log (`#77`, DOGFOOD-LOG.md:492–508): *similar-looking
-idioms encoding **different** decisions are not a 5 violation — pin each with a test, don't merge.*
+idioms encoding **different** decisions are not a 5 violation: pin each with a test, don't merge.*
 - **Proposed target:** add the drafted **Boundary** line to sounding 5 (SKILL.md:101), beside its
   existing `[combine? with 6, 14]` marker. (Verbatim text is in the log; no authoring needed.)
 
@@ -194,7 +194,7 @@ here the issue is the yardstick for *completeness*, not a lie.
 
 ---
 
-## B. Combine dossier — merge candidates (assembled, NOT executed)
+## B. Combine dossier: merge candidates (assembled, NOT executed)
 
 The concrete co-fire couplings the log observed, as the evidence base for the eventual 19→~10–12
 combine. **Nothing here is acted on.** The striking result: sounding **5 is the empirical hub**, and
@@ -203,7 +203,7 @@ its *real* co-fire neighbors (1, 3, 16, 15, 10, 13) are **not** the ones its cur
 
 | Co-fire | What it means | Cites | vs current SKILL.md marker |
 |---|---|---|---|
-| **4 × 16** | a name/type that lies, surfaced by a breaking edge | 07-07 | — |
+| **4 × 16** | a name/type that lies, surfaced by a breaking edge | 07-07 |: |
 | **1 × 5** | add a union member → silently omitted; the drift's leverage is one-source | `#14`, `#92` | 5 marks `[6,14]`, not 1 |
 | **3 × 5** | "add a case → silently skipped" totality smell whose leverage is a one-source drift; log says "watch whether 3 and 5 should be cross-flagged" | `#69` | neither marks the other |
 | **7 × 1** | unfaithful shape forces an invented axis + guards + defensive comment | `#44` | matches 7`[1]`, 1`[…,7]` |
@@ -224,25 +224,25 @@ the combine runs.
 
 ---
 
-## C. Cut / keep evidence (fire-frequency) — answers REFINEMENT.md's "which never fire → cut"
+## C. Cut / keep evidence (fire-frequency): answers REFINEMENT.md's "which never fire → cut"
 
 **Empirical answer: no sounding *never* fired.** So the naive "cut the dead ones" has no clean
-targets — but activity is very uneven, which is the real input to the combine.
+targets, but activity is very uneven, which is the real input to the combine.
 
 - **Heavily exercised, unambiguously earn keep** (headlined a real finding, repeatedly): **5**
-  (dominant — headline in `#14`,`#37`,`#69`,`#44`,`#92`,`#94`,`#90`,`#99`,`#62`), **16**, **12**,
+  (dominant: headline in `#14`,`#37`,`#69`,`#44`,`#92`,`#94`,`#90`,`#99`,`#62`), **16**, **12**,
   **1**, **3**, **7**, **13**.
 - **"First headline" markers the log tracks as distinctness/keep evidence:** 3 @ `#69`, 7 @ `#44`,
   8/9/17 @ `zarr` (prior-headline set was 4, 5, 12, 15, 16). Each first-headline is logged precisely
   as "this sounding earns its keep / is distinct."
-- **Moderately exercised:** 4, 6, 8, 9, 10, 11, 15 (6 and 11 fire most often as *affirmations* — the
-  design got them right — which the log counts as real output, not silence).
-- **Lightly exercised — the genuine combine questions:**
-  - **14** (trivial-common-path) — fired **only ever as an affirmation** (`#14`, `#69`), never drove a
+- **Moderately exercised:** 4, 6, 8, 9, 10, 11, 15 (6 and 11 fire most often as *affirmations*, the
+  design got them right, which the log counts as real output, not silence).
+- **Lightly exercised: the genuine combine questions:**
+  - **14** (trivial-common-path): fired **only ever as an affirmation** (`#14`, `#69`), never drove a
     finding. The closest thing to a cut candidate, but "affirm-only" ≠ "never fires."
-  - **17** (locality of behavior) — fired **exactly once** (`zarr`, as an 8/9/17 co-fire); the newest
+  - **17** (locality of behavior): fired **exactly once** (`zarr`, as an 8/9/17 co-fire); the newest
     and least-exercised. Its keep-vs-merge-into-9/10 is the most open call.
-  - **2** (outcomes-as-values) — a few findings (`#74` Raw-reject, `#18` explicit `Skipped`) plus its
+  - **2** (outcomes-as-values): a few findings (`#74` Raw-reject, `#18` explicit `Skipped`) plus its
     LANDSCAPE-driven Boundary line; load-bearing but rarely a standalone headline.
 
 ---
@@ -253,24 +253,24 @@ targets — but activity is very uneven, which is the real input to the combine.
 1. **Real dup → extract to one home.** `#14` (`_ROOT_TYPES = get_args`), `#69` (lift `coordinate_systems`).
 2. **Real dup taxing a hot path → *deliberate* dup + an enforced differential test.** `#99`
    (single-sourcing would put a regex back on the path the change exists to remove).
-3. **Not dup — different codomains → don't unify; make the design doc argue from the codomain root,
+3. **Not dup: different codomains → don't unify; make the design doc argue from the codomain root,
    not a cost tradeoff.** `#62` (the "inverted" 5: three parsers with different return types; the ADR
    argument was the headline, not the code).
-4. **Subtractive — 5 fires on dup a plan is *about to add*; fix is "build less."** `#94` (take the one
+4. **Subtractive: 5 fires on dup a plan is *about to add*; fix is "build less."** `#94` (take the one
    semantic discriminator, defer the workload-gated rest; co-fires 15).
-5. **Boundary — similar-looking idioms encoding *different* decisions are not a 5 violation; pin with a
+5. **Boundary: similar-looking idioms encoding *different* decisions are not a 5 violation; pin with a
    test, don't merge.** `#77` (full Boundary text drafted at DOGFOOD-LOG.md:492–508).
    - New **smell shape** to add to 5's list: *a predicate/classifier re-implemented inline in a new
-     helper instead of calling the existing total one* — the tell is a fresh `isinstance(...) and
+     helper instead of calling the existing total one*: the tell is a fresh `isinstance(...) and
      foo(...)` chain duplicating an existing classifier (`#90`).
    - Generated-artifact flavor: *a generator asserting conclusions about its own output* is a 5/
      circularity smell (`#74`, `#18`).
 
-**Skill-partition with code-review / ponytail-review** (the standing self-check — mostly holds clean):
+**Skill-partition with code-review / ponytail-review** (the standing self-check: mostly holds clean):
 - **NaN routing rule of thumb:** NaN-in-*values* → code-review; NaN admitted by a *boundary that
   claims to produce trusted values* → plumb (`#44` vs `#69`).
 - **Redundant coverage that paid off:** code-review's *reuse* angle caught a 5 (plumb's own turf)
-  that plumb missed — twice, same day (`#90`, `#41`). The correctness bug itself is code-review's; the
+  that plumb missed: twice, same day (`#90`, `#41`). The correctness bug itself is code-review's; the
   plumb signal is *depth-of-discharge*, not a missing sounding.
 - **Reversibility (15) routes the "is this over-care?" question to ponytail-review by name** rather
   than manufacturing a plumb finding (`#21` three-rounds-of-IA).
@@ -282,33 +282,33 @@ targets — but activity is very uneven, which is the real input to the combine.
   name, whose shared-`composite_columns` fix was itself the deeper structural improvement),
   corroborating the `07-15` partition entry on a self-authored diff where plumb found only shape.
 
-**Scope beyond code** (each a distinct altitude plumb transferred to cleanly — for the combine's
+**Scope beyond code** (each a distinct altitude plumb transferred to cleanly: for the combine's
 "where does plumb apply" framing): plans before code (`#14`,`#69`,`#99`); a documentation/information
-architecture (`#21` — illegal-state analog = "one fact, two canonical homes that can drift"); a
+architecture (`#21`: illegal-state analog = "one fact, two canonical homes that can drift"); a
 measurement/benchmark artifact where 12 *is* the correctness condition (`#18`,`#74`); an ADR's
 *argument structure* (`#62`); brownfield third-party audit where "judge against the ideal" is
 load-bearing in a way greenfield can't exercise, and a self-flagging TODO is corroboration, not a
 reason to defer (`zarr`). Organic firing with no `/plumb` invocation, under a competing mode, on live
-design decisions — candidate triggers "would X work / does this give us Y for free / better ergonomics
+design decisions: candidate triggers "would X work / does this give us Y for free / better ergonomics
 for Z" (`#74`/`#18`).
 
 ---
 
 ## E. Doc inconsistencies (noted, not fixed)
 
-1. **Stale term-swap.** SKILL.md:51 offers *"One-word swap if you prefer `gauges`"* — but
+1. **Stale term-swap.** SKILL.md:51 offers *"One-word swap if you prefer `gauges`"*, but
    REFINEMENT.md:12 records *soundings* as a **locked decision** and lists "gauges" among the
    **rejected** names. Delete the swap offer.
 2. **Changelog points at the wrong file.** LANDSCAPE.md:4 calls REFINEMENT.md an *"append-only history
    of internal changes"* and LANDSCAPE.md:183–184 says to log each rescan *"in REFINEMENT.md's
-   changelog"* — but REFINEMENT.md is rewrite-in-place and has **no `## Changelog`** section; the
+   changelog"*, but REFINEMENT.md is rewrite-in-place and has **no `## Changelog`** section; the
    append-only file is DOGFOOD-LOG.md, and it is **LANDSCAPE.md itself** that carries a `## Changelog`
    (line 186). Repoint the rescan-logging instruction.
 3. **17 soundings vs a "~19" target with three unlanded additions.** SKILL.md defines exactly **17**
    numbered soundings. REFINEMENT.md's "eight-additions" verdict (lines 60–68) says *"Add standalone:
-   … immutability; testability-without-mocks; sound typing"* — only the FC/IS split (sounding 6) was
+   … immutability; testability-without-mocks; sound typing"*: only the FC/IS split (sounding 6) was
    marked DONE. So three sanctioned standalone additions are **not reflected in SKILL.md**. Not a bug,
-   but the combine pass starts from 17, not 19 — reconcile the target count first.
+   but the combine pass starts from 17, not 19: reconcile the target count first.
 
 ---
 
@@ -316,16 +316,16 @@ for Z" (`#74`/`#18`).
 
 Ranked by leverage; the first two address the only two logged *misses*, so they buy the most:
 
-1. **A1 — discharge-is-an-action** (sharpen sounding 16 + one Working note). Highest leverage: closes
+1. **A1: discharge-is-an-action** (sharpen sounding 16 + one Working note). Highest leverage: closes
    the miss class directly. **✔ Landed** in two passes (2026-07-14 a–e, 2026-07-20 h–m); (f) citation
    and (g) decode-bytes still queued.
-2. **A2 — both-altitudes sub-cases** (expand the SKILL.md:286 note). Cheap, high-corroboration.
-3. **A4 — sounding-5 Boundary line** (paste the log's drafted text). Zero authoring cost.
-4. **A3 — sounding-12 verify-the-source riders** (pin-the-revision + quantitative-claim + can-close).
-5. **A5 — sounding-1 unreachable-ideal → test** (small rider or Working note).
+2. **A2: both-altitudes sub-cases** (expand the SKILL.md:286 note). Cheap, high-corroboration.
+3. **A4: sounding-5 Boundary line** (paste the log's drafted text). Zero authoring cost.
+4. **A3: sounding-12 verify-the-source riders** (pin-the-revision + quantitative-claim + can-close).
+5. **A5: sounding-1 unreachable-ideal → test** (small rider or Working note).
 6. **A6: park-can-be-scope, discharged as a filed follow-up** (third park class on the fix-vs-park Working note, SKILL.md:280–284). Fresh (×1).
 7. **A7: leverage measured against the charter** (second trace target on the leverage Working note, SKILL.md:277). Fresh (×1).
-8. **E1/E2 — the two trivial doc fixes** (gauges line; changelog pointer) — land alongside anything.
+8. **E1/E2: the two trivial doc fixes** (gauges line; changelog pointer): land alongside anything.
 
 *The combine pass (Section B/C) stays deferred per REFINEMENT.md's "let usage drive, not armchair
-debate" — this ledger is its input, not its trigger.*
+debate": this ledger is its input, not its trigger.*
