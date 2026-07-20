@@ -95,7 +95,9 @@ corpus cannot:
 One focused batch, not forty entries. Goal: populate the empty cells enough to see
 which soundings are bias-suppressed and to make the `Unhomed:` line trigger.
 
-- **Size**: 6 to 10 real `/plumb` runs, review mode.
+- **Size**: ~10 runs, balanced **5 `generated` + 5 real**, review mode. Run
+  incrementally: a 2 to 3 run *pilot* first, to validate the entry format and see
+  whether the coverage-audit candidates fire at all, then complete the batch.
 - **Target spread** (deliberately hit empty cells, and *mix generated with real*): at
   least 4 languages; at least 3 shapes including one `frontend-ui`; at least 5 `poor`; a
   **balanced provenance mix**, roughly half `generated` and half real
