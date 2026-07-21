@@ -166,9 +166,12 @@ per-module tallies are **provisional** until the whole-repo audit lands.
 **DONE 2026-07-21** (see LANDSCAPE "Second pass: un-walked canon"): candidate set now also
 carries **CQS** (Tier-1, deductive + earthaccess unhomed fire) and a broadened Tier-2
 **temporal coupling / illegal transitions**; the rest of the un-walked canon folded or went
-off-axis with reasons (near-saturation, CQS the single escape). Nomination is complete;
-promotion §A and combines §C still gate on batch data. **The audits should now also probe for
-CQS and temporal coupling.** Next: run the audits one-per-turn, starting with **earthaccess**
+off-axis with reasons (near-saturation, CQS the single escape). A follow-on **faithful CxC
+sweep** (against the real companion guide, not the first pass's proxy citations) nominated
+**recoverable-vs-unrecoverable invariants** (Tier-2) and corroborated immutability + sound-typing.
+Nomination is complete; promotion §A and combines §C still gate on batch data. **The audits
+should now also probe for CQS, temporal coupling, and recoverable-vs-unrecoverable.** Next: run
+the audits one-per-turn, starting with **earthaccess**
 (already seeded by `auth.py`), then titiler-cmr (the decisive mock cell), then the two
 non-Python picks (Go service, Rust/TS app); slot the cheap generated small-module runs
 (gen-3..5) in between. Each repo's `clean`/`mixed`/`poor` prior is confirmed or refuted by

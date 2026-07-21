@@ -195,6 +195,17 @@ dimensions.*
   temporally-coupled pair can be pure) and from 1 (states vs sequences). Clusters with CQS:
   a query that secretly commands *creates* temporal coupling downstream. → rider on 1, or a
   new sounding if it fires on stateful code.
+- **Recoverable vs unrecoverable invariants** [CxC Point 3, "the load-bearing distinction of
+  the whole guide"; faithful sweep 2026-07-21]. A *meta*-probe that routes to the right
+  sounding: can validity be decided from the finished value alone (**recoverable** → a
+  validating constructor / a downstream check suffices) or is it a fact about the value's
+  *history / intent / provenance* the bytes don't record (**unrecoverable** → construction
+  control is the *only* mechanism; no downstream validator can exist)? Plumb owns both
+  *answers* (validate → 2/11; control construction → 1) but not the *question that chooses
+  between them*. Ties to 7 (the guide's `/axes/x/y` forgotten-escape is an information-loss /
+  non-round-trip case) and the provenance family (SafeHtml / taint / units / normalization).
+  Single strong source, distinct kernel → Tier-2; `[combine? rider on 1]`. Detail in the CxC
+  sweep below.
 
 **Tier 3: partial coverage, likely fold (not new soundings).**
 
@@ -278,6 +289,58 @@ the mirror of totality, DbC lifts contracts into types. Plumb is a *type-driven*
 not an OO one, and it steers *away from* the shapes (inheritance hierarchies) where half the
 OO canon's warnings even apply. CQS is the one probe that escapes that absorption — and, like
 primitive-obsession in the first pass, it re-earns the deductive method's keep.
+
+#### CxC (Correct by Construction): faithful sweep (added 2026-07-21)
+
+*Prompted mid-pass ("did you want CxC too?"). **Correction first:** the first pass's "CxC"
+citations were a **proxy** — general type-driven canon (Wlaschin / King / Hickey) wearing a
+"CxC" label — not the actual companion guide, which no one had read. The real source is
+`~/src/chuckwondo/digital-garden/content/correct-by-construction.md` (stage **budding**: the
+**Values** scale is complete; **States / Sequences / Relationships** are seedlings). Reading it
+changed the yield, because its load-bearing idea is **original to the guide**, so the proxy
+sweep was structurally blind to it. This is the deductive method's own breaking edge — a canon
+walk is only as good as the canon actually read (JOURNEY beat 9).*
+
+**One new candidate (→ Tier-2 above):** recoverable vs unrecoverable invariants — CxC's own
+headline distinction, invisible to the proxy.
+
+**Corroborations (deductive, bias-free — a second source strengthens existing candidates):**
+- **Immutability** (Tier-1): CxC — "airtight = controlled construction **and** immutability;
+  skip either and the invariant leaks — through the front door or the window."
+- **Sound typing** (Tier-1): CxC Point 4 Hole 3 gives the mechanism — `Any`-laundering, with
+  `cast(...)` a *named* hatch and an *annotated assignment* a *silent* one: the concrete kernel
+  of "no lies to the checker."
+
+**Riders (fold, but named — they sharpen an existing sounding/candidate):**
+- **Primitive-obsession** candidate: split **brand** (a role, *no* invariant → `NewType`) from
+  **value object** (a real invariant → smart constructor); CxC's Q1 "is there anything to
+  check?" is the gate. The candidate as framed ("a bare str/int where a domain type belongs")
+  misses this fork.
+- **Sounding 1**: (a) **timeless value-facts vs world-facts** — "`UserId` must be a *real*
+  user" is a fact about the DB *now* (a query, stale the instant it's checked), not a property
+  of the value; a type carries only timeless facts, so don't type a world-fact. (b) the
+  backbone under 1: **leak surface = what the public constructor accepts** (the guide's sharpest
+  line).
+- **Sounding 6 / 1**: **minting is a boundary-authority act** — the layer where raw data first
+  becomes meaningful vouches; an *interior* `UserId(...)` vouches for what it cannot know (the
+  bug wearing construction syntax). Concentrate the mints; grep them.
+- **Sounding 11**: **seam / one-guard-per-seam** — a runtime guard belongs where guarantees
+  change (wire / unchecked caller / every `Any` / brand erasure), and *once*; re-checking in
+  every interior function silently re-invents correct-by-validation. Sharper than 11's
+  cost/scope tiering for the boundary case.
+- **Sounding 10**: **closure** — every operation on a refined type returns the refined type; a
+  method that hands back the raw base "undoes the constructor one call at a time" (an
+  encapsulation leak with an algebraic name).
+- **Sounding 12 / 4**: **false confidence** — a guard that looks stronger than it is (a brand on
+  a public surface whose door still accepts garbage) is worse than none: it moves the mistake
+  from visible to invisible. A refined type with an open front door is a lying name (4) and
+  disproportionate trust (12) at once.
+
+**Both directions (feed back to the guide's author):** on the scales CxC has only *seeded*,
+plumb is **ahead** — sounding 1 already operationalizes the **States** scale, and the broadened
+Tier-2 candidate the **Sequences** scale. The **Relationships** scale (a value valid only
+*relative to another* — an index tied to one collection; connascence of identity) is thin on
+*both* sides; watch it, don't nominate yet.
 
 Output complete: survivors folded into the Tier-1/2/3 lists above; candidate set is ready for
 the repo audits.

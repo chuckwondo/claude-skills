@@ -197,6 +197,29 @@ party who can confirm (the user) verify the claim the model cannot cleanly self-
   like primitive-obsession before it) re-earns the method's keep. Saturation is a finding, not a
   failure to find.
 
+### 9. (this session) The proxy canon: a sweep is only as good as the source you read
+- **Believed:** "CxC" was a canon I could sweep plumb against — the first pass cited it four
+  times (immutability, sound-typing, primitive-obsession, typestate), and I'd offered to do a
+  systematic second sweep "against the public type-driven canon (Wlaschin / King / Hickey)."
+- **Broke:** the user asked, "where *specifically* are you reading CxC from?" I had no artifact
+  — only the plumb docs' own secondary citations plus general training knowledge wearing a
+  citation's coat. Worse, the *first pass had done the same thing weeks earlier*: its "CxC"
+  citations are all textbook type-driven canon, and they miss the real guide's **load-bearing**
+  idea entirely — *recoverable vs unrecoverable invariants*, which is original to the guide, not
+  in any textbook. A proxy sweep is structurally blind to exactly the source's own contribution.
+  **Caught by the user**, with one question.
+- **Corrected:** the user pointed me at the real file
+  (`digital-garden/content/correct-by-construction.md`); read in full, the faithful sweep
+  nominated the recoverable/unrecoverable candidate (Tier-2), corroborated immutability and
+  sound-typing from a genuine second source, and yielded six named riders — materially more than
+  the proxy, and *different* in kind. Flagged the first-pass citations as proxy-sourced in
+  LANDSCAPE.
+- **Lesson:** a deductive canon walk inherits the authority of the canon it *actually opens* —
+  not the canon it *names*. Citing a source you reconstructed from memory is the same unrun-claim
+  sin as calling a repo clean from its reputation (beat 5), one level up: it launders priors as
+  authority and goes blind to precisely what's new. Open the source, or label the proxy as a
+  proxy — never let a remembered catalog impersonate the real one.
+
 ---
 
 ## The transferable method (to finalize at the end)
