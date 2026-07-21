@@ -162,12 +162,14 @@ per-module tallies are **provisional** until the whole-repo audit lands.
 | deferred | pydantic (clean-prior control, 23k LOC) | `color.py` seed retained; full audit only if saturation not reached |
 | dropped | rasterio | 2nd Python-library fire-source, a filled cell |
 
-**Recommended next order:** **Gate (2026-07-21): complete the LANDSCAPE second canon pass
-(un-walked canon) BEFORE any repo audit**, so the audits probe the *complete* candidate
-sounding set and no candidate nominated later leaves an earlier audit blind to it (see
-LANDSCAPE "Second pass: un-walked canon"; this completes nomination only, promotion §A and
-combines §C still gate on batch data). Then run the audits one-per-turn, starting with
-earthaccess (already seeded), then titiler-cmr (the decisive mock cell), then the two
+**Recommended next order:** ~~Gate: complete the LANDSCAPE second canon pass first~~
+**DONE 2026-07-21** (see LANDSCAPE "Second pass: un-walked canon"): candidate set now also
+carries **CQS** (Tier-1, deductive + earthaccess unhomed fire) and a broadened Tier-2
+**temporal coupling / illegal transitions**; the rest of the un-walked canon folded or went
+off-axis with reasons (near-saturation, CQS the single escape). Nomination is complete;
+promotion §A and combines §C still gate on batch data. **The audits should now also probe for
+CQS and temporal coupling.** Next: run the audits one-per-turn, starting with **earthaccess**
+(already seeded by `auth.py`), then titiler-cmr (the decisive mock cell), then the two
 non-Python picks (Go service, Rust/TS app); slot the cheap generated small-module runs
 (gen-3..5) in between. Each repo's `clean`/`mixed`/`poor` prior is confirmed or refuted by
 its own audit.

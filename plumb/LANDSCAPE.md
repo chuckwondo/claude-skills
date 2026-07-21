@@ -166,14 +166,35 @@ dimensions.*
   distinct *probe* plumb does not currently name. **The audit's headline finding: this
   is invisible to the fire-frequency method**, because we already model with types, so
   we never commit the smell and it never fires; only the deductive walk catches it. →
-  candidate sounding, or a sharp rider on 1.
+  candidate sounding, or a sharp rider on 1. *(Second pass sharpens this: connascence of
+  meaning / boolean-blindness — a bare `bool` or magic `0`/`1` whose meaning is a shared
+  convention across sites — is the same probe pointed at a value convention; and data-clumps
+  / connascence of position — a positional `(lat, lon)` where a `Point` belongs — is its
+  recurring-field-group face.)*
+- **Command-Query Separation (CQS)** [Meyer · connascence-of-execution adjacent ·
+  earthaccess `auth.py` real unhomed fire]. A single method both *returns* a value and
+  *mutates* observable state: a query that commands, or a command that returns status.
+  Distinct from 6 (architecture: *where* effects live; a CQS-violating method can sit
+  wholly in the imperative shell and still mix asking with doing) and from 9 (generic
+  cohesion): CQS is a per-method, mechanically-checkable split — does it return AND mutate?
+  **The second pass's headline candidate: both a deductive miss AND a real inductive fire**
+  (earthaccess `_get_credentials`, a query-named method that mutates `self`, homed only
+  awkwardly under 9/4 in the seed run) — the same deductive+inductive convergence that
+  earned immutability and sound-typing their Tier-1 slots. Bound tightly against 6 and 9.
+  → candidate sounding; confirm/rank in the batch.
 
 **Tier 2: single strong source, distinct kernel (watch, adversarial-confirm).**
 
-- **Illegal *transitions* unrepresentable (typestate / state machines)** [CxC]. Sounding
-  1 makes illegal *states* unrepresentable; a machine where an illegal *transition* is
-  representable (calling `.ship()` on an unpaid order) is uncovered. Distinct kernel. →
-  rider on 1, or a new sounding if it fires on stateful code.
+- **Temporal coupling / illegal *transitions* unrepresentable** [CxC typestate ·
+  connascence-of-execution · Meyer]. **Broadened by the second pass** from "state machines"
+  to *any* hidden ordering requirement: call `.open()` before `.read()`; a
+  must-set-before-read field; `configure()` then `run()`, not only an explicit state
+  machine. Sounding 1 makes illegal *states* unrepresentable; this makes an illegal
+  *sequence* unrepresentable — typestate (`.read()` exists only on an `OpenFile`) — or,
+  where typestate is too heavy, names the ordering contract explicitly. Distinct from 6 (a
+  temporally-coupled pair can be pure) and from 1 (states vs sequences). Clusters with CQS:
+  a query that secretly commands *creates* temporal coupling downstream. → rider on 1, or a
+  new sounding if it fires on stateful code.
 
 **Tier 3: partial coverage, likely fold (not new soundings).**
 
@@ -195,7 +216,7 @@ from a second, bias-free direction, adds one genuinely new bias-invisible candid
 transitions). None is a fire-frequency artifact, so all survive the §C freeze. Promote a
 candidate into TIGHTENING-SIGNALS.md §A once it fires in the adversarial batch.
 
-### Second pass: un-walked canon (pending, do BEFORE the repo audits)
+### Second pass: un-walked canon (DONE 2026-07-21)
 
 *Rationale (decided 2026-07-21): the soundings are the measuring instrument; the repo
 audits measure with it, so complete the deductive **nomination** set before measuring. A
@@ -205,28 +226,61 @@ reason to wait behind the expensive audits. This completes **nomination only**: 
 (§A) still requires an adversarial fire, and the combine decisions (§C) stay frozen pending
 batch data, so canon-first adds candidates without touching either downstream gate.*
 
-The first pass walked Fowler + CxC + Ousterhout + NTCoding. Sweep the un-walked bodies
-below next, same distinct-kernel-vs-fold test, until a new catalog yields no new candidate
-(**saturation**, mirroring the repo-side stopping rule):
+The first pass walked Fowler + CxC + Ousterhout + NTCoding. Second pass swept the five
+un-walked bodies below with the same distinct-kernel-vs-fold test. **Result: one new
+candidate (CQS, → Tier-1 above), one broadening (temporal coupling, → Tier-2 above), the
+rest fold or go off-axis with reasons. Near-saturation: CQS is the single escape.** Per-body
+disposition:
 
-- **Connascence** (Page-Jones, connascence.io): the systematic coupling taxonomy (name,
-  type, meaning, position, algorithm, execution, timing, value, identity). Test whether any
-  *static* form (esp. position, meaning, algorithm) is a probe sounding 8 is too coarse to
-  name.
-- **CQS / Command-Query Separation** (Meyer): a command that returns state, or a query that
-  mutates. Already has **inductive** support: the earthaccess `auth.py` run flagged
-  `_get_credentials` as a query-named command that mutates `self`, homed awkwardly under
-  9/4. Deductive miss + real unhomed fire = strongest candidate.
-- **Full GRASP / SOLID**: SRP=9, DIP=8/6, LoD=Tier-3 already covered; individually check LSP
-  / behavioral subtyping, OCP, ISP, Protected Variations, Indirection, Pure Fabrication.
-  Some may be off-axis for plumb's non-inheritance focus: **decide, don't omit**.
-- **Temporal coupling** (must-call-A-before-B with no explicit state machine): broader than
-  the Tier-2 illegal-transitions candidate; check if distinct.
-- **Design by contract** (Meyer pre/post/invariant): against 1 (invariant in type) and 11
-  (check tier), is contract conformance a distinct probe?
+- **Connascence** (Page-Jones, connascence.io). The taxonomy's *forms* distribute across
+  soundings we already have rather than nominating one of their own: connascence of value
+  (fields must agree) → sounding 1; of meaning / boolean-blindness and of position /
+  data-clumps → sharpen the **primitive-obsession** Tier-1 candidate (noted there); of
+  algorithm (same encode both ends) → 5 + 13, with the sharp residue that when the algorithm
+  is duplicated across an *un-shareable* boundary (JS client / Python server), one-source-of-
+  truth becomes "one *spec* + a conformance test," not extraction; of execution → temporal
+  coupling (below); of timing → off-axis (races → code-review); of identity → immutability +
+  10. **The one additive idea:** connascence's *locality gradient* — the coupling strength you
+  tolerate should degrade with the distance between the coupled elements (strong connascence
+  is fine inside one function, a smell across a module boundary). Sounding 8 says "low
+  coupling" flat; this grades it. → **rider on 8**, not a new sounding.
+- **CQS / Command-Query Separation** (Meyer). → **promoted to Tier-1 above** (deductive miss +
+  earthaccess real unhomed fire; the second pass's headline).
+- **Full GRASP / SOLID** (un-checked forms). All fold or go off-axis, with reasons:
+  - **LSP / behavioral subtyping** → mostly **off-axis**: it is a property of inheritance
+    hierarchies, and plumb's totality (3) + illegal-states (1) soundings *prefer the closed
+    sum type that has no LSP hazard*. Where a `Protocol` implementer breaks the interface's
+    documented contract, that is design-by-contract + sounding 12, not a new probe.
+  - **OCP (open/closed)** → **the other side of a tension plumb already resolved**: a closed,
+    exhaustive sum (sounding 3) is deliberately *closed to extension* so the compiler forces
+    every case — the expression-problem trade. Not a gap. → recommend a **Boundary line on
+    sounding 3** (mirroring the errors-as-values Boundary on 2) so an OO reader sees plumb
+    takes the closed-and-exhaustive side and where it costs. *(A landing, deferred to §A.)*
+  - **ISP (interface segregation)** → **cohesion (9) at interface grain + coupling (8)**; the
+    narrow-capability seam in 6 is ISP done right. Fold.
+  - **Protected Variations / Indirection / Pure Fabrication** → design *devices*, not
+    fault-probes: covered by 10/15/6/8 where legit, and their over-applied forms (protecting a
+    variation that never varies, indirection for one implementation) are **ponytail's** turf,
+    deferred by name. Non-gaps.
+- **Temporal coupling** (must-call-A-before-B, no explicit state machine). Same probe as the
+  Tier-2 illegal-transitions candidate (the smell; typestate is the move). → **merged into and
+  broadened that Tier-2 entry above**, not a separate candidate.
+- **Design by contract** (Meyer pre/post/invariant). Folds: **invariants** → 1 (+11 for where
+  the runtime check goes); **preconditions** → 11 + 16 + 12 (a precondition is a requirement);
+  **postconditions** → 1 with the sum-type move — a "returns non-empty" contract is best kept
+  by returning a `NonEmpty<T>`, i.e. *lift the contract into the type* rather than assert it.
+  The caller-vs-callee responsibility split is sounding 1's parse-at-the-edge-trust-inward.
+  **Confirmed non-gap**, fully distributed across 1/11/12.
 
-Output: fold the survivors into the Tier-1/2/3 lists above, then run the repo audits
-against the completed candidate set.
+**The structural finding of the pass:** most of the OO/procedural canon folds because plumb's
+**type-first stance already absorbs it** — LSP dissolves into the sum-type preference, OCP is
+the mirror of totality, DbC lifts contracts into types. Plumb is a *type-driven* design lens,
+not an OO one, and it steers *away from* the shapes (inheritance hierarchies) where half the
+OO canon's warnings even apply. CQS is the one probe that escapes that absorption — and, like
+primitive-obsession in the first pass, it re-earns the deductive method's keep.
+
+Output complete: survivors folded into the Tier-1/2/3 lists above; candidate set is ready for
+the repo audits.
 
 ---
 

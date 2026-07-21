@@ -176,6 +176,27 @@ party who can confirm (the user) verify the claim the model cannot cleanly self-
 - **Lesson:** finish the instrument's candidate set before you measure with it. Changing the ruler
   after taking readings invalidates the readings.
 
+### 8. (this session) The OO canon mostly folds: plumb is type-first
+- **Believed:** the un-walked canon still to sweep — connascence, CQS, the rest of SOLID/GRASP,
+  temporal coupling, design-by-contract — was a large body of famous principles, so it might
+  nominate several new soundings.
+- **Broke:** it nominated **one** (CQS). Almost everything else *folds*, and for a common
+  reason: plumb's **type-first stance already absorbs the OO canon**. LSP dissolves into the
+  preference for a closed sum over a subtype hierarchy; OCP is the mirror image of totality (a
+  closed exhaustive sum is *deliberately* closed to extension); design-by-contract's
+  postconditions lift into the type (`NonEmpty<T>` over an asserted "returns non-empty").
+  Plumb steers *away from* the shapes — inheritance hierarchies — where half those warnings
+  even apply. **Caught by the model** (the deductive walk itself); no user catch this beat.
+- **Corrected:** recorded the folds *with their reasons* rather than as omissions (a reasoned
+  non-gap is a result, not a blank), broadened the Tier-2 illegal-transitions candidate to
+  cover temporal coupling generally, and promoted **CQS** to a Tier-1 candidate — it was both a
+  deductive miss and a real earthaccess unhomed fire, the same deductive+inductive convergence
+  that earned primitive-obsession its slot in beat 3.
+- **Lesson:** a deductive canon sweep pays off even when it mostly folds — the folds *locate the
+  skill* (they told us plumb is a type-driven lens, not an OO one), and the lone escape (CQS,
+  like primitive-obsession before it) re-earns the method's keep. Saturation is a finding, not a
+  failure to find.
+
 ---
 
 ## The transferable method (to finalize at the end)
