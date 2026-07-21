@@ -66,6 +66,14 @@ session that produced them). Where each beat's source lives:
   boundary the origins-mining pass must respect, since attribution is per-transcript. (The
   earthaccess audit itself is *not* a beat: it is a confirmation, and DOGFOOD-LOG already holds
   it; the journey records only what the working docs erase.)
+- **Beats 10-11:** a **later same-day (2026-07-21) session**, a **third distinct transcript** from
+  beats 5-7 and 8-9, running gen-3 (the generated Go `spend` CLI) and real-4 (the `rust-simple-httpd`
+  audit). Beat 11 (the `obstore` clean-prior catch) is a **verbatim user question** in this
+  transcript, so its attribution is firm; beat 10 (the sounding-3 / must-consume refinement) is
+  **model-proposed and user-directed**, flagged for the author's confirmation. The per-transcript
+  attribution boundary from beats 5-9 applies here too. (The gen-3 and real-4 *saturation-held*
+  results are confirmations in DOGFOOD-LOG, not beats; only the wording refinement and the
+  selection catch turned.)
 
 **The bias, quantified from the recon:** `faithful` and `round-trip` appear in ~102 of the 215
 covjson-msgspec sessions (~half), because covjson-msgspec *is* a faithful-serialization
@@ -238,6 +246,63 @@ party who can confirm (the user) verify the claim the model cannot cleanly self-
   load-bearing and why the transferable method must name "verify the source is the live one" as a
   step, not a footnote.
 
+### 10. (this session: gen-3 Go + real-4 Rust) The soundings smuggle language assumptions; a language flip audits their wording
+- **Believed:** sounding 3 states its guarantee as "adding a case *forces* the update
+  (compiler-checked exhaustiveness)," and sounding 2's Boundary states "the raise belongs at the
+  edge" as a uniform rule. Both were phrased as language-independent design properties, the way a
+  plumb line is meant to measure against a language-neutral ideal.
+- **Broke:** running plumb across a language-*family* boundary (Python, then Go, then Rust) showed
+  both are language-*dependent* premises. Go (gen-3): the compiler-checked-exhaustiveness guarantee
+  is *absent* for error-values, `amt, _ :=` and a bare call both compile clean and `go vet` is
+  silent (RAN), so totality degrades to a linter. Rust (real-4): the guarantee is *present*
+  (`Result` is `#[must_use]`), but a codebase opts out idiomatically: `let _ = stream.write(...)` to
+  silence the warning, `.unwrap()` to consume-by-panic, a macro `Default` fallback to swallow a
+  parse-fail (RAN). And Rust exposed a fact neither Python nor Go did: a buried panic does not just
+  fail locally the way Go's `log.Fatal` does, it *poisons shared state* (`Arc<Mutex>` cascade), so
+  sounding 2's Boundary carries a strictly higher cost in a shared-state concurrency model.
+- **Corrected:** the must-consume / `#[must_use]` discipline (the receiving-side dual of sounding 2)
+  does *not* become a new sounding; it folds into **1** (as the API designer, make an ignored
+  outcome unrepresentable) **+ 3** (as the consumer, handle the error case). But the fold came with a
+  wording fix: sounding 3 must separate the *ideal* (every case is consumed) from the *enforcement*
+  (which the type system may or may not provide, and which a codebase can escape), and sounding 2's
+  Boundary gains that its blast-radius is concurrency-model-dependent. Attribution: **model-proposed**
+  (the must-consume gap was called at gen-3's start and the Go/Rust enforced-contrast pair was
+  designed to test it) and **user-directed** (the user set the batch and chose Rust for real-4);
+  *to be confirmed by the user.*
+- **Lesson:** a sounding phrased as a *compiler guarantee* ("forces the update") has a language
+  assumption baked into its words, and a tool that claims to measure against a language-neutral ideal
+  must state the ideal separately from its enforcement. The instrument that exposes the smuggled
+  premise is the **language flip** itself: sampling a new language family (the CORPUS empty-cell rule)
+  does more than test saturation, it *audits the soundings' own wording* for hidden assumptions.
+  Saturation *held* (zero new unhomed across four external audits), and that is a DOGFOOD
+  confirmation; the beat is the wording refinement the flip forced out.
+
+### 11. (this session, sourcing real-4) The clean-prior trap: match the sample to the question, and measure, don't trust reputation
+- **Believed:** for real-4 (the external-Rust language-flip test) I proposed `developmentseed/obstore`,
+  chosen on the axis under test (Rust) plus convenience (already local, same org as real-2), and I
+  pre-framed its pyo3 FFI seam as a bonus.
+- **Broke:** the user caught it: "i'm relatively familiar with obstore, and believe it is probably
+  quite clean, so I'm wondering if this is a good candidate." A *clean* repo is a low-power
+  saturation test: few smells means "zero new unhomed" cannot distinguish "the set absorbed
+  everything" from "there was nothing to absorb," so the result is nearly uninformative. I had matched
+  the repo to the *language* but not to the *question*: a saturation test wants a repo you *expect to
+  be messy*, so that zero-new is a surprising, high-information outcome. **Caught by the user.**
+- **Corrected:** reframed the clean repo as the pydantic-role (a specificity control, deferred), not
+  the saturation test, and sourced a `mixed`/`poor` target by *measuring* roughness (unwrap/panic
+  density: 45 + 14 in rust-simple-httpd) instead of trusting reputation, rejecting obstore for its
+  clean prior.
+- **Lesson:** the measurement *sample* must fit the question, not just the axis under test: a
+  saturation test wants high smell-density, a specificity control wants a clean one, and the two are
+  not interchangeable. And the prior is *measurable at selection time* (grep the panic/unwrap
+  density), which is beat 5's "quality is an output the audit assigns, not a prior" pushed one stage
+  earlier: do not even *select* on reputation, measure. This is the **third** time in this journey's
+  lineage the user caught the model trusting a reputation over a measurement, after beat 5 (pydantic's
+  clean *reputation*) and beat 9 (CxC's remembered *citation*, plus the `nsidc` deprecated-upstream
+  echo). The recurrence is the datum: a solo model reaches for the *plausibly-representative* choice
+  (the famous canon, the official upstream, the well-regarded repo) and the person who knows the
+  ground truth is the one who catches it, which is why "verify or measure the thing, don't trust its
+  reputation" has to be a named step in the transferable method, not a footnote.
+
 ---
 
 ## The transferable method (to finalize at the end)
@@ -251,5 +316,10 @@ from the beats above. Provisional shape:*
 4. Treat every label and claim as a hypothesis to run, not a fact to reason from (beat 5).
 5. Match your rigor claims to a single-rater instrument: signal, not statistics (beat 6).
 6. Complete the instrument before you measure with it (beat 7).
-7. Throughout: apply the skill's own discipline to the skill's own construction. If it judges
+7. Fit the measurement sample to the question, and measure its properties rather than trusting its
+   reputation (beats 5, 9, 11): a saturation test wants a messy prior, a specificity control a clean
+   one, and roughness is measurable at selection time.
+8. Flip the context (language, domain) not only to test coverage but to audit the tool's own wording
+   for smuggled assumptions (beat 10).
+9. Throughout: apply the skill's own discipline to the skill's own construction. If it judges
    against an ideal, so must its build; if it distrusts unrun claims, so must you.
