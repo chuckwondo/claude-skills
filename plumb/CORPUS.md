@@ -155,7 +155,7 @@ per-module tallies are **provisional** until the whole-repo audit lands.
 | gen 3 | Go CLI (small module) | todo, sounding 2 / error-values |
 | gen 4 | Rust or C# module (small module) | todo |
 | gen 5 | Node/JS backend (small module) | todo |
-| real 1 | earthaccess whole-repo audit (Python, mixed/brownfield) | seeded by `auth.py`; **run first** |
+| real 1 | earthaccess whole-repo audit (Python, mixed/brownfield) | **DONE 2026-07-21** @ `bbbced0b` (audit the `earthaccess-dev` fork; `nsidc/earthaccess` is deprecated per the maintainer). `mixed` prior confirmed; CQS + temporal-coupling + primitive-obsession + sound-typing all fired real; **zero new unhomed** (saturation) |
 | real 2 | developmentseed/titiler-cmr whole-repo audit (Python, **mock-heavy**, external) | todo; provenance **external** (user's contribution minimal, not design-shaping); quality prior `mixed` (user reports messy), tested by the audit |
 | real 3 | non-Python: **Go service** (error-values / sounding 2) | todo; concrete repo chosen at audit time |
 | real 4 | non-Python: **Rust or TS app** (ownership+exhaustiveness, or frontend-ui state) | todo; concrete repo chosen at audit time |
@@ -170,11 +170,14 @@ off-axis with reasons (near-saturation, CQS the single escape). A follow-on **fa
 sweep** (against the real companion guide, not the first pass's proxy citations) nominated
 **recoverable-vs-unrecoverable invariants** (Tier-2) and corroborated immutability + sound-typing.
 Nomination is complete; promotion §A and combines §C still gate on batch data. **The audits
-should now also probe for CQS, temporal coupling, and recoverable-vs-unrecoverable.** Next: run
-the audits one-per-turn, starting with **earthaccess**
-(already seeded by `auth.py`), then titiler-cmr (the decisive mock cell), then the two
-non-Python picks (Go service, Rust/TS app); slot the cheap generated small-module runs
-(gen-3..5) in between. Each repo's `clean`/`mixed`/`poor` prior is confirmed or refuted by
+should now also probe for CQS, temporal coupling, and recoverable-vs-unrecoverable.**
+**earthaccess (real-1) is DONE @ `bbbced0b` (2026-07-21): all three new candidates fired real,
+CQS strongest (multiple in-repo fires), and it produced zero new unhomed candidates — a
+saturation signal that nomination is near-complete, so the remaining runs test ranking/promotion,
+not nomination.** Next: run
+the remaining audits one-per-turn, starting with **titiler-cmr** (real-2, the decisive mock cell),
+then the two non-Python picks (Go service, Rust/TS app); slot the cheap generated small-module
+runs (gen-3..5) in between. Each repo's `clean`/`mixed`/`poor` prior is confirmed or refuted by
 its own audit.
 **Stopping rule:** theoretical saturation across diverse cells (see The analysis output), not
 a target count and not statistical significance.
