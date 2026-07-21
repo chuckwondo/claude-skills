@@ -95,57 +95,107 @@ corpus cannot:
 One focused batch, not forty entries. Goal: populate the empty cells enough to see
 which soundings are bias-suppressed and to make the `Unhomed:` line trigger.
 
-- **Size**: ~10 runs, balanced **5 `generated` + 5 real**, review mode. Run
-  incrementally: a 2 to 3 run *pilot* first, to validate the entry format and see
-  whether the coverage-audit candidates fire at all, then complete the batch.
+- **Size**: ~10 runs, balanced **5 `generated` + 5 real**, review mode. The generated
+  half is small-module/small-diff reviews; the **real half is five whole-repo audits**
+  (see the 2026-07-20 scope decision under Batch progress). Run incrementally: a 2 to 3
+  run *pilot* first, to validate the entry format and see whether the coverage-audit
+  candidates fire at all, then complete the batch.
 - **Target spread** (deliberately hit empty cells, and *mix generated with real*): at
   least 4 languages; at least 3 shapes including one `frontend-ui`; at least 5 `poor`; a
   **balanced provenance mix**, roughly half `generated` and half real
   (`external-raw` / `external-reviewed`), so neither the self-plumbed bias nor the
-  LLM-smell bias dominates; at least 2 `brownfield`; at least 1 whole-repo audit on a
-  messy *real* repo (audits exercise the brownfield stance, cf. the zarr entry).
+  LLM-smell bias dominates; at least 2 `brownfield`; the five real runs are whole-repo
+  audits (superseding the earlier "at least 1"; see Batch progress), which exercise the
+  brownfield stance, cf. the zarr entry.
 - **Generated vs real is itself a signal**, not just volume: generated code carries its
   *own* smell profile (verbose, stringly-typed, God-functions, defensive over-checking)
   distinct from human bad code (drift, copy-paste divergence, framework anti-patterns,
   premature abstraction). A coverage-audit candidate that fires hot on `generated` but
   cold on real repos is suspect as an LLM artifact; one that fires on both is a real
   gap. Read the `generated` vs `external-raw` columns against each other.
-- **Scope guardrail**: keep most runs to a diff or a small module (whole-repo audits
-  are expensive); time-box each.
+- **Scope guardrail**: generated runs stay a diff or a small module; the five real runs
+  are whole-repo audits (expensive, one per turn). Time-box each.
 - **Log**: the normal entry plus the `Corpus:` and `Unhomed:` lines. Mark the batch so
   it can be analyzed as a group.
 
-### Batch progress (pilot done 2026-07-20)
+### Batch progress (pilot done 2026-07-20; real half rescoped to whole-repo audits 2026-07-20)
+
+**Scope decision (2026-07-20).** The *real* half of the batch is **five whole-repo audits**,
+not single-module reviews: **3 Python** (earthaccess, rasterio, pydantic) + **2 non-Python**
+(my picks). The *generated* half stays small-module/small-diff (the cost guardrail). This
+supersedes the earlier "at least 1 whole-repo audit" floor. Audits are breadth-first and
+leverage-ranked (zarr-style top-N across the repo), one repo per turn (expensive).
+
+**Quality tags are a-priori priors, not audit results.** Per this file's own definition,
+quality is assigned *coarse and a-priori*, so `clean`/`mixed`/`poor` on a repo is a
+*hypothesis the audit tests*, never a verified property. Do not pre-assign a repo a role
+("specificity control" vs "fire-source") from its prior: quiet-vs-loud is an **output** of
+the audit. A `clean`-tagged repo whose audit stays quiet *earns* the control reading; one
+that lights up *refutes its own prior*, itself a result. (Caught 2026-07-20: an earlier draft
+called pydantic a clean control from reputation + one deprecated module, reasoning from the
+prior as if the audit had run. It had not.)
+
+**The two module runs already done are seeds, not standalone real entries.** earthaccess
+`auth.py` and pydantic `color.py` are the first ranked findings of their repo's audit; their
+per-module tallies are **provisional** until the whole-repo audit lands.
 
 | # | Slot | Status |
-|---|---|---|
-| gen 1 | TS/React dashboard | done (pilot) |
-| gen 2 | Java service | todo, next: probes immutability-standalone + testability-without-mocks |
-| gen 3 | Go CLI | todo, sounding 2 / error-values |
-| gen 4 | Rust or C# module | todo |
-| gen 5 | Node/JS backend | todo |
-| real 1 | earthaccess `auth.py` | done (pilot) |
-| real 2 | rasterio (user-named) | todo |
-| real 3 | pydantic (user-named) | todo, acid test for primitive-obsession on well-typed code |
-| real 4 | my pick, non-Python brownfield app | todo |
-| real 5 | my pick, non-Python service | todo |
+| --- | --- | --- |
+| gen 1 | TS/React dashboard (small module) | done (pilot) |
+| gen 2 | Java service (small module) | done |
+| gen 3 | Go CLI (small module) | todo, sounding 2 / error-values |
+| gen 4 | Rust or C# module (small module) | todo |
+| gen 5 | Node/JS backend (small module) | todo |
+| real 1 | earthaccess whole-repo audit (Python) | seeded by `auth.py`; repo audit todo |
+| real 2 | rasterio whole-repo audit (Python) | todo |
+| real 3 | pydantic whole-repo audit (Python) | seeded by `color.py`; repo audit todo |
+| real 4 | non-Python whole-repo audit (my pick) | todo |
+| real 5 | non-Python whole-repo audit (my pick) | todo |
 
-**Recommended next order:** gen-2 Java, then real-3 pydantic (highest information).
-**Pilot conclusions:** primitive-obsession fired on generated + real (one more real corroboration
-from a §A promotion); sound-typing fired on real; immutability is corpus-dependent (standalone on
-generated, fused into sounding 1 on real OO code). All held out of §A pending the full batch.
+**Recommended next order:** run the five audits one-per-turn, starting with the two already
+seeded (pydantic, earthaccess); slot the cheap generated small-module runs (gen-3..5) in
+between. Each repo's `clean`/`mixed`/`poor` prior is confirmed or refuted by its own audit.
+**Stopping rule:** theoretical saturation across diverse cells (see The analysis output), not
+a target count and not statistical significance.
+**Pilot/seed conclusions (provisional).** primitive-obsession fired on generated (TS, Java) +
+real (earthaccess `auth.py`); on pydantic `color.py` (one deprecated module) it correctly did
+NOT fire (`h_units: str` closed by the leverage trace), a specificity data point at the *module*
+level, not yet a repo-level claim. sound-typing fired on real. immutability is corpus-dependent:
+standalone (leaked collection / mutable value) on generated, fused into 1 (lifecycle) or 5
+(duplicated derived state) on real OO code. testability-without-mocks fired on mock-heavy Java,
+fully a consequence of 6. All held out of §A pending the five audits.
 
 ## The analysis output
 
-After the batch, produce a **stratified** fire-frequency table: sounding × provenance
-(and × quality). The money comparison is `self-plumbed` vs `external-raw` / `generated`:
+After the batch, produce a **stratified signal read**, not a statistical frequency
+table: sounding × provenance (and × quality), reported as *directional* (fired / did not
+fire / fired-but-parked), never as a rate with an implied denominator.
+
+**Why not statistical (decided 2026-07-20).** The questions this batch asks are existence
+and contrast, not estimation: "does sounding X *ever* fire off the self-plumbed corpus?"
+(one counterexample settles it), "is X hot on `poor` and quiet on `clean`?" (a few per
+side show the pattern), "does a smell recur in `Unhomed:` with no home?" (saturation, not
+frequency). A real fire-*rate* with confidence would need tens of repos *per cell* (dozens
+of cells, so hundreds to thousands of audits), and even then it is one rater (me) scoring
+soundings I also designed: correlated subjective judgments, not independent measurements,
+so a significance number would be false precision, the same sin as reading module-counts
+as frequencies. **We do not chase statistical.** The stopping rule is **theoretical
+saturation across diverse cells**: keep adding *different* cells (empty-cell-first, per the
+sourcing recipe) until a new audit stops producing new `Unhomed:` candidates and each
+sounding has at least one clear off-self fire-or-not. Stop per-region when discovery dries
+up, not at a target N; diversity (a new language/shape) outvalues volume (another repo in
+a filled cell). If genuine frequencies are ever wanted, the only honest path is
+**automation** (plumb as a mechanical pass over hundreds of repos, machine-counted), a
+separate project with a different cost structure, out of scope for hand-run dogfooding.
+
+The money comparison stays `self-plumbed` vs `external-raw` / `generated`:
 
 - cold in `self-plumbed`, hot elsewhere → **bias-suppressed**; keep it, it is
   high-value on the target user's code (this is the correction that retracts the
   "testability fires ×1, fold it" verdict).
 - cold in **both** → a genuine cut candidate.
 
-Feed the stratified table back into TIGHTENING-SIGNALS.md §C, and any recurring
+Feed the stratified read back into TIGHTENING-SIGNALS.md §C, and any recurring
 `Unhomed:` into a candidate new sounding for §A.
 
 ## Entry template
