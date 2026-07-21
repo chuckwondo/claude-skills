@@ -195,6 +195,39 @@ from a second, bias-free direction, adds one genuinely new bias-invisible candid
 transitions). None is a fire-frequency artifact, so all survive the §C freeze. Promote a
 candidate into TIGHTENING-SIGNALS.md §A once it fires in the adversarial batch.
 
+### Second pass: un-walked canon (pending, do BEFORE the repo audits)
+
+*Rationale (decided 2026-07-21): the soundings are the measuring instrument; the repo
+audits measure with it, so complete the deductive **nomination** set before measuring. A
+candidate nominated mid-batch leaves the already-run audits blind to it (incomplete
+`Unhomed`/fire data, re-work). The canon walk is cheap and code-independent, so it has no
+reason to wait behind the expensive audits. This completes **nomination only**: promotion
+(§A) still requires an adversarial fire, and the combine decisions (§C) stay frozen pending
+batch data, so canon-first adds candidates without touching either downstream gate.*
+
+The first pass walked Fowler + CxC + Ousterhout + NTCoding. Sweep the un-walked bodies
+below next, same distinct-kernel-vs-fold test, until a new catalog yields no new candidate
+(**saturation**, mirroring the repo-side stopping rule):
+
+- **Connascence** (Page-Jones, connascence.io): the systematic coupling taxonomy (name,
+  type, meaning, position, algorithm, execution, timing, value, identity). Test whether any
+  *static* form (esp. position, meaning, algorithm) is a probe sounding 8 is too coarse to
+  name.
+- **CQS / Command-Query Separation** (Meyer): a command that returns state, or a query that
+  mutates. Already has **inductive** support: the earthaccess `auth.py` run flagged
+  `_get_credentials` as a query-named command that mutates `self`, homed awkwardly under
+  9/4. Deductive miss + real unhomed fire = strongest candidate.
+- **Full GRASP / SOLID**: SRP=9, DIP=8/6, LoD=Tier-3 already covered; individually check LSP
+  / behavioral subtyping, OCP, ISP, Protected Variations, Indirection, Pure Fabrication.
+  Some may be off-axis for plumb's non-inheritance focus: **decide, don't omit**.
+- **Temporal coupling** (must-call-A-before-B with no explicit state machine): broader than
+  the Tier-2 illegal-transitions candidate; check if distinct.
+- **Design by contract** (Meyer pre/post/invariant): against 1 (invariant in type) and 11
+  (check tier), is contract conformance a distinct probe?
+
+Output: fold the survivors into the Tier-1/2/3 lists above, then run the repo audits
+against the completed candidate set.
+
 ---
 
 ## Open tensions & harvest
