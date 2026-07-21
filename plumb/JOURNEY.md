@@ -57,7 +57,15 @@ session that produced them). Where each beat's source lives:
 - **Beats 2-4 (bias, blindness, gap-finders):** `claude-skills` transcripts, 5 sessions from
   **2026-07-08**; the signals (`corpus`, `selection bias`, `coverage audit`, `unhomed`,
   `bias-suppress`) are present.
-- **Beats 5-7 (this session):** 2026-07-20/21, in the conversation itself.
+- **Beats 5-7:** the **2026-07-20/21 session** that first created this file, in the conversation
+  itself.
+- **Beats 8-9 (+ the earthaccess real-1 whole-repo audit):** the **2026-07-21 session**, a
+  **separate, later transcript** from the 5-7 one. Beat 8 = the second canon pass; beat 9 = the
+  CxC proxy-source catch (and its same-session `nsidc`-vs-`earthaccess-dev` echo). The
+  "(this session)" tags on beats 5-9 therefore point at **two different transcripts** — a
+  boundary the origins-mining pass must respect, since attribution is per-transcript. (The
+  earthaccess audit itself is *not* a beat: it is a confirmation, and DOGFOOD-LOG already holds
+  it; the journey records only what the working docs erase.)
 
 **The bias, quantified from the recon:** `faithful` and `round-trip` appear in ~102 of the 215
 covjson-msgspec sessions (~half), because covjson-msgspec *is* a faithful-serialization
@@ -219,6 +227,16 @@ party who can confirm (the user) verify the claim the model cannot cleanly self-
   sin as calling a repo clean from its reputation (beat 5), one level up: it launders priors as
   authority and goes blind to precisely what's new. Open the source, or label the proxy as a
   proxy — never let a remembered catalog impersonate the real one.
+- **Echo, same session (the pattern, not a one-off):** the identical slip recurred within the
+  hour. Starting the earthaccess audit I reached for `nsidc/earthaccess` — the *apparent*
+  canonical upstream — and the user corrected it again: "that's old/deprecated, use
+  `earthaccess-dev`." **Two source-provenance catches by the user in one session**, same shape
+  each time: a solo model reaches for the *plausibly-authoritative* source (the famous canon, the
+  official upstream) over the *actually-current* one, and the person who knows the real provenance
+  is the one who catches it. The recurrence is the real datum — this is a **systematic** failure
+  mode of solo model work, not a stray miss, which is exactly why the human-in-the-loop is
+  load-bearing and why the transferable method must name "verify the source is the live one" as a
+  step, not a footnote.
 
 ---
 
