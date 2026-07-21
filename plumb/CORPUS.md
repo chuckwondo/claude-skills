@@ -156,7 +156,7 @@ per-module tallies are **provisional** until the whole-repo audit lands.
 | gen 4 | Rust or C# module (small module) | todo |
 | gen 5 | Node/JS backend (small module) | todo |
 | real 1 | earthaccess whole-repo audit (Python, mixed/brownfield) | **DONE 2026-07-21** @ `bbbced0b` (audit the `earthaccess-dev` fork; `nsidc/earthaccess` is deprecated per the maintainer). `mixed` prior confirmed; CQS + temporal-coupling + primitive-obsession + sound-typing all fired real; **zero new unhomed** (saturation) |
-| real 2 | developmentseed/titiler-cmr whole-repo audit (Python, **mock-heavy**, external) | todo; provenance **external** (user's contribution minimal, not design-shaping); quality prior `mixed` (user reports messy), tested by the audit |
+| real 2 | developmentseed/titiler-cmr whole-repo audit (Python, **mock-heavy**, external) | **DONE 2026-07-21** @ `5101ef06`. `mixed` prior confirmed (reverse polarity: quiet-typed-core + loud-orchestration-rim, mirror of earthaccess). testability-without-mocks fired **and resolved as fully derivative of 6** (135 mocks → 4 reached-for effects: global cache, inline sync/async Client, `datetime.now`, `np.random`); recommend fold-not-promote. Headline `temporal: str` unparsed sum (primitive-obsession 3rd real positive, new shape) + `0`-as-unknown size-guard bypass (both **run**-confirmed). Candidate set read as clean CONTRAST vs earthaccess (CQS/temporal-coupling strong there, quiet here; recoverable/unrecoverable classified both models, opposite verdicts). **Zero new unhomed** (saturation holds across a model-quality flip) |
 | real 3 | non-Python: **Go service** (error-values / sounding 2) | todo; concrete repo chosen at audit time |
 | real 4 | non-Python: **Rust or TS app** (ownership+exhaustiveness, or frontend-ui state) | todo; concrete repo chosen at audit time |
 | deferred | pydantic (clean-prior control, 23k LOC) | `color.py` seed retained; full audit only if saturation not reached |
@@ -174,11 +174,15 @@ should now also probe for CQS, temporal coupling, and recoverable-vs-unrecoverab
 **earthaccess (real-1) is DONE @ `bbbced0b` (2026-07-21): all three new candidates fired real,
 CQS strongest (multiple in-repo fires), and it produced zero new unhomed candidates — a
 saturation signal that nomination is near-complete, so the remaining runs test ranking/promotion,
-not nomination.** Next: run
-the remaining audits one-per-turn, starting with **titiler-cmr** (real-2, the decisive mock cell),
-then the two non-Python picks (Go service, Rust/TS app); slot the cheap generated small-module
-runs (gen-3..5) in between. Each repo's `clean`/`mixed`/`poor` prior is confirmed or refuted by
-its own audit.
+not nomination.**
+**titiler-cmr (real-2) is DONE @ `5101ef06` (2026-07-21): the mock cell delivered its verdict —
+testability-without-mocks fires but is fully derivative of sounding 6 (fold, don't promote); the
+candidate set read as a clean CONTRAST against earthaccess (specificity, not repetition); still
+zero new unhomed (saturation holds across a model-quality flip).** Next: run
+the two non-Python picks one-per-turn (Go service = real-3, error-values / sounding 2; Rust or TS
+app = real-4, ownership+exhaustiveness or frontend-ui state) — these now test whether saturation
+survives a *language* flip; slot the cheap generated small-module runs (gen-3..5) in between. Each
+repo's `clean`/`mixed`/`poor` prior is confirmed or refuted by its own audit.
 **Stopping rule:** theoretical saturation across diverse cells (see The analysis output), not
 a target count and not statistical significance.
 **Pilot/seed conclusions (provisional).** primitive-obsession fired on generated (TS, Java) +
