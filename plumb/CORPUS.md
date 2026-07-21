@@ -96,15 +96,16 @@ One focused batch, not forty entries. Goal: populate the empty cells enough to s
 which soundings are bias-suppressed and to make the `Unhomed:` line trigger.
 
 - **Size**: ~10 runs, balanced **5 `generated` + 5 real**, review mode. The generated
-  half is small-module/small-diff reviews; the **real half is five whole-repo audits**
-  (see the 2026-07-20 scope decision under Batch progress). Run incrementally: a 2 to 3
+  half is small-module/small-diff reviews; the **real half is whole-repo audits** (four
+  planned: 2 Python + 2 non-Python, pydantic deferred; see the 2026-07-20 scope decision
+  under Batch progress). Run incrementally: a 2 to 3
   run *pilot* first, to validate the entry format and see whether the coverage-audit
   candidates fire at all, then complete the batch.
 - **Target spread** (deliberately hit empty cells, and *mix generated with real*): at
   least 4 languages; at least 3 shapes including one `frontend-ui`; at least 5 `poor`; a
   **balanced provenance mix**, roughly half `generated` and half real
   (`external-raw` / `external-reviewed`), so neither the self-plumbed bias nor the
-  LLM-smell bias dominates; at least 2 `brownfield`; the five real runs are whole-repo
+  LLM-smell bias dominates; at least 2 `brownfield`; the real runs are whole-repo
   audits (superseding the earlier "at least 1"; see Batch progress), which exercise the
   brownfield stance, cf. the zarr entry.
 - **Generated vs real is itself a signal**, not just volume: generated code carries its
@@ -113,18 +114,26 @@ which soundings are bias-suppressed and to make the `Unhomed:` line trigger.
   premature abstraction). A coverage-audit candidate that fires hot on `generated` but
   cold on real repos is suspect as an LLM artifact; one that fires on both is a real
   gap. Read the `generated` vs `external-raw` columns against each other.
-- **Scope guardrail**: generated runs stay a diff or a small module; the five real runs
+- **Scope guardrail**: generated runs stay a diff or a small module; the real runs
   are whole-repo audits (expensive, one per turn). Time-box each.
 - **Log**: the normal entry plus the `Corpus:` and `Unhomed:` lines. Mark the batch so
   it can be analyzed as a group.
 
 ### Batch progress (pilot done 2026-07-20; real half rescoped to whole-repo audits 2026-07-20)
 
-**Scope decision (2026-07-20).** The *real* half of the batch is **five whole-repo audits**,
-not single-module reviews: **3 Python** (earthaccess, rasterio, pydantic) + **2 non-Python**
-(my picks). The *generated* half stays small-module/small-diff (the cost guardrail). This
-supersedes the earlier "at least 1 whole-repo audit" floor. Audits are breadth-first and
-leverage-ranked (zarr-style top-N across the repo), one repo per turn (expensive).
+**Scope decision (2026-07-20).** The *real* half of the batch is **whole-repo audits**, not
+single-module reviews: **2 Python** (earthaccess, seeded; and developmentseed/titiler-cmr, a
+**mock-heavy** repo picked to hit the testability-without-mocks cell the self-corpus
+suppresses to ~zero) + **2 non-Python** (my picks). **pydantic is deferred** (clean-*prior*
+specificity control, 23k LOC, low marginal info now; its `color.py` seed stays as a module
+data point, and a full audit runs only if saturation is not reached) and **rasterio is
+dropped** (a second Python-library fire-source is volume in an already-filled cell). Capping
+Python at 2 follows the saturation logic: the three candidate Python repos all live in the
+saturated `python · library` cell, so diversity (non-Python, plus the mock axis) outvalues a
+third Python library. The *generated* half stays small-module/small-diff (the cost
+guardrail). This supersedes the earlier "at least 1 whole-repo audit" floor. Audits are
+breadth-first and leverage-ranked (zarr-style top-N across the repo), one repo per turn
+(expensive).
 
 **Quality tags are a-priori priors, not audit results.** Per this file's own definition,
 quality is assigned *coarse and a-priori*, so `clean`/`mixed`/`poor` on a repo is a
@@ -146,15 +155,17 @@ per-module tallies are **provisional** until the whole-repo audit lands.
 | gen 3 | Go CLI (small module) | todo, sounding 2 / error-values |
 | gen 4 | Rust or C# module (small module) | todo |
 | gen 5 | Node/JS backend (small module) | todo |
-| real 1 | earthaccess whole-repo audit (Python) | seeded by `auth.py`; repo audit todo |
-| real 2 | rasterio whole-repo audit (Python) | todo |
-| real 3 | pydantic whole-repo audit (Python) | seeded by `color.py`; repo audit todo |
-| real 4 | non-Python whole-repo audit (my pick) | todo |
-| real 5 | non-Python whole-repo audit (my pick) | todo |
+| real 1 | earthaccess whole-repo audit (Python, mixed/brownfield) | seeded by `auth.py`; **run first** |
+| real 2 | developmentseed/titiler-cmr whole-repo audit (Python, **mock-heavy**, external) | todo; provenance **external** (user's contribution minimal, not design-shaping); quality prior `mixed` (user reports messy), tested by the audit |
+| real 3 | non-Python: **Go service** (error-values / sounding 2) | todo; concrete repo chosen at audit time |
+| real 4 | non-Python: **Rust or TS app** (ownership+exhaustiveness, or frontend-ui state) | todo; concrete repo chosen at audit time |
+| deferred | pydantic (clean-prior control, 23k LOC) | `color.py` seed retained; full audit only if saturation not reached |
+| dropped | rasterio | 2nd Python-library fire-source, a filled cell |
 
-**Recommended next order:** run the five audits one-per-turn, starting with the two already
-seeded (pydantic, earthaccess); slot the cheap generated small-module runs (gen-3..5) in
-between. Each repo's `clean`/`mixed`/`poor` prior is confirmed or refuted by its own audit.
+**Recommended next order:** run the audits one-per-turn, starting with earthaccess (already
+seeded), then titiler-cmr (the decisive mock cell), then the two non-Python picks (Go service,
+Rust/TS app); slot the cheap generated small-module runs (gen-3..5) in between. Each repo's
+`clean`/`mixed`/`poor` prior is confirmed or refuted by its own audit.
 **Stopping rule:** theoretical saturation across diverse cells (see The analysis output), not
 a target count and not statistical significance.
 **Pilot/seed conclusions (provisional).** primitive-obsession fired on generated (TS, Java) +
