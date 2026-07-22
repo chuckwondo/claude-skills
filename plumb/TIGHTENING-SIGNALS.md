@@ -18,6 +18,11 @@ today's **16**. Corroboration count = distinct entries that produced the signal.
 Well-corroborated signals that change *behavior/notes*, not the sounding count: safe to land into
 SKILL.md whenever green-lit, independent of the combine. Each names a concrete target.
 
+> **Count-changing promotions live in §C-batch, not here** (§A is behavior/notes only). Landed
+> 2026-07-22 from the batch: **primitive-obsession** (SKILL sounding 18), **sound-typing** (19), **CQS**
+> (20), plus the **sounding-3 language-dependence note**. Folds recorded there too (testability→6,
+> immutability→1+10, must-consume→1+3, temporal-coupling→rider on 1, recoverable/unrecoverable→router).
+
 ### A1. "Affirmed" is not "closed": discharge is an action, not an argument *(×15+, the sharpest; landed in two passes)*
 The only two logged **misses** were soundings *named but not run*: `#90` (diff pass affirmed the 5
 fix landed, never swept the new code for a *fresh* 5 → code-review caught it) and `#41` (both passes
@@ -300,8 +305,20 @@ the combine runs.
 
 ## C. Cut / keep evidence (fire-frequency): answers REFINEMENT.md's "which never fire → cut"
 
-> **FROZEN (2026-07-20): do not cut a sounding on this data.** The corpus is one cell
-> (`self-plumbed · clean · python · library`), which is author-pre-corrected, so
+> **UNFROZEN (2026-07-22): the corpus is now representative.** The adversarial batch
+> reached its stopping rule (theoretical saturation: four external/real audits, earthaccess
+> loud-Python, titiler clean-typed-Python, gen-3 error-values-Go, real-4 messy-external-Rust,
+> each nominating **zero** new `Unhomed:` candidates, across both the quality and the language
+> axis). Fire-frequency can now be read *stratified by provenance* (the money comparison), so the
+> cut/keep freeze lifts. **Result: still no clean cut** (no sounding ever failed to fire; even 17
+> earned an off-self fire on gen-2). What the stratification delivers is the bias correction the
+> freeze protected: three soundings that read "cold" on the self-corpus are **hot off-self**
+> (bias-suppressed keeps → promoted), and two candidates that read "keep" **fold** on a distinctness
+> axis the money comparison alone cannot see. Full stratified read and every disposition are in
+> **§C-batch** below; the historical one-cell caveat that follows is retained for context.
+
+> **FROZEN (2026-07-20, LIFTED 2026-07-22 by §C-batch): do not cut a sounding on this data.** The
+> corpus is one cell (`self-plumbed · clean · python · library`), which is author-pre-corrected, so
 > fire-frequency measures `importance × how often THIS corpus commits the sin`, and the
 > second factor is near zero for the bad-practice soundings (testability-without-mocks
 > fires ~never because we never write mocks). A low count here is as likely to be
@@ -323,10 +340,123 @@ targets, but activity is very uneven, which is the real input to the combine.
 - **Lightly exercised: the genuine combine questions:**
   - **14** (trivial-common-path): fired **only ever as an affirmation** (`#14`, `#69`), never drove a
     finding. The closest thing to a cut candidate, but "affirm-only" ≠ "never fires."
-  - **17** (locality of behavior): fired **exactly once** (`zarr`, as an 8/9/17 co-fire); the newest
-    and least-exercised. Its keep-vs-merge-into-9/10 is the most open call.
-  - **2** (outcomes-as-values): a few findings (`#74` Raw-reject, `#18` explicit `Skipped`) plus its
-    LANDSCAPE-driven Boundary line; load-bearing but rarely a standalone headline.
+  - **17** (locality of behavior): fired `zarr` (8/9/17 co-fire), **then again off-self** on gen-2
+    Java (`describeStatus` feature envy, a real finding). No longer "exactly once"; its
+    keep-vs-merge-into-9/10 stays the open combine call (see §C-batch).
+  - **2** (outcomes-as-values): a few *self* findings (`#74` Raw-reject, `#18` explicit `Skipped`)
+    plus its Boundary line, rarely a standalone *self* headline. **The batch reversed that reading:**
+    2 is the dominant headline the moment the corpus is an error-values language (gen-3 Go, real-4
+    Rust) or external code (titiler `temporal`, earthaccess collapse) — bias-suppressed as a headline,
+    see §C-batch.
+
+### §C-batch: stratified signal read (2026-07-22) — the adversarial-batch analysis output
+
+*Per [CORPUS.md](CORPUS.md) "The analysis output": sounding × provenance, **directional** (fired /
+did-not-fire / fired-but-parked / affirm-only), never a rate. Saturation-based, not statistical
+(single-rater instrument). Provenance buckets: **self** = the ~40-entry `self-plumbed·clean·python`
+cell; **gen** = `generated·poor` (gen-1 TS, gen-2 Java, gen-3 Go); **real** = `external·mixed`
+(earthaccess py-lib, titiler py-service, real-4 Rust-service) + the pydantic `clean` seed. Money
+comparison: cold-in-self / hot-elsewhere = **bias-suppressed → keep**; cold-in-both = **cut candidate**.*
+
+| sounding / candidate | self | gen | real / external | disposition |
+|---|---|---|---|---|
+| **2** outcomes-as-values | fired, ~never *headline* | fired (sentinel, bare returns) | **HEADLINE ×4** (gen-3 Go & real-4 Rust Boundary; titiler `temporal`; earthaccess collapse×7) | **keep; bias-suppressed *as a headline*** — cold-headline in self, hot-headline on error-values langs + external. Re-rank up at the combine. |
+| **17** locality | fired ×1 (`zarr`) | **fired** (gen-2 feature envy) | — | off-self fire → no longer "×1"; `[combine? 9/10]` call still open |
+| **14** trivial-path | affirm-only | did-not-drive | affirm-only (earthaccess shell) | cold-*driving* in both → **merge candidate** (fold into 5 / rider), **not a cut** |
+| primitive-obsession | **cold (bias-invisible)** | HOT (TS, Java, Go) | HOT (earthaccess `strategy:str`, titiler `temporal:str`, real-4 no-`Request` type) + correct-negative (pydantic `h_units`) | **bias-suppressed → PROMOTE** (new sounding 18) |
+| sound-typing | cold | — | fired ×3 mech (earthaccess return-`Any` / `Literal\|Any` / two-shape); parked-correctly (titiler `Any`-at-edge) | **bias-suppressed → PROMOTE** (new sounding 19), bound vs 3/16 |
+| CQS | cold | — | STRONG (earthaccess `_get_credentials`, `__repr__`); near-silent-*contrast* (titiler `bounds`) | **bias-suppressed → PROMOTE** (new sounding 20), bound vs 6/9 |
+| immutability | cold-standalone (fuses 1) | standalone (gen-2 leaked `List` / mutable value) + fused | fused (earthaccess→1, pydantic→5) | **FOLD into 1 + 10** — leaked-mutable-collection is its *only* standalone face |
+| testability-without-mocks | ~never | consequence-of-6 | **derivative-of-6** (titiler mock cell: 135 mocks → 4 reached-for effects DI removes) | **FOLD into 6** — the mock cell was built to give it a standalone identity and it did not |
+| must-consume / `#[must_use]` | n/a | Go **can't-enforce** (gen-3, `go vet` silent) | Rust **enforce-but-opt-out** (real-4 `let _=` / `.unwrap()` / `Default`) | **FOLD into 1** (designer) **+ 3** (consumer); drives the **sounding-3 language note** |
+| recoverable vs unrecoverable | n/a | — | classified BOTH models, opposite verdicts (earthaccess dict = wrong; titiler pydantic = right) | **KEEP as a meta-router** (routes to 1 vs 2/11; "fires" by classifying) |
+| temporal-coupling | cold | — | fired (earthaccess login-before-use, unenforced by types); silent (titiler, injected) | **KEEP as a rider on 1** (make the illegal *sequence* unrepresentable) |
+
+**Money-comparison verdicts.**
+
+- **Bias-suppressed keeps** (the freeze's whole purpose). primitive-obsession, sound-typing, and CQS
+  read cold on the self-corpus *only* because we already model with types / don't lie to the checker /
+  don't mix command-and-query; each fires real off-self. All three **promote** (§18–20 in SKILL.md).
+  The same pattern re-valued an *existing* sounding: **2's headline-value is bias-suppressed** — we
+  write errors-as-values by habit, so 2 seldom headlines self runs, yet it is the dominant headline
+  the instant the corpus is an error-values language (Go, Rust) or external code. A method built to
+  vet candidates also re-ranks a shipped sounding.
+- **No clean cut.** Cold-in-both would be a cut target; nothing is. 14 is the closest (affirm/prescribe-
+  only in *both* self and off-self, never drove a finding), so it stays a **combine** (merge-into-5 /
+  rider) question, not a cut.
+- **The distinctness axis the money comparison cannot see.** Hot-off-self proves a candidate is *real*
+  (not an LLM / self-plumbed artifact); it does **not** prove it is a *distinct sounding*. testability
+  fired hot on the mock cell (real, not suppressed to zero) yet **folds**, because its *Move is
+  identical to 6's* (inject the seams). Two axes, not one: `bias artifact?` (cold/hot) and `distinct
+  probe?` (is the Move new?). immutability and must-consume fold on the same second axis (their Moves
+  are 1/10 and 1/3). This sharpens CORPUS's money-comparison rule, which as written implies
+  hot-elsewhere ⇒ keep; the batch shows hot-elsewhere ⇒ *real*, and distinctness is a separate test.
+
+**§A promotion reviews (the corpus now earns them; each reviewed on specificity, none declined).**
+
+- **primitive-obsession → PROMOTE (sounding 18).** Real positives across two distinct shapes
+  (earthaccess `strategy:str` = closed-set-as-string; titiler `temporal:str` = structured-value-as-string;
+  real-4 no-`Request`/`Response`/`Method`/`Status` type) + three generated (TS, Java, Go) + the pydantic
+  `h_units` **correct-negative** (closed by the leverage trace: a transient regex capture, not a trusted
+  domain value). Specificity demonstrated — it does *not* fire on every string-typed closed set, only on
+  one a downstream consumer trusts. Distinct from 1 (field *combinations*) and 4 (a name can be exact
+  while the *type* stays primitive). Standalone, not a rider on 1.
+- **sound-typing → PROMOTE (sounding 19), bound tightly vs 3/16.** Three real mechanisms on earthaccess
+  (`login -> Any` return-Any; `Literal[...] | Any` union-collapse; `Mapping[str,str]` two-shape under-spec)
+  + titiler's **parked** `Any`-at-a-real-dynamic-edge (specificity: the fire is an `Any` that *defeats* a
+  declared type, not one at a genuine xarray/cache boundary). Absorbs A10 (a `TypeIs` predicate stricter
+  than its input is unsound; use `TypeGuard`) as its narrowing facet.
+- **CQS → PROMOTE (sounding 20), honoring `[bound against 6/9]`.** Strongest real showing on the run
+  designed to test it: earthaccess `_get_credentials` (a `get_`-named query mutating four `self` fields
+  and returning `bool`) and `DataGranule.__repr__` (a repr that mutates the record). The bound held —
+  both are per-method command/query mixing, not architecture (6) or generic cohesion (9). titiler's
+  near-silence (only `backend.bounds`, a query with an I/O side effect) is the specificity contrast a
+  worthless probe would not show.
+
+**Fold decisions (recorded per step 4, with reasons — not omissions).**
+
+- **testability-without-mocks → 6.** gen-1 (homed under 6), gen-2 (consequence of 6), titiler real-2
+  (the decisive mock cell: 135/18/14 mock counts → four reached-for effects — global cache, inline
+  sync/async `Client`, `datetime.now`, `np.random` — each removed by the DI the repo already practices
+  elsewhere). Present but not independent; fold as 6's test-visible symptom.
+- **immutability → 1 + 10.** gen-1 standalone push/mutation; gen-2 **both** (lifecycle fused into 1
+  *and* a standalone leaked `List` / mutable `OrderItem`); earthaccess fused into 1; pydantic fused with
+  5. The **only standalone face** is the leaked-mutable-collection / mutable-value (gen-2); elsewhere it
+  fuses (lifecycle→1, derived-state→5, leaked-rep→10). A lens over 1/10, not a standalone probe.
+- **must-consume / `#[must_use]` → 1 + 3.** The gen-3 (Go: no enforcement, `go vet` silent) + real-4
+  (Rust: `#[must_use]` warns but is opted out with `let _=` / `.unwrap()` / `Default`) pair: enforcement
+  is *language-dependent*, and where the language enforces there are idiomatic opt-outs. Designer-side
+  Move is 1 (make an ignored outcome unrepresentable — exactly what `#[must_use]` does); consumer-side is
+  3 (handle the case). No new Move → fold; the one residue that IS landed is the sounding-3 note.
+- **temporal-coupling → rider on 1.** One real fire (earthaccess login-before-use, enforced only by
+  runtime branches/raises, never the type); silent where auth is injected (titiler). The Move is 1's
+  pointed at *sequences* (make the illegal *order* unrepresentable — a capability the authed calls
+  require). Rider, not a standalone sounding.
+- **recoverable vs unrecoverable → keep as a meta-router.** It catches no violation; it *routes*:
+  received-authority-with-checkable-grammar (**recoverable**) → a boundary parser / validating
+  constructor (1 at the edge, or 2/11); a fact about history/intent/provenance the bytes don't record
+  (**unrecoverable**) → construction-control is the only mechanism (1). It classified earthaccess's dict
+  model and titiler's pydantic tree to *opposite* verdicts — the router working. Watch it stays a router
+  and doesn't collapse into "parse at the boundary" (1).
+
+**Merge/keep calls (§B markers vs observed co-fire, now unfrozen; execution stays the deferred combine).**
+
+- **5 is confirmed the empirical hub**, and the batch adds co-fires that again disagree with its armchair
+  `[combine? with 6, 14]` marker: titiler's `temporal:str` root co-fires 2/4/primitive-obsession;
+  earthaccess's dict model co-fires 10/7/CQS/primitive-obsession/sound-typing. **Call:** at the combine,
+  drive 5's merges from its real neighbors (1, 3, 16, 15, 10, 13, + primitive-obsession); drop the 6/14
+  armchair marker as unsupported.
+- **primitive-obsession co-fires with 1/2/3/4** on stringly-typed dispatch (earthaccess, gen-1/2/3) — the
+  promoted sounding wants tight boundaries against all four at the combine.
+- **14 ↔ 5:** the mutual marker is armchair; 14 never co-fired with 5 (14 only affirms the thin-convenience
+  shell). **Call:** 14 is a lightly-used keep whose 5-merge is not co-fire-earned; revisit as fold-14-into-
+  a-rider on its low *drive*-rate, not on a 5 coupling.
+- The full 17 → ~10–12 **combine execution stays deferred** (REFINEMENT item 3): these are the now-decidable
+  *calls*; landing the merges (and reconciling the count, §E3) is its own pass. This session deliberately
+  *grows* the pre-combine set (three promotions) so the combine runs from the complete evidence-backed set
+  rather than pre-suppressing earned probes. Count moved 17 → 20, and the batch **swapped the
+  sanctioned-additions membership**: immutability + testability folded OUT, primitive-obsession + CQS in
+  (sound-typing landed as already planned) — the §E3 "~19" reconciliation now resolves on evidence, not count.
 
 ---
 
@@ -398,6 +528,12 @@ for Z" (`#74`/`#18`).
 queued) · A3 (sounding-12 verify-the-source riders: pin-revision, shape, upstream, doc-grounding,
 verify-can-close, 2026-07-20) · A4 (sounding-5 Boundary line, 2026-07-14) · E1 + E2 (the two doc fixes,
 2026-07-14).
+
+**✔ Landed (2026-07-22, the batch analysis output, count-changing — recorded in §C-batch):** three
+promotions into SKILL.md (**18** primitive-obsession, **19** sound-typing, **20** CQS) + the **sounding-3
+language-dependence note**. §C cut/keep unfrozen (no cut); folds recorded (testability→6, immutability→1+10,
+must-consume→1+3, temporal-coupling→rider-on-1, recoverable/unrecoverable→router). The 17→~10–12 combine
+execution stays deferred; its calls are now decidable and recorded.
 
 **Queued, ranked by leverage:**
 

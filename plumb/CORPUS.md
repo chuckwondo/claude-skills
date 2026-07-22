@@ -207,6 +207,16 @@ fully a consequence of 6. All held out of §A pending the five audits.
 
 ## The analysis output
 
+**DONE 2026-07-22.** The batch hit its stopping rule (four external/real audits, zero new
+`Unhomed:` each, across quality and language) and the stratified read is written into
+[TIGHTENING-SIGNALS.md](TIGHTENING-SIGNALS.md) **§C-batch**: sounding × provenance,
+directional. Outcome: three bias-suppressed promotions (primitive-obsession, sound-typing,
+CQS → SKILL soundings 18/19/20), two folds-on-the-distinctness-axis (testability→6,
+immutability→1+10), the must-consume Go/Rust pair folded into 1+3 with a sounding-3 note,
+temporal-coupling kept as a rider on 1, recoverable/unrecoverable kept as a meta-router,
+and no cut. gen-4/gen-5 skipped as volume in filled cells. The spec below is retained as
+the method of record.
+
 After the batch, produce a **stratified signal read**, not a statistical frequency
 table: sounding × provenance (and × quality), reported as *directional* (fired / did not
 fire / fired-but-parked), never as a rate with an implied denominator.

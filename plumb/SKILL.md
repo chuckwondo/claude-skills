@@ -89,6 +89,14 @@ Every input and every variant is handled; adding a case *forces* the update
 non-exhaustive match with a silent default; a fall-through that swallows the
 unforeseen; a new variant that quietly breaks old callers. **Move:** make the
 match exhaustive (assert-never); prefer closed sets the checker can enforce.
+**Note (the guarantee is language-dependent):** "adding a case forces the update"
+assumes a checker that enforces exhaustiveness. That holds for a closed sum matched
+with `assert_never`, but *not* for error-values: Go's `(T, error)` lets `_ :=` and a
+bare call compile clean with `go vet` silent, and Rust's `#[must_use] Result` *warns*
+yet is routinely opted out of (`let _ =`, `.unwrap()`, a `Default` fallback). So for
+error-values (Go, C return codes, unchecked exceptions) totality degrades to opt-in
+tooling (`errcheck`/`staticcheck`) or a runtime silent-drop; name it as a discipline,
+not a compiler guarantee, where the language doesn't provide the check.
 
 ### 4. Names encode shape
 A name tells you the *kind*: a one-of union vs a value+failures record vs a single
@@ -253,6 +261,59 @@ cohesion (9, *one* concern per unit) and encapsulation (10, hide representation)
 distinct: this is the method-*placement* face of the same pull (GRASP *Information
 Expert* / *Tell, Don't Ask*). Harvested from the clean-code rubric; the
 `[combine?]` marker defers merge-or-keep to the tightening pass.
+
+### 18. Model the domain with types, not primitives  `[combine? with 1, 4]`
+A value from a closed set, or one carrying structure, gets its own type rather than a
+bare `str`/`int`/`tuple`; a field-group that always travels together becomes one
+object. First split **brand** (a role with *no* invariant to check: a `NewType`/tag)
+from **value object** (a real invariant: a smart constructor); the gate is "is there
+anything to check?" **Smell:** a `str` standing in for a closed enum (`strategy`,
+`status`, `role`) dispatched by `if/elif`; a structured value smuggled as a string (a
+`"start/end"` interval re-`split` at three call sites); a recurring positional tuple
+(`(lat, lon)`, `(endpoint, region)`) where a named record belongs; `**kwargs: Any` on a
+public signature that a misspelled key passes through silently. **Move:** lift the
+primitive into the domain type: a `Literal`/enum for a closed set (which also makes the
+dispatch compiler-exhaustive, co-firing 3), a parsed sum for a structured value
+(co-firing 2), a small record for a data-clump. **Boundary:** distinct from 1 (illegal
+*combinations* of fields, not the primitive-vs-type choice) and 4 (a name can be exact
+while the *type* stays primitive). The leverage trace gives it specificity: it fires on
+a closed-set / structured value a *downstream consumer trusts as a domain value*, and
+stays silent on a transient token consumed on the next line (a regex capture used once,
+never stored). Promoted from the canon audit (bias-invisible to fire-frequency) plus
+adversarial-batch real fires; `[combine?]` defers final merge to the tightening pass.
+
+### 19. Sound typing: no lies to the checker  `[combine? with 3, 16]`
+The static checker sees the real shape: no `Any` laundering, no `cast` to a type the
+value isn't, no unsound narrowing that strips a case the checker would otherwise force.
+**Smell:** a `Literal[...] | Any` that collapses the whole union back to `Any`
+(defeating the Literal's point); a public function annotated `-> Any` that in fact
+returns one known type; a `Mapping[str, str]` under-specifying two distinct record
+shapes; a `cast(...)` (a *named* escape) or a bare annotated assignment (a *silent*
+one) vouching for what wasn't checked; a `TypeIs` predicate *stricter* than the type it
+narrows, whose false-branch narrowing is then unsound (only a positive-only `TypeGuard`
+is correct). **Move:** annotate the real type; replace the `Any`/`cast` with a parse or
+a guard that earns the type; where a predicate is stricter than its input, use
+`TypeGuard`, not `TypeIs`. **Boundary:** bound tightly against 3 (totality is *handling*
+every case; this is *not blinding the checker* so it can force the cases) and 16 (16
+exercises the checker by feeding a known-red input; this keeps the checker able to see
+red at all). An `Any` at a genuine dynamic edge (an untyped blob, a cache) is parked,
+not a violation; the fire is an `Any` that *defeats a declared type*. Sanctioned in the
+additions round, confirmed by the batch; `[combine?]` defers final merge.
+
+### 20. Command-Query Separation: ask or do, not both  `[combine? with 6, 9]`
+A method either *returns* a value (a query, no observable mutation) or *performs* a
+change (a command); one method that does both is the smell. **Smell:** a `get_`/`is_`/
+`__repr__`-named query that mutates `self` or its argument and returns a status; a
+command that also returns a value callers start to depend on. **Move:** split the query
+from the command; if a caller needs both, let it call both, so the mutation is visible
+at the call site. **Boundary:** bound against 6 and 9. Distinct from 6 (6 is *where*
+effects live: a CQS-violating method can sit wholly in the imperative shell and still
+mix asking with doing) and from 9 (generic cohesion: CQS is the narrower, per-method,
+mechanically-checkable split, does this one method both return *and* mutate?). Its blast
+radius is a query a caller trusts as pure: a `repr()` that silently rewrites the record
+it prints breaks any consumer that re-reads that record after inspecting it. Promoted
+from the canon audit's CQS gap plus its strongest real fires in the batch; `[combine?]`
+defers final merge.
 
 ## Output
 

@@ -227,6 +227,23 @@ from a second, bias-free direction, adds one genuinely new bias-invisible candid
 transitions). None is a fire-frequency artifact, so all survive the §C freeze. Promote a
 candidate into TIGHTENING-SIGNALS.md §A once it fires in the adversarial batch.
 
+**Batch outcome (2026-07-22, the batch reached saturation; dispositions in
+[TIGHTENING-SIGNALS.md](TIGHTENING-SIGNALS.md) §C-batch).** Of the candidates above:
+**primitive-obsession** (Tier-1), **sound-typing** (Tier-1), and **CQS** (Tier-1)
+**promoted** to SKILL.md soundings **18 / 19 / 20** — each fired real off-self with
+demonstrated specificity (primitive-obsession's pydantic `h_units` correct-negative;
+sound-typing's parked `Any`-at-a-dynamic-edge; CQS's near-silent titiler contrast).
+**Immutability** (Tier-1) **folded into 1 + 10** — its only standalone face is the
+leaked-mutable-collection (gen-2 Java); elsewhere it fuses into the lifecycle (1),
+derived-state (5), or leaked-representation (10). **Temporal coupling** (Tier-2) stays a
+**rider on 1** (make the illegal *sequence* unrepresentable). **Recoverable vs
+unrecoverable** (Tier-2) is **kept as a meta-router**, not a numbered sounding: it
+classified earthaccess's dict model and titiler's pydantic tree to opposite verdicts,
+routing each to 1 vs 2/11. Separately, **testability-without-mocks** (an Open-tensions
+harvest candidate) **folded into 6** — the titiler mock cell (135 mocks) proved every
+mock maps 1:1 to a reached-for effect DI removes. The Tier-3 folds and confirmed
+non-gaps held; no neighbor closed a moat gap.
+
 ### Second pass: un-walked canon (DONE 2026-07-21)
 
 *Rationale (decided 2026-07-21): the soundings are the measuring instrument; the repo
