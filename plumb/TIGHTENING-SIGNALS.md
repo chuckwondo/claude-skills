@@ -23,7 +23,7 @@ SKILL.md whenever green-lit, independent of the combine. Each names a concrete t
 > (20), plus the **sounding-3 language-dependence note**. Folds recorded there too (testability→6,
 > immutability→1+10, must-consume→1+3, temporal-coupling→rider on 1, recoverable/unrecoverable→router).
 
-### A1. "Affirmed" is not "closed": discharge is an action, not an argument *(×15+, the sharpest; landed in two passes)*
+### A1. "Affirmed" is not "closed": verifying is an action, not an argument *(×15+, the sharpest; landed in two passes)*
 The only two logged **misses** were soundings *named but not run*: `#90` (diff pass affirmed the 5
 fix landed, never swept the new code for a *fresh* 5 → code-review caught it) and `#41` (both passes
 *named* the clamp-divergence under 5×16 and argued it "bounded/negligible" → never built the
@@ -62,7 +62,7 @@ rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that r
   taken from a diffstat skim and caught only by checking before publishing: into the very document
   about treating the record honestly). Sounding 12 already forbids asserting an authority from
   memory, so (f) is less a new rule than the **surface** A1 applies to: a citation is a claim, and
-  opening it is the discharge. Distinct from (a)–(e) in that nothing here was a *verdict* or a
+  opening it is the verification. Distinct from (a)–(e) in that nothing here was a *verdict* or a
   *measurement*; the lie was a quoted source, and the tests were green throughout because none of it
   is test-catchable.
   (g) construct the breaking input the way it **arrives**, not the way that is convenient: for a
@@ -75,7 +75,7 @@ rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that r
   false why, `#137`), and run the downstream *consumer*, which already exists and whose
   crash-vs-silent-repair-vs-reject profile ranks the planned rules by leverage *before* code is written
   (`#138`, shapely): this is what makes §16 runnable in guide mode.
-  (i) the discharge hunts the ground the **last sweep skipped**, not the cases already green: a re-run
+  (i) the verification hunts the ground the **last sweep skipped**, not the cases already green: a re-run
   of the affirmed set is confirmation bias in a lab coat (`#139`).
   (j) §16 turns on the **verification code itself**: in a known-trap domain (int64 datetime overflow,
   float epsilon, timezone math) the tool reached for to check the boundary is subject to the same trap
@@ -90,13 +90,13 @@ rounding divergence (`#99`) and falsifying a subagent's code-read (`#62`) that r
   (m) **resolve the value, don't reason about its description**: ADR-0018 reasoned about "the default"
   as an abstraction and recorded a tier backwards; resolving that default to the concrete `("composite",)`
   it produces flipped the answer a year later (`#147`).
-  **Provenance across (h)–(m):** the author under-ran in every one; the discharge's real trigger was an
+  **Provenance across (h)–(m):** the author under-ran in every one; the verification's real trigger was an
   *external* prompt (the user's question, the reviewee's principle), corroborating (d): a self-authored
   design does not reliably run its own claims even when the skill says to (`#65`, `#109`, `#153`).
 - **Landed (two passes).** First pass (2026-07-14, `e6b540f`): 16's Move sharpened to *construct-and-run*
   and the "Affirmed is not closed" Working note added (sub-rules a–d + e's both-directions framing).
   Second pass (2026-07-20): (h)–(m) folded into 16's Move and the same note, the run target is wider
-  than the input (excluded case / consumer / check-itself / oldest environment), the discharge hunts
+  than the input (excluded case / consumer / check-itself / oldest environment), the verification hunts
   un-swept ground, the claim need not be code, and resolve-the-value-not-its-description. **Still
   queued:** (f) a citation is a claim (routes through sounding 12) and (g) build the breaking input by
   *decoding bytes*, not a literal: both harvested pre-07-17, deferred to the next pass.
@@ -206,22 +206,22 @@ regression) > comment (only informs). When the top rung is closed by the languag
 *enforces*, never settle at a comment.
 - **Proposed target:** Working note, or a rider on sounding 1 (SKILL.md:67).
 
-### A6. A park's reason can be *scope*, not unreachability; its discharge is a filed follow-up *(×3)*
+### A6. A park's reason can be *scope*, not unreachability; its resolution is a filed follow-up *(×3)*
 `#129`: the highest-leverage finding was `subset.py`'s bare `IndexError` on the exact input the new
 `validate()` rule flags. It was **reachable** (confirmed by running the *public* `isel()`, not the
 private helper first probed) and load-bearing, yet correctly **parked**: the path to a consumer
 exists, so the current fix-vs-park reason (SKILL.md:281–284) does not apply. It parked because the fix
 lives outside the change's agreed **scope** (`#129` scoped the work to the `validate()` rule; subset's
-repair, drop vs. diagnostic-raise, is a separate decision that may want an ADR). The discharge was a
-**routed, traceable issue (#142)**: an *action* (cf. A1's "a discharge is an action, not an
+repair, drop vs. diagnostic-raise, is a separate decision that may want an ADR). The resolution was a
+**routed, traceable issue (#142)**: an *action* (cf. A1's "verifying is an action, not an
 argument"), not a note that rots. Distinct from `#44`-commit-1's park, which flagged a better-shape
 contrast on the incumbent sibling; here the subject is a reachable crash and the boundary is scope.
 - **Corroborated (×3):** `#138` (the diff-review's whole value was one run-surfaced park routed to new
   issue #147) and `#139` (spun off docs follow-up #151); park-to-filed-issue is now the log's standard
-  park discharge.
+  park resolution.
 - **Proposed target:** the fix-vs-park Working note (SKILL.md:280–284): add "out-of-scope, routed to a
   follow-up" as a third park class beside "unreachable / sole trusted constructor," and state its
-  discharge is a *filed issue* (links A1's discharge-is-an-action rule).
+  resolution is a *filed issue* (links A1's verifying-is-an-action rule).
 
 ### A7. Measure leverage against the work's *charter*, not only a downstream consumer *(×1, clean)*
 `#129`: every prior headline traced a flaw to what *consumes* it downstream; this one traced the diff
@@ -286,7 +286,7 @@ its *real* co-fire neighbors (1, 3, 16, 15, 10, 13) are **not** the ones its cur
 | **1 × 5** | add a union member → silently omitted; the drift's leverage is one-source | `#14`, `#92` | 5 marks `[6,14]`, not 1 |
 | **3 × 5** | "add a case → silently skipped" totality smell whose leverage is a one-source drift; log says "watch whether 3 and 5 should be cross-flagged" | `#69` | neither marks the other |
 | **7 × 1** | unfaithful shape forces an invented axis + guards + defensive comment | `#44` | matches 7`[1]`, 1`[…,7]` |
-| **5 × 16** | 16 is *how you discharge* a 5-divergence (run the maximizing input) | `#41` | not marked |
+| **5 × 16** | 16 is *how you verify* a 5-divergence (run the maximizing input) | `#41` | not marked |
 | **5 × 1** | in-band sentinel for empty/root fails 5 *and* 1 at once; one representation (`()`) fixes both | `#92` | not marked |
 | **8 × 9 × 17** | coupling cycle papered by a lazy import + feature-envy | `zarr` | matches 8`[9,10]`, 17`[9,10]` |
 | **12 × 13** | diff two independently-written sibling types against a shared external authority (asymmetry invisible per-class) | `zarr` G1 | not marked; log proposes a 12↔13 cross-flag |
@@ -484,7 +484,7 @@ comparison: cold-in-self / hot-elsewhere = **bias-suppressed → keep**; cold-in
   claims to produce trusted values* → plumb (`#44` vs `#69`).
 - **Redundant coverage that paid off:** code-review's *reuse* angle caught a 5 (plumb's own turf)
   that plumb missed: twice, same day (`#90`, `#41`). The correctness bug itself is code-review's; the
-  plumb signal is *depth-of-discharge*, not a missing sounding.
+  plumb signal is *depth-of-verification*, not a missing sounding.
 - **Reversibility (15) routes the "is this over-care?" question to ponytail-review by name** rather
   than manufacturing a plumb finding (`#21` three-rounds-of-IA).
 - Clean deferrals logged where plumb correctly stayed out of ponytail/code-review's lane: `#90`
@@ -557,7 +557,7 @@ reinforce" layer). Count reconciled 20 → **10** as a consequence of grouping, 
 2. **A8: prose-drift after a reversal** (Working note under faithfulness / one-source-of-truth). ×3.
 3. **A9: run the sibling to find the shape** (Working note, or into the guide-mode note). ×2.
 4. **A5: sounding-1 unreachable-ideal → test** (small rider or Working note). ×1.
-5. **A6: park-can-be-scope, discharged as a filed follow-up** (third park class on the fix-vs-park
+5. **A6: park-can-be-scope, resolved as a filed follow-up** (third park class on the fix-vs-park
    note, SKILL.md:280–284). ×3.
 6. **A7: leverage measured against the charter** (second trace target on the leverage note,
    SKILL.md:277). ×1.

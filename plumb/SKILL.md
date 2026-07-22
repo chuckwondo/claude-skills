@@ -395,7 +395,7 @@ of them meet. The map (from the observed co-fires):
   is silently omitted downstream, and the drift's *leverage* is that one source of
   truth was lost, not the local omission. Model the outcome as a case *and* give it
   one home.
-- **1 × 10 (hunt the edge):** 10 is *how you discharge* a totality or illegal-state
+- **1 × 10 (hunt the edge):** 10 is *how you verify* a totality or illegal-state
   claim, run the maximizing input; and 1e (sound typing) is what keeps the checker
   able to *see* the red edge 10 feeds it.
 - **5 (faithfulness) × 1a:** an unfaithful shape forces an invented axis, then guards,
@@ -471,8 +471,8 @@ that most shape this solution.
   flaws. (On #14 the plan-review's headline was a host-app naming collision; the
   diff-review's was a one-source-of-truth drift that only existed once code was
   written.) Each pass earns its keep.
-- "Affirmed" is not "closed"; a discharge is an action, not an argument. "The fix
-  landed", "the edge is bounded", "it's negligible" are *claims*; discharge them by
+- "Affirmed" is not "closed"; verifying a claim is an action, not an argument. "The fix
+  landed", "the edge is bounded", "it's negligible" are *claims*; verify them by
   doing: sweep the new code for a fresh instance of the same sounding (affirming one
   landed is the cue to hunt its *other* instances, not to close it out), or
   *construct and run* the breaking input. When you authored what you're reviewing,
@@ -482,7 +482,7 @@ that most shape this solution.
   build executes, a test's own predicate (copied from the code it guards, so blind to
   that predicate going stale), a `# pragma: no cover`, each is an un-run assertion,
   and after a decision *reverses*, stale prose is the top risk because nothing compiles
-  it. The discharge must hunt the ground the last sweep *skipped*: re-running the cases
+  it. The verification must hunt the ground the last sweep *skipped*: re-running the cases
   already green is confirmation bias in a lab coat. Provenance to plan around: a
   self-authored design does not reliably run its own claims even when this note says to,
   so the likeliest real trigger is an external prompt, a reviewer, or the user, who is
