@@ -331,6 +331,84 @@ party who can confirm (the user) verify the claim the model cannot cleanly self-
   reputation this time: a number set early, load-bearing by habit, until the user asked whether it
   should be.
 
+### 13. (this session) Sharpening the labels: a term is a reference, not a label
+- **Set out to:** with the combine's 10 grouped soundings landed, refine every headline and facet
+  *label* so it lands instantly for a first-time reader, the scaffold for a planned reader-facing
+  writeup (its own companion doc, so SKILL.md stays lean) plus a one-line description and one real
+  example per sounding. Rule: canonical name plus a plain gloss, parallel in form, mutually distinct,
+  every term-of-art glossed. Most labels already cleared the bar; about eight needed a touch, several
+  only a word. A low-drama step, logged anyway because the reasoning transfers.
+- **Broke, and the user pushed each catch a level deeper than the model first took it:**
+  - **Object-less head nouns.** "Proportional response" reads blank because "response" carries no
+    object (response to *what?*); the fix is never a clarifying suffix but a noun that bakes its object
+    in. The user then pushed it twice more: "proportional" is *itself* object-less (proportional to
+    what?), and the model's next try, "enforce", was not just opaque but *inaccurate*, covering only
+    the mandatory end and silently dropping the recommended/optional levels the sounding grades. Landed
+    on **"Match strictness to the requirement"**, where "strictness" spans the whole range and is the
+    sounding's *own* word (its body already says over-/under-strict). "Structure & boundaries" failed
+    the same test (structure of what?) and became **"Focused parts, clean seams"**.
+  - **A label that hid its own distinction.** 3d, "keep behavior with its data", read as plain OOP
+    encapsulation, and the user asked what the distinction even was. The real answer is feature-envy /
+    GRASP Information-Expert: a method leaning on *another* object's data is misplaced, a defect that
+    fires straight *through* clean encapsulation and applies in FP too (co-locate a function with the
+    type). Then two more user catches: "feature envy" literally describes *data* envy (Fowler's own
+    note is that the envied thing is the data), so the canonical term *misdirects* as a label; and
+    "with" is the OOP-bundling word ("a class bundles data *with* behavior"), pulling back toward the
+    very conflation being removed. Landed on **"Keep behavior near the data it uses most"**: jargon-free,
+    "near" is co-location not containment, "uses most" is Fowler's actual test.
+- **Lesson:** the reusable rule is **a canonical term is a reference, not a label**. "Feature envy",
+  "locality of behavior", "proportional response" are the right words to *cite* in the body
+  (searchable, precise) and the wrong words to *lead with* when they misdirect or hide their object. A
+  label must be transparent to someone reading it cold; the term lives in the body where a gloss can
+  catch it. Corollary: the object-less-noun smell recurs at every level (response, then proportional,
+  then enforce), so apply the test until the label names both what it acts on and what it matches to.
+  Provenance, and it is beat 1 and beat 12's gap once more: the model's first-pass labels kept
+  smuggling the author's own knowledge of the object, and the reader meeting them cold is the one who
+  sees the blank, which is why the pass had to be run *with* the domain owner reading each label, not
+  by the author alone.
+
+### 14. (this session) Descriptions, familiar names, and eating our own cooking
+- **Set out to:** turn the settled labels into reader-facing content, a crisp one-line
+  *description* per sounding/facet (what it is, and what it buys), then surface the *familiar
+  names* a reader might already know, both feeding a planned companion writeup. Both moves are
+  beat 13's reference-vs-label rule run forward: descriptions and canonical names live in the
+  body, the label stays clean.
+- **Broke and sharpened, most of it user-caught:**
+  - **A reader-facing description must not smuggle the author's home language.** The first drafts
+    leaned Python (`str`/`int`/`tuple`, `Any`, `cast`, `None`) and said "compiler" (false for
+    interpreted languages) and "checker" (vague). The fix: language-neutral terms ("a
+    general-purpose primitive", "the static type checker", "a type error", "a bare null or
+    boolean"), no backticks. Caught by the user.
+  - **An imprecise payoff invites the wrong reading.** "logic tests without mocks" was ambiguous,
+    because an injected stand-in *is* a test double, so a reader would rightly object. The precise
+    claim: because the effect arrives *through a seam*, a test hands in its own stand-in as an
+    ordinary argument, so the *mocking library that patches internal calls* is what becomes
+    unnecessary. Caught by the user; the fix names the distinction (injected stand-in vs
+    library-patching).
+  - **Surface familiar names as references, but only where they map exactly.** A sweep of all ten
+    soundings for canonical terms a reader might know but that went unnamed added primitive
+    obsession, DRY, SRP, information hiding, RFC 2119, typestate, discriminated union /
+    Result-Either-Option, hexagonal architecture, and dependency inversion to the bodies. The bar
+    the user reaffirmed: a *loose* cite is worse than none, because a reader who knows the term
+    trusts the mapping and is misled, so the tempting-but-inexact ones (LSP/OCP/ISP, Law of
+    Demeter, CQRS, intention-revealing names, boundary-value analysis, Postel's law) were dropped
+    with reasons.
+  - **A technique is a Move, not a sounding.** The user asked whether dependency injection is
+    captured. It is, as the *Move* of soundings 4 and 3a, not a standalone sounding: DI is a
+    *technique that achieves properties* (a pure core, low coupling), not a property itself, and
+    run through the combine's distinctness test ("is the Move new?") it folds, exactly as
+    testability-without-mocks did. Promoting a technique alongside properties is a category error.
+    It still gets *named* in the body, which it previously wasn't.
+- **Lesson, the sharpest and reflexive:** the references that let an unfamiliar reader learn a
+  named concept must be **verified, not recalled**. A document *about* grounding claims in their
+  real source, whose own citations were pasted from memory, fails its own sounding 12 on the very
+  page that defines it. The journey's recurring datum (beats 5, 9, 11: the model reaches for the
+  plausible-from-reputation answer, the human catches it) sets the rule: assume recalled URLs and
+  attributions are wrong until checked, so the bibliography is a dedicated verified step, never
+  improvised into the prose. The through-line of the whole pass: everything a reader will read
+  (label, description, name, citation) is a claim, and the author's own fluency is exactly what
+  hides the claim from the author.
+
 ---
 
 ## The transferable method (to finalize at the end)
