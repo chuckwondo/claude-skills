@@ -514,11 +514,12 @@ for Z" (`#74`/`#18`).
    "gauges" among the rejected names.
 2. **✔ Fixed: changelog pointer.** LANDSCAPE.md now correctly names DOGFOOD-LOG.md as the append-only
    history (it had called REFINEMENT.md that); REFINEMENT.md is rewrite-in-place with no changelog.
-3. **Open: 17 soundings vs a "~19" target with three unlanded additions.** SKILL.md defines **17**
-   numbered soundings. The original eight-additions round sanctioned three standalone additions not yet
-   in SKILL.md, immutability, testability-without-mocks, and sound typing (now recorded in
-   REFINEMENT.md's "Candidate superset (superseded by the ledger)" section). Not a bug, but the combine
-   starts from 17, not 19: reconcile the target count first.
+3. **✔ Resolved (2026-07-22): the count reconciled on evidence.** SKILL.md now defines **20** numbered
+   soundings. The original "~19" was 17 + three sanctioned-but-unlanded additions (immutability,
+   testability-without-mocks, sound typing); the batch resolved all three on evidence: **immutability
+   folded** into 1+10, **testability folded** into 6, **sound typing promoted** (19). The canon audit added
+   two more, both promoted: **primitive-obsession** (18) and **CQS** (20). So the combine starts from **20**,
+   not a to-be-reconciled count: 17 → 20 pre-combine, then 20 → ~10–12 at the combine (see §C-batch).
 
 ---
 
@@ -549,5 +550,6 @@ execution stays deferred; its calls are now decidable and recorded.
 7. **A10: sound narrowing, TypeGuard vs TypeIs** (rider on sounding 1). ×1, niche.
 8. **A1 (f)/(g): citation-is-a-claim + decode-the-bytes** (still queued from the first harvest).
 
-*The combine pass (Section B/C) stays deferred per REFINEMENT.md's "let usage drive, not armchair
-debate": this ledger is its input, not its trigger. Reconcile the ~19→17 count (§E3) before combining.*
+*The combine pass (Section B/C) is now **ready to run** (2026-07-22): the corpus reached saturation, §C
+unfroze, the merge/keep calls are recorded in §C-batch, and the count reconciled to **20** (§E3). Per
+REFINEMENT.md's "let usage drive, not armchair debate," this ledger is its input; the input is now in.*

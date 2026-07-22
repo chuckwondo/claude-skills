@@ -42,14 +42,15 @@ clusters.
 
 **Settled additions decisions** (the original eight-proposals round): FC/IS split out
 standalone (DONE 2026-07-08, now sounding 6); simplicity deferred to `ponytail-review`;
-clarity reframed as plumb's *goal*, not a sounding. **Still unlanded:** immutability,
-testability-without-mocks, and sound typing were sanctioned as standalone additions but
-are not yet in SKILL.md, which has 17 soundings, not ~19; reconciling that count is the
-combine's first task (ledger §E3).
+clarity reframed as plumb's *goal*, not a sounding. **Resolved on evidence (2026-07-22, the
+adversarial batch):** of the three sanctioned additions, **sound typing landed** (sounding 19),
+**immutability folded** into 1+10, and **testability-without-mocks folded** into 6; the canon audit
+added **primitive-obsession** (18) and **CQS** (20). SKILL.md now has **20** soundings, and the count
+question §E3 tracked is closed (see TIGHTENING-SIGNALS.md §C-batch + §E3).
 
 ## Open questions (the tightening pass)
 
-1. **Tighten ~19 → a tight ~10–12.** The correct-by-construction and purity
+1. **Tighten the 20 soundings → a tight ~10–12.** The correct-by-construction and purity
    clusters double up in places (illegal-states / sound-typing / outcomes-as-values
    all lean on the same idea); decide the merges.
 2. **Clarity:** overarching goal, or a narrowed "reads as its intent" sounding?
@@ -96,7 +97,7 @@ the why.
 
 ## Files in this skill
 
-- [SKILL.md](SKILL.md): the live skill (17 soundings + Working notes).
+- [SKILL.md](SKILL.md): the live skill (20 soundings + Working notes).
 - [DOGFOOD-LOG.md](DOGFOOD-LOG.md): append-only log of real runs and refinement
   actions, kept separate from this rewrite-in-place status doc so it can grow
   without churning it.
