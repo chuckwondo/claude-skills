@@ -7,15 +7,18 @@ description: >-
   itself rather than the surrounding code, so conforming to a bad established
   pattern is itself a finding. Asks whether the code has the right SHAPE (not
   whether it works, which is code-review, nor whether it is minimal, which is
-  ponytail-review). Probes against principled "soundings": make illegal states
-  unrepresentable; model outcomes as typed values; handle every case; names that
-  encode a type's shape; one source of truth; a functional core with effects
-  injected at the edges (sans-IO / ports-and-adapters); faithful lossless
-  round-tripping data; low
-  coupling; cohesion; encapsulation; checks in the right tier; proportional
-  response grounded in the real source; symmetry; a trivial common path over a
-  complete core; reversibility (one-way vs two-way doors); and hunting the
-  breaking edge. Works on a
+  ponytail-review). Probes against principled "soundings", grouped into ten: correct by
+  construction (make illegal states unrepresentable, model the domain with types
+  not primitives / primitive obsession, model outcomes as typed values /
+  discriminated unions / Result, totality, sound typing); one source of truth
+  (DRY); focused parts with clean seams (low coupling, cohesion, encapsulation,
+  keep behavior near its data / feature envy, command-query separation); a
+  functional core with effects injected at the edges (sans-IO / ports-and-adapters
+  / hexagonal architecture / dependency injection); faithful round-trips
+  (faithfulness, symmetry); match strictness to the requirement (proportional
+  response grounded in the source, RFC 2119); names that encode shape; put each
+  check in the right tier; reversibility (one-way vs two-way doors); and hunting
+  the breaking edge. Works on a
   greenfield repo (nothing to conform to) and a brownfield one (where the
   established pattern may itself be the fault to push against). Use when reviewing
   structure/modeling, or when designing a new type, module, API, or check and you
@@ -23,7 +26,8 @@ description: >-
   right", "design review", "structural review", "review the shape", "review my
   plan/design", "how should I model this", "should this be a sum type / Result",
   "is this sans-IO", "functional core imperative shell", "ports and adapters",
-  "is this out of plumb".
+  "hexagonal architecture", "make illegal states unrepresentable",
+  "command-query separation", "is this out of plumb".
 ---
 
 # Plumb
