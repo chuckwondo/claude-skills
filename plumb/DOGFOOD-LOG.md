@@ -1763,3 +1763,54 @@ contributor's diff). Those two are the only existing non-`self` data.*
   **Method sharpening (the one thing that could turn):** the money comparison answers "**bias artifact?**" (cold/hot), *not* "**distinct sounding?**" (is the Move new?). testability is hot off-self yet folds because its fix *is* sounding 6's. Two axes, not one. This is necessary-but-not-sufficient sharpening of CORPUS's money-comparison rule (which as written implies hot-elsewhere ⇒ keep); immutability and must-consume fold on the same second axis. Recorded as a signal, not a JOURNEY beat: the individual fold verdicts were already in the log (Java/titiler entries), this session only *named the second axis*, a synthesis sharpening rather than a live turn or user-catch.
 
   **Deferred (recorded, not omitted):** the 17 → ~10–12 **combine execution** (the merge/keep *calls* are now decidable from representative data and recorded in §C-batch; landing the merges + reconciling the ~19/17/20 count per §E3 is its own pass); the OCP Boundary line on sounding 3 and A1 (f)/(g), still queued; gen-4/gen-5 optional ranking runs. **Net count:** 17 → 20 soundings pre-combine; the batch **swapped the sanctioned-additions membership** (immutability + testability folded OUT, primitive-obsession + CQS promoted IN, sound-typing landed as already planned).
+
+- **2026-07-22: covjson-msgspec coverage-to-100 diff** (`self-plumbed · clean ·
+  python · library`; a **test/doc-heavy diff**, a shape the corpus is thin on).
+  Ran the pre-combine 20-sounding version (the 20 → 10 combine landed after this
+  fired); sounding numbers below map to the current grouped set.
+
+  Fired: **10 Hunt the breaking edge**, but as a *verification*, not a find. The
+  three `# pragma: no cover` "unreachable exhaustiveness guard" claims and the
+  `_ISSUE_SAMPLES` completeness guard were un-run assertions I had authored.
+  Discharged by running the known-red input: deleted a `case` arm and confirmed
+  `ty` goes red (`assert_never` receives `CoverageCollection & ~Coverage`), and
+  dropped a sample and confirmed the completeness test fails. Both held. **6 / 8 /
+  1 (match-strictness / right-tier / correct-by-construction)** co-fired on a
+  note-and-park: a `category_encoding` key naming no category is representable and
+  unflagged by `validate()` (the `if values:` empty-flags guard in the xarray
+  bridge was the *symptom*). **Net: "Plumb is true" on the diff's own shape** (95%
+  tests + doctests + 3 source lines); the leverage was all in the verification and
+  the downstream trace.
+
+  Leverage / co-fire: the note-and-park traced downstream (phantom key →
+  `validate()` false-negative in `range.invalid-category-code` → silent flag-drop
+  in `to_xarray`) and became filed bug **#162** (silent corruption). Same shape as
+  the 2026-07-07 entry: the *park* verdict's expansion block prompted "what's the
+  gap?", which drove it to a filed bug. **Second confirming instance of the
+  "expand the park block" Output rule and the "a park verdict is the likeliest
+  'explain that' trigger" provenance note:** both earned their keep again.
+
+  Signals for the tightening pass:
+  (1) **The self-authored-verification Working note is load-bearing even when the
+  claims hold.** Both verifications confirmed the code was fine, yet running them was
+  still correct: the alternative was shipping "Plumb is true" unverified.
+  Discharge produces value by converting "I believe X" into "I confirmed X," not
+  only by catching a wrong X. Worth sanctioning explicitly.
+  (2) **On a near-pure-test diff, plumb's value came entirely from two Working
+  notes (verification + downstream-trace), not the structural soundings** (which
+  mostly do not apply to new test code). A corpus data point that the Working
+  notes carry the skill outside its production-code-modeling habitat; the corpus
+  is thin on test/doc diffs and this is one.
+  (3) **(Boundary / candidate refinement.)** Plumb-on-a-diff surfaced the one
+  latent bug a doctest structurally touched (#162, via the empty-flags branch) but
+  missed three `from_xarray` faithfulness / illegal-state bugs (#163 bounds-vertex
+  leak, which yields a coverage that fails its own `validate()`; #164 / #165
+  auxiliary-coordinate drop). Those were caught by *code-review*'s "bugs in touched
+  functions the PR re-exposes" angle. The diff only added tests exercising
+  unchanged `from_xarray`, so the latent bugs sat outside plumb-on-a-diff's frame.
+  Two of my new tests were tripwires that pin buggy output as expected; plumb could
+  have flagged "this test asserts a shape that fails `validate()`." Candidate
+  refinement: a new test that pins or asserts the current output of unchanged code
+  is itself a plumb-relevant smell (check whether the assertion cements an illegal
+  state, sounding 1, or a faithfulness violation, sounding 5), extending "hunt the
+  breaking edge / run the excluded case" from pragma'd code to test assertions.
