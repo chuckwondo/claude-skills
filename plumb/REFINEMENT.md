@@ -50,12 +50,23 @@ question §E3 tracked is closed (see TIGHTENING-SIGNALS.md §C-batch + §E3).
 
 ## Open questions (the tightening pass)
 
-1. **Tighten the 20 soundings → a tight ~10–12.** The correct-by-construction and purity
-   clusters double up in places (illegal-states / sound-typing / outcomes-as-values
-   all lean on the same idea); decide the merges.
+1. **✔ Resolved (2026-07-22): the combine ran → SKILL.md is now 10 grouped soundings.** The
+   merge was executed as **group, don't fold**: distinct-Move probes are *grouped* under a
+   shared cluster headline (each keeping its own Smell/Move as a numbered facet), never folded
+   away. Rule used: the batch's distinctness axis (`is the Move new?`) is a *fold-vs-group* test:
+   a distinct Move may only be grouped. So the correct-by-construction cluster (illegal-states
+   1a, domain-types 1b, outcomes 1c, totality 1d, sound-typing 1e) keeps all five Moves; the
+   structure cluster (coupling 3a, encapsulation 3b, cohesion 3c, locality 3d, CQS 3e) keeps
+   five; faithfulness+symmetry (5a/5b) keeps two. The only *fold* (Move-death) beyond the batch's
+   four was **none**; the only *demotion* was **14** (trivial-common-path, affirm-only, never
+   drove a finding) → a rider on 2. Count: 20 → **10 headlines / 19 facet-Moves**. The ~10–12
+   target was hit as a *consequence* of grouping, not by targeting a number (the user's steer:
+   right delineation over count).
 2. **Clarity:** overarching goal, or a narrowed "reads as its intent" sounding?
 3. **Completeness:** keep as an umbrella, or drop (totality + symmetry cover it)?
-4. **Presentation:** grouped-by-cluster vs one flat leverage-ranked list.
+4. **✔ Resolved (2026-07-22): grouped-by-cluster.** Chosen over the flat list because grouping
+   preserves the same distinct Moves as a flat 15 *and* surfaces the reinforcement structure the
+   target-end-state asks for. See the "How the clusters reinforce each other" map in SKILL.md.
 5. **Definition dose:** crisp definition + one-line payoff per sounding + a compact
    cluster reinforcement map: deep collaboration narrative to the CxC companion.
 6. **Sounding 1: the *layer* of "parse-don't-validate" (from #113).** The sounding
@@ -87,8 +98,10 @@ the why.
    [DOGFOOD-LOG.md](DOGFOOD-LOG.md) and harvested into
    [TIGHTENING-SIGNALS.md](TIGHTENING-SIGNALS.md). Usage drives the final list, not
    armchair debate. The **tighten** half is the live next step (item 3).
-3. **Do the combine pass** to land ~10–12, then write the definitions, payoffs, and
-   reinforcement map.
+3. **✔ Combine pass ran (2026-07-22): 20 → 10 grouped soundings, reinforcement map written.**
+   Remaining polish (not blocking): a one-line "what it buys you" payoff per sounding (the
+   Smell/Move bodies are in place); it can land alongside the queued §A items (A2 three
+   altitudes, A5–A10) in TIGHTENING-SIGNALS.md §F.
 4. **Cross-link with Correct by Construction.** Shared DNA (illegal-states, sum
    types, immutability, sound typing). Division of labor: CxC = the deep "why";
    plumb = the operational review/guide. Each references the other.
@@ -97,7 +110,7 @@ the why.
 
 ## Files in this skill
 
-- [SKILL.md](SKILL.md): the live skill (20 soundings + Working notes).
+- [SKILL.md](SKILL.md): the live skill (10 grouped soundings / 19 facets + reinforcement map + Working notes).
 - [DOGFOOD-LOG.md](DOGFOOD-LOG.md): append-only log of real runs and refinement
   actions, kept separate from this rewrite-in-place status doc so it can grow
   without churning it.

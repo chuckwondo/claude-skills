@@ -533,8 +533,22 @@ verify-can-close, 2026-07-20) · A4 (sounding-5 Boundary line, 2026-07-14) · E1
 **✔ Landed (2026-07-22, the batch analysis output, count-changing — recorded in §C-batch):** three
 promotions into SKILL.md (**18** primitive-obsession, **19** sound-typing, **20** CQS) + the **sounding-3
 language-dependence note**. §C cut/keep unfrozen (no cut); folds recorded (testability→6, immutability→1+10,
-must-consume→1+3, temporal-coupling→rider-on-1, recoverable/unrecoverable→router). The 17→~10–12 combine
-execution stays deferred; its calls are now decidable and recorded.
+must-consume→1+3, temporal-coupling→rider-on-1, recoverable/unrecoverable→router).
+
+**✔ Landed (2026-07-22, THE COMBINE — the deferred 20 → ~10–12 execution ran):** SKILL.md restructured to
+**10 grouped headlines / 19 facet-Moves**. Method = **group, don't fold**: the batch's distinctness axis
+(`is the Move new?`) reused as a *fold-vs-group* test, so a distinct-Move probe may only be *grouped* under a
+shared cluster headline (each facet keeps its own Smell/Move), never folded away. Clusters: **1 correct by
+construction** (1a illegal-states / 1b domain-types(old 18) / 1c outcomes(old 2) / 1d totality(old 3) / 1e
+sound-typing(old 19)); **3 structure & boundaries** (3a coupling(old 8) / 3b encapsulation(old 10) / 3c
+cohesion(old 9) / 3d locality(old 17) / 3e CQS(old 20)); **5 faithfulness & round-trip** (5a faithfulness(old
+7) / 5b symmetry(old 13)). Standalones: **2** one-source-of-truth(old 5, with old 14 demoted to a rider),
+**4** functional-core(old 6), **6** proportional-response(old 12), **7** names(old 4), **8** right-tier(old
+11), **9** reversibility(old 15), **10** hunt-the-edge(old 16). The §C-batch merge/keep calls executed as
+recorded: 5's armchair `[6,14]` marker dropped, 14 demoted on low *drive*-rate (never a rider on a 5 coupling),
+8×9×17 clustered, all `[combine?]` markers retired. Only *fold* beyond the batch's four was none; only
+*demotion* was 14. A cross-cluster **reinforcement map** was written (the target-end-state's "how the clusters
+reinforce" layer). Count reconciled 20 → **10** as a consequence of grouping, not by targeting a number.
 
 **Queued, ranked by leverage:**
 

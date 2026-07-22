@@ -303,6 +303,34 @@ party who can confirm (the user) verify the claim the model cannot cleanly self-
   ground truth is the one who catches it, which is why "verify or measure the thing, don't trust its
   reputation" has to be a named step in the transferable method, not a footnote.
 
+### 12. (this session) The combine: group, don't fold — the count was the wrong axis
+- **Believed:** with the corpus saturated and §C-batch's calls recorded, I framed the deferred 20 →
+  ~10–12 combine as a *count-aggressiveness* dial and offered three options (aggressive ~10, moderate
+  ~12, conservative ~15), each a different amount of *folding* soundings into one another. The frame
+  smuggled in an assumption: that combining means folding, and the choice is how much.
+- **Broke:** the user rejected the axis: "I'm less concerned with reaching a specific count than
+  getting the right soundings properly delineated (but not a laundry list of weak ones either) — if
+  conservative is actually a better delineation, don't avoid it for the arbitrary 10–12 range. What's
+  your take?" That reframed the question from *how many* to *what is genuinely distinct*, and exposed
+  that my options traded delineation against count as if they were the same lever. **Caught by the
+  user.**
+- **Corrected:** separated the two operations "combine" had been conflating — **fold** (a probe loses
+  its Move into a parent) vs **group** (distinct probes get organized under one headline, each keeping
+  its Move). The batch's own distinctness axis (`is the Move new?`), originally a *promotion* test,
+  reused as a *fold-vs-group* test, decides it: a distinct-Move probe may only be grouped, never
+  folded. That dissolved the dilemma — grouping buys the low headline count (~10) *for free* off the
+  reinforcement structure while preserving all 19 distinct Moves as facets. Landed SKILL.md as 10
+  grouped headlines; only genuine demotion was 14 (affirm-only, never drove a finding → rider).
+- **Lesson:** when the model offers a menu of options, the *axis the menu is built on* is itself a
+  claim that can be wrong — and a menu is a comfortable place to hide an unexamined frame, because it
+  looks like deference. Here the count axis (a number named early and then treated as the thing being
+  traded) was the artifact; the real axis was distinctness, and it took the domain owner's priorities
+  to name it. This is beat 5/9/11's pattern turned inward one more notch: not "measure the sample, don't
+  trust its reputation," but "check the *frame* of the choice you're presenting, don't trust that the
+  dial you reached for is the dial that matters." The `~10–12` target from REFINEMENT.md was the
+  reputation this time: a number set early, load-bearing by habit, until the user asked whether it
+  should be.
+
 ---
 
 ## The transferable method (to finalize at the end)

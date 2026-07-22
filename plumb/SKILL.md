@@ -58,54 +58,102 @@ Plumb owns *modeling and structure*. It defers, by name, rather than duplicating
 
 Plumb's altitude is above both: *is the design the right shape?*
 
-## The soundings (ranked by leverage)
+## The soundings (grouped, ranked by leverage)
 
-> Draft ordering. `[combine?]` marks principles that overlap and are candidates
-> to merge or fold in our tightening pass.
+> The soundings are organized into **clusters** whose facets reinforce each
+> other, interleaved with standalone soundings, ordered by *leverage* (the ones
+> that most often carry the load-bearing finding come first). Cite a facet by its
+> id (`1b`, `3e`) in a finding. A cluster is one review station with several
+> questions, not one blurred principle: each facet keeps its own Smell and Move.
+> How the clusters reinforce each other is mapped at the end.
 
-### 1. Make illegal states unrepresentable  `[combine? with 2, 7]`
-Encode invariants in the type so a bad value cannot be constructed; parse
-untrusted input into a trusted shape once, at the boundary, then trust it inward.
+### 1. Correct by construction
+
+*One family: make the type carry the truth so the checker enforces it. The facets
+chain, lift the primitive into a real type (1b), make its illegal states
+unrepresentable (1a), model the outcomes as typed cases (1c), force every case to
+be handled (1d), and keep the checker able to see all of it (1e). Each fires on
+its own; together they are the highest-leverage cluster, because a flaw here is
+the kind no downstream test can catch.*
+
+**1a. Make illegal states unrepresentable.** Encode invariants in the type so a
+bad value cannot be constructed; parse untrusted input into a trusted shape once,
+at the boundary, then trust it inward. The same discipline pointed at other axes:
+an *immutable* value (no later setter can break the invariant); an illegal
+*sequence* made unrepresentable (a capability the next call requires, so "log in
+before use" cannot compile wrong); an ignored *outcome* made unrepresentable (the
+designer half of must-consume, exactly what Rust's `#[must_use]` encodes).
 **Smell:** the same thing validated again and again downstream; a struct whose
 fields permit combinations that are never valid; "remember to check X first."
 **Move:** push the invariant into the constructor/type; parse-don't-validate at
 the edge.
 
-### 2. Model outcomes as values; lose no information  `[combine? with 1, 3]`
-An operation with several meaningful outcomes returns a closed sum type, each case
-carrying its own payload; errors are values, with an opt-in raise confined to the
-edge. **Smell:** `X | None`, a bare bool, or an exception where the *reason*
-matters; two distinct situations collapsed into one `None`. **Move:** name the
-outcomes as typed cases; keep the rich result as truth, add a thin convenience
-for the common path. **Boundary:** this takes the *errors-as-values* side; a
-fail-fast/throw house style is a different tradition, not a violation: plumb's
-position is that the raise belongs at the *edge* over a typed core, not that
-exceptions are banned. Where a codebase is deliberately fail-fast, name the seam
-(where the value becomes a raise), don't relitigate the philosophy.
+**1b. Model the domain with types, not primitives.** A value from a closed set, or
+one carrying structure, gets its own type rather than a bare `str`/`int`/`tuple`;
+a field-group that always travels together becomes one object. First split
+**brand** (a role with *no* invariant to check: a `NewType`/tag) from **value
+object** (a real invariant: a smart constructor); the gate is "is there anything
+to check?" **Smell:** a `str` standing in for a closed enum (`strategy`, `status`,
+`role`) dispatched by `if/elif`; a structured value smuggled as a string (a
+`"start/end"` interval re-`split` at three call sites); a recurring positional
+tuple (`(lat, lon)`, `(endpoint, region)`) where a named record belongs;
+`**kwargs: Any` on a public signature that a misspelled key passes through
+silently. **Move:** lift the primitive into the domain type: a `Literal`/enum for
+a closed set (which also makes the dispatch compiler-exhaustive, reinforcing 1d), a
+parsed sum for a structured value (reinforcing 1c), a small record for a
+data-clump. **Boundary:** distinct from 1a (illegal *combinations* of fields, not
+the primitive-vs-type choice) and 7 (a name can be exact while the *type* stays
+primitive). It fires only on a closed-set / structured value a *downstream consumer
+trusts as a domain value*, not a transient token consumed on the next line (a regex
+capture used once, never stored).
 
-### 3. Totality: handle every case  `[combine? with 2]`
-Every input and every variant is handled; adding a case *forces* the update
-(compiler-checked exhaustiveness), not a hoped-for edit. **Smell:** a
-non-exhaustive match with a silent default; a fall-through that swallows the
-unforeseen; a new variant that quietly breaks old callers. **Move:** make the
-match exhaustive (assert-never); prefer closed sets the checker can enforce.
-**Note (the guarantee is language-dependent):** "adding a case forces the update"
-assumes a checker that enforces exhaustiveness. That holds for a closed sum matched
-with `assert_never`, but *not* for error-values: Go's `(T, error)` lets `_ :=` and a
-bare call compile clean with `go vet` silent, and Rust's `#[must_use] Result` *warns*
-yet is routinely opted out of (`let _ =`, `.unwrap()`, a `Default` fallback). So for
-error-values (Go, C return codes, unchecked exceptions) totality degrades to opt-in
-tooling (`errcheck`/`staticcheck`) or a runtime silent-drop; name it as a discipline,
-not a compiler guarantee, where the language doesn't provide the check.
+**1c. Model outcomes as values; lose no information.** An operation with several
+meaningful outcomes returns a closed sum type, each case carrying its own payload;
+errors are values, with an opt-in raise confined to the edge. **Smell:** `X |
+None`, a bare bool, or an exception where the *reason* matters; two distinct
+situations collapsed into one `None`. **Move:** name the outcomes as typed cases;
+keep the rich result as truth, add a thin convenience for the common path.
+**Boundary:** this takes the *errors-as-values* side; a fail-fast/throw house style
+is a different tradition, not a violation: plumb's position is that the raise
+belongs at the *edge* over a typed core, not that exceptions are banned. Where a
+codebase is deliberately fail-fast, name the seam (where the value becomes a
+raise), don't relitigate the philosophy.
 
-### 4. Names encode shape
-A name tells you the *kind*: a one-of union vs a value+failures record vs a single
-value; a verb pairs with its noun; a suffix means one thing everywhere. **Smell:**
-a `*Result` that's really a value+failures record; a success-implying name on a
-mixed union; a domain word reused for the wrong shape. **Move:** rename for
-legibility; if a suffix is overloaded, split it and apply the split everywhere.
+**1d. Totality: handle every case.** Every input and every variant is handled;
+adding a case *forces* the update (compiler-checked exhaustiveness), not a
+hoped-for edit. **Smell:** a non-exhaustive match with a silent default; a
+fall-through that swallows the unforeseen; a new variant that quietly breaks old
+callers. **Move:** make the match exhaustive (`assert_never`); prefer closed sets
+the checker can enforce. **Note (the guarantee is language-dependent):** "adding a
+case forces the update" assumes a checker that enforces exhaustiveness. That holds
+for a closed sum matched with `assert_never`, but *not* for error-values: Go's
+`(T, error)` lets `_ :=` and a bare call compile clean with `go vet` silent, and
+Rust's `#[must_use] Result` *warns* yet is routinely opted out of (`let _ =`,
+`.unwrap()`, a `Default` fallback). So for error-values (Go, C return codes,
+unchecked exceptions) totality degrades to opt-in tooling (`errcheck`/
+`staticcheck`) or a runtime silent-drop; name it as a discipline, not a compiler
+guarantee, where the language doesn't provide the check.
 
-### 5. One source of truth; compose  `[combine? with 6, 14]`
+**1e. Sound typing: no lies to the checker.** The static checker sees the real
+shape: no `Any` laundering, no `cast` to a type the value isn't, no unsound
+narrowing that strips a case the checker would otherwise force. **Smell:** a
+`Literal[...] | Any` that collapses the whole union back to `Any` (defeating the
+Literal's point); a public function annotated `-> Any` that in fact returns one
+known type; a `Mapping[str, str]` under-specifying two distinct record shapes; a
+`cast(...)` (a *named* escape) or a bare annotated assignment (a *silent* one)
+vouching for what wasn't checked; a `TypeIs` predicate *stricter* than the type it
+narrows, whose false-branch narrowing is then unsound (only a positive-only
+`TypeGuard` is correct). **Move:** annotate the real type; replace the `Any`/`cast`
+with a parse or a guard that earns the type; where a predicate is stricter than its
+input, use `TypeGuard`, not `TypeIs`. **Boundary:** bound tightly against 1d
+(totality is *handling* every case; this is *not blinding the checker* so it *can*
+force the cases) and 10 (10 exercises the checker by feeding a known-red input; this
+keeps the checker able to see red at all). An `Any` at a genuine dynamic edge (an
+untyped blob, a cache) is parked, not a violation; the fire is an `Any` that
+*defeats a declared type*.
+
+### 2. One source of truth; compose
+
 One authoritative home for each piece of knowledge, reused by many consumers;
 behavior built by composing small, single-purpose pure functions. **Smell:** the
 same decision derived in three places; a rule, formula, or constant with several
@@ -120,9 +168,68 @@ knowledge in N places"; leave "similar-looking idioms encoding different semanti
 alone, and pin each with a test. The tell: could one helper serve every site
 *without* a parameter that re-encodes the very difference? If not, it is not one
 source of truth: it is N sources wearing the same coat, and merging them hides a
-decision.
+decision. **Rider (trivial common path over a complete core):** the 90% case should
+be a one-liner (a thin convenience) layered *over* the one authoritative core, and
+the 10% case not locked out (the rich form stays reachable). A rich API forced on
+every caller, or a convenient API with no escape hatch to the full thing, is the
+smell; layer the convenience over the complete core and export both. (This rides
+here rather than standing alone: it prescribes the *shape* of the single source's
+public face, and in practice it only ever affirmed a thin convenience shell, never
+driving a finding of its own.)
 
-### 6. Functional core; effects at the edges  `[combine? with 5, 8]`
+### 3. Structure & boundaries
+
+*The shape of modules and of the methods inside them. Facets: imports flow one
+direction (3a) and callers depend on meaning not representation (3b) at the module
+boundary; each unit does one thing (3c), behavior lives with its data (3d), and a
+method either asks or does but not both (3e) inside it. Low coupling (3a) and high
+cohesion (3c) are the classic pair; encapsulation (3b) is what lets you decouple;
+locality (3d) and CQS (3e) are the per-method discipline that keeps a unit honest.*
+
+**3a. Low coupling, clean boundaries.** Modules are leaves or near-leaves; imports
+flow one direction; a module names another's *public* surface, never its internals;
+the core knows nothing of its optional bridges. **Smell:** import cycles; a
+low-level module importing a high-level one; reaching past a public API into a
+private helper; a "utility" that drags a heavy/optional dependency in at import.
+**Move:** invert the dependency (inject, don't import); rehome shared helpers
+neutrally; import optional deps lazily.
+
+**3b. Encapsulation: expose intent, hide representation.** Callers depend on what a
+thing *means*, not how it's built; the representation can change without breaking
+them. **Smell:** callers reaching into fields/internals; an abstraction that leaks
+its storage; invariants a caller must maintain by hand. **Move:** expose
+intent-named operations; make the representation private; keep invariants inside.
+
+**3c. Cohesion: one concern per unit.** A module/type/function does one thing; you
+can name it without an "and." **Smell:** a grab-bag module; a function whose doc
+lists three unrelated jobs. **Move:** split by concern.
+
+**3d. Locality of behavior: keep behavior with its data.** Behavior lives with the
+data it operates on; a method that reads another object's fields more than its own
+belongs on *that* object (feature envy). **Smell:** a method calling many getters on
+one collaborator and few on `self`; logic that reaches across a boundary to assemble
+what the other side should compute and expose. **Move:** move the behavior to the
+data (tell-don't-ask); or, if the data is a plain value, compose a function over it
+beside its definition. **Boundary:** the method-*placement* face of the same pull as
+cohesion (3c, *one* concern per unit) and encapsulation (3b, hide representation),
+distinct in being about *where a method lives* (GRASP *Information Expert* / *Tell,
+Don't Ask*).
+
+**3e. Command-Query Separation: ask or do, not both.** A method either *returns* a
+value (a query, no observable mutation) or *performs* a change (a command); one
+method that does both is the smell. **Smell:** a `get_`/`is_`/`__repr__`-named query
+that mutates `self` or its argument and returns a status; a command that also returns
+a value callers start to depend on. **Move:** split the query from the command; if a
+caller needs both, let it call both, so the mutation is visible at the call site.
+**Boundary:** distinct from 4 (4 is *where* effects live: a CQS-violating method can
+sit wholly in the imperative shell and still mix asking with doing) and from 3c
+(generic cohesion: CQS is the narrower, per-method, mechanically-checkable split,
+does this one method both return *and* mutate?). Its blast radius is a query a caller
+trusts as pure: a `repr()` that silently rewrites the record it prints breaks any
+consumer that re-reads that record after inspecting it.
+
+### 4. Functional core; effects at the edges
+
 A pure core of functions over immutable data, with every effect and impure
 dependency (I/O, the clock, randomness, the environment, mutable global state, the
 framework) pushed to a thin shell and injected at the edge as a seam (a fetcher, a
@@ -139,10 +246,12 @@ deep in the core, a hard-coded logger or global singleton, a framework imported 
 a domain module, with the vivid special case being a library that bakes in one
 transport (`requests` / `httpx` / `aiohttp`) or concurrency model, forcing that
 dependency on every consumer (redundant when they already ship a different one) and
-welding the logic to sync XOR async. **Move:** make the core *compute, never
-perform*: pass the effect in as a value or a capability (the fetched bytes, an
-injected `now` / `Fetch` / store) so callers supply their own and one core serves
-every context, sync and async included.
+welding the logic to sync XOR async. This is where *testability without mocks* shows
+up as a symptom: a core that receives its effects is tested by passing values, so a
+wall of mocks is the tell that an effect was reached for, not injected. **Move:**
+make the core *compute, never perform*: pass the effect in as a value or a
+capability (the fetched bytes, an injected `now` / `Fetch` / store) so callers
+supply their own and one core serves every context, sync and async included.
 
 *Lineage & sources:*
 - sans-IO: sans-io.readthedocs.io/how-to-sans-io.html; firezone.dev/blog/sans-io
@@ -153,42 +262,27 @@ every context, sync and async included.
 - ports & adapters from FP: Seemann,
   blog.ploeh.dk/2016/03/18/functional-architecture-is-ports-and-adapters
 
-### 7. Faithfulness: preserve the input  `[combine? with 1]`
-The stored/decoded form reproduces the input exactly (it round-trips); any lossy
-interpretation is an opt-in projection, never the stored representation. **Smell:**
-a decode that normalizes, rounds, or drops precision; a model that cannot
-reproduce what it read. **Move:** store faithfully; offer lossy views as separate,
-opt-in operations.
+### 5. Faithfulness & round-trip
 
-### 8. Low coupling, clean boundaries  `[combine? with 9, 10]`
-Modules are leaves or near-leaves; imports flow one direction; a module names
-another's *public* surface, never its internals; the core knows nothing of its
-optional bridges. **Smell:** import cycles; a low-level module importing a
-high-level one; reaching past a public API into a private helper; a "utility" that
-drags a heavy/optional dependency in at import. **Move:** invert the dependency
-(inject, don't import); rehome shared helpers neutrally; import optional deps
-lazily.
+*A stored form that reproduces its input (5a) and a complete set of mirrored
+operations (5b) are the two halves of a real round-trip: a faithful store with no
+encoder can't prove it round-trips, and a symmetric encode/decode pair over a lossy
+store round-trips to the wrong value.*
 
-### 9. Cohesion: one concern per unit  `[combine? with 8]`
-A module/type/function does one thing; you can name it without an "and."
-**Smell:** a grab-bag module; a function whose doc lists three unrelated jobs.
-**Move:** split by concern.
+**5a. Faithfulness: preserve the input.** The stored/decoded form reproduces the
+input exactly (it round-trips); any lossy interpretation is an opt-in projection,
+never the stored representation. **Smell:** a decode that normalizes, rounds, or
+drops precision; a model that cannot reproduce what it read. **Move:** store
+faithfully; offer lossy views as separate, opt-in operations.
 
-### 10. Encapsulation: expose intent, hide representation  `[combine? with 8]`
-Callers depend on what a thing *means*, not how it's built; the representation can
-change without breaking them. **Smell:** callers reaching into fields/internals; an
-abstraction that leaks its storage; invariants a caller must maintain by hand.
-**Move:** expose intent-named operations; make the representation private; keep
-invariants inside.
+**5b. Symmetry.** Paired operations exist and mirror each other (encode/decode,
+to/from, set/get, sync/async); shapes that should match, match. **Smell:** a lone
+half (a decoder with no encoder); asymmetric signatures for symmetric ideas; a
+round-trip that doesn't round-trip. **Move:** complete the pair or justify its
+absence; align the mirrored shapes.
 
-### 11. Put the check in the right tier
-Local, O(1), single-object invariants at construction; cross-cutting or
-data-scanning checks in an opt-in pass, so loading stays permissive and faithful.
-**Smell:** a cross-object or O(n) rule jammed into a constructor (a slightly-off
-document won't even load); a genuinely-local invariant left unchecked. **Move:**
-match the check's placement to its scope and cost.
+### 6. Proportional response, grounded in the real source
 
-### 12. Proportional response, grounded in the real source
 A requirement graded mandatory drives an *error*; recommended drives a *warning*;
 optional is permitted. Claims about an authority (spec, RFC, API contract, docs, a
 ticket) are verified against it and cited, never asserted from memory. With **no**
@@ -198,8 +292,8 @@ proportionally. **Smell:** severity or hard-vs-soft chosen by vibes; "the spec s
 MUST" without opening it; a preference enforced as a requirement (over-strict) or a
 requirement left unenforced (under-strict); a constraint invented from nothing; a
 *quantitative* claim ("~3x faster") taken from memory or a diffstat rather than a
-measurement; a field's *type* shaped by the ticket's paraphrase rather than the source;
-a contract reworded to match a known bug.
+measurement; a field's *type* shaped by the ticket's paraphrase rather than the
+source; a contract reworded to match a known bug.
 **Move:** find the governing source (or the stated requirement); confirm the claim
 *and its strength*; let it pick the response. Absent a governing rule, don't
 manufacture one: the absence of a requirement is information. Verifying the source is
@@ -214,20 +308,24 @@ wrong, never to match a tracked, fixable bug (which enshrines the defect and dri
 when the fix lands). Verifying can *close* a suspected finding as readily as sharpen a
 real one.
 
-### 13. Symmetry
-Paired operations exist and mirror each other (encode/decode, to/from, set/get,
-sync/async); shapes that should match, match. **Smell:** a lone half (a decoder
-with no encoder); asymmetric signatures for symmetric ideas; a round-trip that
-doesn't round-trip. **Move:** complete the pair or justify its absence; align the
-mirrored shapes.
+### 7. Names encode shape
 
-### 14. Trivial common path over a complete core  `[combine? with 5]`
-The 90% case is a one-liner (a thin convenience); the 10% case is not locked out
-(the rich form remains reachable). **Smell:** a rich API forced on every caller; or
-a convenient API with no escape hatch to the full thing. **Move:** layer a thin
-convenience over a complete core; export both.
+A name tells you the *kind*: a one-of union vs a value+failures record vs a single
+value; a verb pairs with its noun; a suffix means one thing everywhere. **Smell:**
+a `*Result` that's really a value+failures record; a success-implying name on a
+mixed union; a domain word reused for the wrong shape. **Move:** rename for
+legibility; if a suffix is overloaded, split it and apply the split everywhere.
 
-### 15. Reversibility: know the door
+### 8. Put the check in the right tier
+
+Local, O(1), single-object invariants at construction; cross-cutting or
+data-scanning checks in an opt-in pass, so loading stays permissive and faithful.
+**Smell:** a cross-object or O(n) rule jammed into a constructor (a slightly-off
+document won't even load); a genuinely-local invariant left unchecked. **Move:**
+match the check's placement to its scope and cost.
+
+### 9. Reversibility: know the door
+
 Distinguish one-way doors (costly to undo: a public API, a wire format, stored
 data) from two-way; keep the blast radius of a possibly-wrong decision contained.
 **Smell:** a hard-to-reverse choice made lightly; an experiment wired through a
@@ -235,7 +333,8 @@ one-way door; a wrong guess whose blast radius is the whole codebase. **Move:**
 spend care in proportion to reversibility; keep two-way doors cheap; isolate the
 risky bet behind a seam.
 
-### 16. Hunt the breaking edge
+### 10. Hunt the breaking edge
+
 The design is probed with the input that violates its assumption: out-of-range,
 non-ASCII, empty/`None`, reduced-precision, adversarial. **Smell:** an assumption
 ("a 4-digit ASCII year", "it fits in a datetime") with no case testing its
@@ -250,70 +349,27 @@ delete a `case` arm to confirm the type-checker goes red, and run the boundary o
 Resolve a default to the value it *produces* and run that, not "the default" as an
 abstraction.
 
-### 17. Locality of behavior: keep behavior with its data  `[combine? with 9, 10]`
-Behavior lives with the data it operates on; a method that reads another object's
-fields more than its own belongs on *that* object (feature envy). **Smell:** a
-method calling many getters on one collaborator and few on `self`; logic that
-reaches across a boundary to assemble what the other side should compute and expose.
-**Move:** move the behavior to the data (tell-don't-ask); or, if the data is a plain
-value, compose a function over it beside its definition. **Boundary:** adjacent to
-cohesion (9, *one* concern per unit) and encapsulation (10, hide representation) but
-distinct: this is the method-*placement* face of the same pull (GRASP *Information
-Expert* / *Tell, Don't Ask*). Harvested from the clean-code rubric; the
-`[combine?]` marker defers merge-or-keep to the tightening pass.
+## How the clusters reinforce each other
 
-### 18. Model the domain with types, not primitives  `[combine? with 1, 4]`
-A value from a closed set, or one carrying structure, gets its own type rather than a
-bare `str`/`int`/`tuple`; a field-group that always travels together becomes one
-object. First split **brand** (a role with *no* invariant to check: a `NewType`/tag)
-from **value object** (a real invariant: a smart constructor); the gate is "is there
-anything to check?" **Smell:** a `str` standing in for a closed enum (`strategy`,
-`status`, `role`) dispatched by `if/elif`; a structured value smuggled as a string (a
-`"start/end"` interval re-`split` at three call sites); a recurring positional tuple
-(`(lat, lon)`, `(endpoint, region)`) where a named record belongs; `**kwargs: Any` on a
-public signature that a misspelled key passes through silently. **Move:** lift the
-primitive into the domain type: a `Literal`/enum for a closed set (which also makes the
-dispatch compiler-exhaustive, co-firing 3), a parsed sum for a structured value
-(co-firing 2), a small record for a data-clump. **Boundary:** distinct from 1 (illegal
-*combinations* of fields, not the primitive-vs-type choice) and 4 (a name can be exact
-while the *type* stays primitive). The leverage trace gives it specificity: it fires on
-a closed-set / structured value a *downstream consumer trusts as a domain value*, and
-stays silent on a transient token consumed on the next line (a regex capture used once,
-never stored). Promoted from the canon audit (bias-invisible to fire-frequency) plus
-adversarial-batch real fires; `[combine?]` defers final merge to the tightening pass.
+The soundings are not independent; the load-bearing finding usually lives where two
+of them meet. The map (from the observed co-fires):
 
-### 19. Sound typing: no lies to the checker  `[combine? with 3, 16]`
-The static checker sees the real shape: no `Any` laundering, no `cast` to a type the
-value isn't, no unsound narrowing that strips a case the checker would otherwise force.
-**Smell:** a `Literal[...] | Any` that collapses the whole union back to `Any`
-(defeating the Literal's point); a public function annotated `-> Any` that in fact
-returns one known type; a `Mapping[str, str]` under-specifying two distinct record
-shapes; a `cast(...)` (a *named* escape) or a bare annotated assignment (a *silent*
-one) vouching for what wasn't checked; a `TypeIs` predicate *stricter* than the type it
-narrows, whose false-branch narrowing is then unsound (only a positive-only `TypeGuard`
-is correct). **Move:** annotate the real type; replace the `Any`/`cast` with a parse or
-a guard that earns the type; where a predicate is stricter than its input, use
-`TypeGuard`, not `TypeIs`. **Boundary:** bound tightly against 3 (totality is *handling*
-every case; this is *not blinding the checker* so it can force the cases) and 16 (16
-exercises the checker by feeding a known-red input; this keeps the checker able to see
-red at all). An `Any` at a genuine dynamic edge (an untyped blob, a cache) is parked,
-not a violation; the fire is an `Any` that *defeats a declared type*. Sanctioned in the
-additions round, confirmed by the batch; `[combine?]` defers final merge.
-
-### 20. Command-Query Separation: ask or do, not both  `[combine? with 6, 9]`
-A method either *returns* a value (a query, no observable mutation) or *performs* a
-change (a command); one method that does both is the smell. **Smell:** a `get_`/`is_`/
-`__repr__`-named query that mutates `self` or its argument and returns a status; a
-command that also returns a value callers start to depend on. **Move:** split the query
-from the command; if a caller needs both, let it call both, so the mutation is visible
-at the call site. **Boundary:** bound against 6 and 9. Distinct from 6 (6 is *where*
-effects live: a CQS-violating method can sit wholly in the imperative shell and still
-mix asking with doing) and from 9 (generic cohesion: CQS is the narrower, per-method,
-mechanically-checkable split, does this one method both return *and* mutate?). Its blast
-radius is a query a caller trusts as pure: a `repr()` that silently rewrites the record
-it prints breaks any consumer that re-reads that record after inspecting it. Promoted
-from the canon audit's CQS gap plus its strongest real fires in the batch; `[combine?]`
-defers final merge.
+- **1 (correct by construction) × 2 (one source of truth):** a missing sum member
+  is silently omitted downstream, and the drift's *leverage* is that one source of
+  truth was lost, not the local omission. Model the outcome as a case *and* give it
+  one home.
+- **1 × 10 (hunt the edge):** 10 is *how you discharge* a totality or illegal-state
+  claim, run the maximizing input; and 1e (sound typing) is what keeps the checker
+  able to *see* the red edge 10 feeds it.
+- **5 (faithfulness) × 1a:** an unfaithful shape forces an invented axis, then guards,
+  then a defensive comment. Fix the representation and the guards dissolve.
+- **4 (functional core) × 6 (proportional response):** a SHOULD conditional on an
+  unfetchable remote is the signal to push the effect to the edge, not to weaken the
+  rule.
+- **7 (names) × 10:** a name that lies about a shape is most often surfaced by the
+  breaking input that the true shape would have handled.
+- **6 × 2, 6 × 3a:** an over-claimed severity and a coupling both trace back to a
+  single authority read wrong; verify the source once and both rank correctly.
 
 ## Output
 
