@@ -102,9 +102,12 @@ the why.
    Remaining polish (not blocking): a one-line "what it buys you" payoff per sounding (the
    Smell/Move bodies are in place); it can land alongside the queued §A items (A2 three
    altitudes, A5–A10) in TIGHTENING-SIGNALS.md §F.
-4. **Cross-link with Correct by Construction.** Shared DNA (illegal-states, sum
-   types, immutability, sound typing). Division of labor: CxC = the deep "why";
-   plumb = the operational review/guide. Each references the other.
+4. **✔ Done (2026-07-23, Stage 4): cross-linked with Correct by Construction.** Shared DNA
+   (illegal-states, sum types, immutability, sound typing). Division of labor: CxC = the deep "why";
+   plumb = the operational review/guide. Bidirectional: SKILL.md's cluster-1 intro + REFERENCES.md
+   point to the CxC guide (github.com/chuckwondo/digital-garden); the guide's canon paragraph points
+   back to plumb/SKILL.md + REFERENCES.md. Hughes's "Why FP Matters" landed in both as a foundational
+   composition cite (explicitly not an effect-placement source).
 5. **Optional, once stable:** split into `plumb-review` / `plumb-guide` entry points
    (mirroring the ponytail family) if the two modes want separate triggers.
 
@@ -113,6 +116,9 @@ the why.
 - [SKILL.md](SKILL.md): the live skill (10 grouped soundings / 19 facets + reinforcement map + Working notes).
 - [EXAMPLES.md](EXAMPLES.md): one worked example per facet (a real trigger + its move, sourced from the
   dogfood log; zero invented), the human-facing companion to SKILL.md's Smell/Move spine. Landed 2026-07-23.
+- [REFERENCES.md](REFERENCES.md): the verified bibliography, one entry per sounding (primary source + why
+  it maps), the Correct-by-Construction cross-link, and honest parks for soundings 7/8/10. Every citation
+  fetched or confirmed, not recalled (the skill's own sounding 6 on its own docs). Landed 2026-07-23 (Stage 4).
 - [DOGFOOD-LOG.md](DOGFOOD-LOG.md): append-only log of real runs and refinement
   actions, kept separate from this rewrite-in-place status doc so it can grow
   without churning it.

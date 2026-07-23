@@ -71,7 +71,8 @@ Plumb's altitude is above both: *is the design the right shape?*
 > questions, not one blurred principle: each facet keeps its own Smell and Move.
 > How the clusters reinforce each other is mapped at the end. A worked example for
 > every facet (a real trigger and its move, drawn from the dogfood log) lives in
-> [EXAMPLES.md](EXAMPLES.md).
+> [EXAMPLES.md](EXAMPLES.md); the verified primary source behind each named concept
+> (DRY, information hiding, CQS, …) lives in [REFERENCES.md](REFERENCES.md).
 
 ### 1. Correct by construction
 
@@ -84,6 +85,12 @@ unrepresentable (1a), model the outcomes as typed cases (1c), force every case t
 be handled (1d), and keep the checker able to see all of it (1e). Each fires on
 its own; together they are the highest-leverage cluster, because a flaw here is
 the kind no downstream test can catch.*
+
+*The extended **why** for this cluster (brands vs value objects, smart
+constructors, where invariants come from, the leak surface) is the companion
+guide [Correct by
+Construction](https://github.com/chuckwondo/digital-garden/blob/main/content/correct-by-construction.md).
+Plumb is the operational review; that guide is the worked-in-depth rationale.*
 
 **1a. Make illegal states unrepresentable.** Shape the type so a bad value can't
 be built in the first place: invariants hold by construction, not by remembering to
@@ -282,14 +289,9 @@ than the core reaching for it; the fetched bytes, an injected `now` / `Fetch` /
 store) so callers supply their own and one core serves every context, sync and async
 included.
 
-*Lineage & sources:*
-- sans-IO: sans-io.readthedocs.io/how-to-sans-io.html; firezone.dev/blog/sans-io
-  (a Rust application of it)
-- functional core / imperative shell: Bernhardt, "Boundaries" and the
-  functional-core/imperative-shell screencast (destroyallsoftware.com); Google
-  Testing Blog, 2025-10
-- ports & adapters from FP: Seemann,
-  blog.ploeh.dk/2016/03/18/functional-architecture-is-ports-and-adapters
+*Lineage & sources: see [REFERENCES.md](REFERENCES.md#4-functional-core-effects-at-the-edges)
+(sans-IO, Bernhardt's functional-core/imperative-shell, Cockburn's hexagonal
+architecture, Seemann, Fowler on DI).*
 
 ### 5. Faithful round-trips
 
