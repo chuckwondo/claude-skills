@@ -566,6 +566,14 @@ with CxC is acceptable, and links point to the GitHub repo.
   theme). Ponytail stance on the tail: land the ×3+ items as notes, fold the ×1 items as one-clause
   riders, and drop A1(f) entirely (sounding 6 already carries it, a cross-link would be a note
   defending a note).
+- **A8 was a 2/DRY check on plumb's own prose.** The "Affirmed" note already said "after a decision
+  reverses, stale prose is the top risk," so landing A8 meant asking the sounding-2 Boundary question
+  *of the skill itself*: does an A8 note duplicate that clause, or encode a different decision? It
+  encodes a different one: the "Affirmed" clause says *prose is an un-run claim, verify it*; A8 says *a
+  reversal is a distinct trigger, here is how to rank and hunt the stale artifacts, sibling tickets
+  included*, so a separate note is right, not a fold. Trimming one into the other would have flattened
+  the distinction, the exact anti-pattern sounding 2's Boundary warns against. The tail pass keeps
+  turning the soundings back on the edits that land them.
 
 ---
 

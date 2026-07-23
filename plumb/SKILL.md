@@ -510,3 +510,12 @@ that most shape this solution.
   *negative* on the *same* site (1a: "and the exact place a collision hides"), because
   the flattering read arrives first and you stop; before leaving a site you affirmed,
   ask which sounding could *indict* it.
+- A decision that *reverses* is a distinct trigger: it turns every artifact that
+  described the now-impossible path into a lie, and prose is the least-checked of them,
+  nothing compiles a stale `.md`. After any reversal, sweep by what no build executes:
+  narrative `.md` (top risk) > doctested docstrings (`pytest --doctest-modules`) >
+  typechecked-and-tested code. Grep the prose deliberately, the checker will not flag it.
+  And the stale artifact need not be *your* doc: a reversal can invalidate a *sibling
+  ticket* whose premises leaned on the old behavior (an issue's own Constraints citing a
+  case a same-day merge just made unreachable), so check a ticket against HEAD, not only
+  against when it was written.

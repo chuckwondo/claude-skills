@@ -562,20 +562,22 @@ sounding 6 already carries "verified, never asserted from memory," so a cross-li
 defending a note. Validation is one external dogfood run *after* the tail lands, not between edits
 (saturation closed nomination; these are transcription, see beat 18).
 
+**✔ Landed (2026-07-23, folded into JOURNEY beat 18):** **A8** (reversal-triggered stale-artifact
+sweep): a new final Working note, distinct from the "Affirmed" note (which already had the
+*top-risk prose* half) by a 2/DRY check, adding the executability ranking (narrative `.md` > doctested
+docstrings > typechecked/tested code) and the *sibling-ticket-vs-HEAD* facet.
+
 **Queued, ranked by leverage:**
 
-1. **A8: prose-drift after a reversal** (Working note under faithfulness / one-source-of-truth). ×3.
-   The "Affirmed" note has the *top-risk prose* half; still missing the executability ranking (`.md`
-   > docstring > code) and "check a sibling ticket's premises against HEAD."
-2. **A9: run the sibling to find the shape** (Working note, or into the guide-mode note). ×2.
-3. **A6: park-can-be-scope, resolved as a filed follow-up** (third park class on the fix-vs-park
+1. **A9: run the sibling to find the shape** (Working note, or into the guide-mode note). ×2.
+2. **A6: park-can-be-scope, resolved as a filed follow-up** (third park class on the fix-vs-park
    note, SKILL.md fix-vs-park Working note). ×3.
-4. **A5: sounding-1 unreachable-ideal → test** (one-clause rider on sounding 1, not a new bullet). ×1.
-5. **A7: leverage measured against the charter** (one-clause rider on the leverage Working note). ×1.
-6. **A1(g): decode-the-bytes, not a convenient literal** (one-clause rider on sounding 10). ×1.
+3. **A5: sounding-1 unreachable-ideal → test** (one-clause rider on sounding 1, not a new bullet). ×1.
+4. **A7: leverage measured against the charter** (one-clause rider on the leverage Working note). ×1.
+5. **A1(g): decode-the-bytes, not a convenient literal** (one-clause rider on sounding 10). ×1.
 
-*Done/dropped from the queue: **A2** ✔ landed · **A10** ✔ already-landed (1e) · **A1(f)** dropped
-(covered by sounding 6).*
+*Done/dropped from the queue: **A2** ✔ landed · **A8** ✔ landed · **A10** ✔ already-landed (1e) ·
+**A1(f)** dropped (covered by sounding 6).*
 
 *The combine pass (Section B/C) is now **ready to run** (2026-07-22): the corpus reached saturation, §C
 unfroze, the merge/keep calls are recorded in §C-batch, and the count reconciled to **20** (§E3). Per
