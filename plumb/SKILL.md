@@ -475,11 +475,21 @@ that most shape this solution.
   layering: inject the check instead" is.
 - When a sounding doesn't apply, say so briefly; don't manufacture a finding to
   fill it.
-- Run plumb at both altitudes: on the *plan* before code, and again on the *diff*
-  after. They are complementary, not redundant: the two passes catch different
-  flaws. (On #14 the plan-review's headline was a host-app naming collision; the
-  diff-review's was a one-source-of-truth drift that only existed once code was
-  written.) Each pass earns its keep.
+- Run plumb at all three altitudes: as *guide* questions before code exists, on the
+  *plan* once there is one, and on the *diff* after. They are complementary, not
+  redundant: each catches flaws the others cannot. The plan judges the *stated
+  shape*, so some errors are only legible once code exists; the diff, run *after*
+  code-review and its fixes, catches structural debt a correctness fix introduced.
+  Read a clean diff-pass as a *positive* signal the plan was thorough, not a wasted
+  run. Two diff-specific failure modes: it can surface a *higher* sounding the plan's
+  fix produced without claiming it (re-rank the landed fix against all soundings, not
+  just the one it targeted), and it can *miss* fresh debt the implementation added
+  (affirming the plan's fix landed is not sweeping the new code, see the "Affirmed"
+  note). And the load-bearing move often lands in *none* of the three passes but the
+  *design dialogue between them*: a reviewer's pushback after the guide walk, where
+  the real reshaping happens. (On #14 the plan-review's headline was a host-app naming
+  collision; the diff-review's was a one-source-of-truth drift that only existed once
+  code was written: two passes, two different load-bearing findings.)
 - "Affirmed" is not "closed"; verifying a claim is an action, not an argument. "The fix
   landed", "the edge is bounded", "it's negligible" are *claims*; verify them by
   doing: sweep the new code for a fresh instance of the same sounding (affirming one

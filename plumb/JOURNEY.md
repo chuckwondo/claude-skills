@@ -537,6 +537,36 @@ with CxC is acceptable, and links point to the GitHub repo.
   producers with no uniqueness guarantee). Landed as a Smell clause. A false negative is a
   legitimate, and here a load-bearing, refinement input.
 
+### 18. (this session) The landings tail: transcription, not discovery, and where dogfooding re-enters
+
+- **The resume-token was ambiguous, and the model misread it.** The prior session wrote "re-invoke
+  `/plumb` to continue" into memory. A bare `/plumb` is *also* the skill's own review invocation, so
+  the model first read it as "the review tool needs a target" and asked the user for a diff. The
+  disambiguator was never in the command, it was in memory's `IMMEDIATE NEXT`. A small process note
+  for any cross-session resume convention: a token that means two things is resolved only by
+  out-of-band context, and the model will reach for the wrong meaning first.
+- **The pacing question, and the discovery-vs-transcription split.** Starting the queued §A landings,
+  the user asked whether to weave more repo audits between them. Answer: no, and the reason is the
+  same two-axis distinction from the batch analysis (beat 6, beats 10 to 11). The batch was
+  *discovery* ("is there an unhomed sounding? does the ranking hold across languages?") and it
+  *saturated*, four external audits, zero-new-unhomed; more repos would re-run a closed question. The
+  §A landings are *transcription*: each moves an already-corroborated, already-logged signal into
+  SKILL.md wording. No fresh run gates a transcription, because the data that would answer it is
+  already in the log.
+- **Where dogfooding re-enters: once, at the end, external.** A wording landing is itself a claim
+  ("this note helps a real review"), and the provenance rule (beats 5, 17) says the author re-reading
+  it does not verify it. So the batch's honest close is one fresh dogfood run on a *new external
+  target* after the landings, checking the reworded notes actually fire and help, validation of the
+  wording, not more nomination. Over-auditing (a repo between each edit) and under-verifying (land
+  seven author-re-read notes) are the two failure modes this avoids. The user's question forced the
+  distinction into the plan.
+- **First landing: A2, three altitudes.** Expanded the "both altitudes" Working note to *guide /
+  plan / diff*, plus the observation the load-bearing move often lands in the *design dialogue
+  between* the passes, not the passes themselves (×16 corroboration, the most-developed ledger
+  theme). Ponytail stance on the tail: land the ×3+ items as notes, fold the ×1 items as one-clause
+  riders, and drop A1(f) entirely (sounding 6 already carries it, a cross-link would be a note
+  defending a note).
+
 ---
 
 ## The transferable method (to finalize at the end)

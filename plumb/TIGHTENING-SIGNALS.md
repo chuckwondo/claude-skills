@@ -550,19 +550,32 @@ recorded: 5's armchair `[6,14]` marker dropped, 14 demoted on low *drive*-rate (
 *demotion* was 14. A cross-cluster **reinforcement map** was written (the target-end-state's "how the clusters
 reinforce" layer). Count reconciled 20 → **10** as a consequence of grouping, not by targeting a number.
 
+**✔ Landed (2026-07-23, the §A tail begins, JOURNEY beat 18):** **A2** (three altitudes): the
+SKILL.md "both altitudes" Working note expanded to *guide / plan / diff*, plus the point that the
+load-bearing move often lands in the *design dialogue between* the passes, not the passes
+themselves. Also confirmed **A10 already-landed in the combine** (1e carries the TypeGuard-vs-TypeIs
+narrowing facet, SKILL.md 1e Smell + Move), marked done with no separate landing.
+
+**Pass stance (ponytail, decided 2026-07-23):** land the ×3+ items as real Working notes; **fold the
+×1 items as one-clause riders**, not new bullets, on an already-dense section; **A1(f) dropped** —
+sounding 6 already carries "verified, never asserted from memory," so a cross-link would be a note
+defending a note. Validation is one external dogfood run *after* the tail lands, not between edits
+(saturation closed nomination; these are transcription, see beat 18).
+
 **Queued, ranked by leverage:**
 
-1. **A2: three altitudes (guide / dialogue / diff)** (expand the SKILL.md:286 note). Cheap,
-   high-corroboration (×16).
-2. **A8: prose-drift after a reversal** (Working note under faithfulness / one-source-of-truth). ×3.
-3. **A9: run the sibling to find the shape** (Working note, or into the guide-mode note). ×2.
-4. **A5: sounding-1 unreachable-ideal → test** (small rider or Working note). ×1.
-5. **A6: park-can-be-scope, resolved as a filed follow-up** (third park class on the fix-vs-park
-   note, SKILL.md:280–284). ×3.
-6. **A7: leverage measured against the charter** (second trace target on the leverage note,
-   SKILL.md:277). ×1.
-7. **A10: sound narrowing, TypeGuard vs TypeIs** (rider on sounding 1). ×1, niche.
-8. **A1 (f)/(g): citation-is-a-claim + decode-the-bytes** (still queued from the first harvest).
+1. **A8: prose-drift after a reversal** (Working note under faithfulness / one-source-of-truth). ×3.
+   The "Affirmed" note has the *top-risk prose* half; still missing the executability ranking (`.md`
+   > docstring > code) and "check a sibling ticket's premises against HEAD."
+2. **A9: run the sibling to find the shape** (Working note, or into the guide-mode note). ×2.
+3. **A6: park-can-be-scope, resolved as a filed follow-up** (third park class on the fix-vs-park
+   note, SKILL.md fix-vs-park Working note). ×3.
+4. **A5: sounding-1 unreachable-ideal → test** (one-clause rider on sounding 1, not a new bullet). ×1.
+5. **A7: leverage measured against the charter** (one-clause rider on the leverage Working note). ×1.
+6. **A1(g): decode-the-bytes, not a convenient literal** (one-clause rider on sounding 10). ×1.
+
+*Done/dropped from the queue: **A2** ✔ landed · **A10** ✔ already-landed (1e) · **A1(f)** dropped
+(covered by sounding 6).*
 
 *The combine pass (Section B/C) is now **ready to run** (2026-07-22): the corpus reached saturation, §C
 unfroze, the merge/keep calls are recorded in §C-batch, and the count reconciled to **20** (§E3). Per
