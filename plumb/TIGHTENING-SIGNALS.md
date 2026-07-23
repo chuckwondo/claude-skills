@@ -567,17 +567,21 @@ sweep): a new final Working note, distinct from the "Affirmed" note (which alrea
 *top-risk prose* half) by a 2/DRY check, adding the executability ranking (narrative `.md` > doctested
 docstrings > typechecked/tested code) and the *sibling-ticket-vs-HEAD* facet.
 
+**✔ Landed (2026-07-23):** **A9** (run a sibling to find the shape): folded into sounding 10's "the
+run target is wider" enumeration as a third run-target (a *sibling* implementation run on the same
+input *before* adopting the buggy path's own fix; names the shape the issue/ADR missed; strongest in
+guide mode), homed with its family rather than a standalone note.
+
 **Queued, ranked by leverage:**
 
-1. **A9: run the sibling to find the shape** (Working note, or into the guide-mode note). ×2.
-2. **A6: park-can-be-scope, resolved as a filed follow-up** (third park class on the fix-vs-park
+1. **A6: park-can-be-scope, resolved as a filed follow-up** (third park class on the fix-vs-park
    note, SKILL.md fix-vs-park Working note). ×3.
-3. **A5: sounding-1 unreachable-ideal → test** (one-clause rider on sounding 1, not a new bullet). ×1.
-4. **A7: leverage measured against the charter** (one-clause rider on the leverage Working note). ×1.
-5. **A1(g): decode-the-bytes, not a convenient literal** (one-clause rider on sounding 10). ×1.
+2. **A5: sounding-1 unreachable-ideal → test** (one-clause rider on sounding 1, not a new bullet). ×1.
+3. **A7: leverage measured against the charter** (one-clause rider on the leverage Working note). ×1.
+4. **A1(g): decode-the-bytes, not a convenient literal** (one-clause rider on sounding 10). ×1.
 
-*Done/dropped from the queue: **A2** ✔ landed · **A8** ✔ landed · **A10** ✔ already-landed (1e) ·
-**A1(f)** dropped (covered by sounding 6).*
+*Done/dropped from the queue: **A2** ✔ landed · **A8** ✔ landed · **A9** ✔ landed · **A10** ✔
+already-landed (1e) · **A1(f)** dropped (covered by sounding 6).*
 
 *The combine pass (Section B/C) is now **ready to run** (2026-07-22): the corpus reached saturation, §C
 unfroze, the merge/keep calls are recorded in §C-batch, and the count reconciled to **20** (§E3). Per

@@ -389,7 +389,11 @@ the breaking edge is the one that violates the invariant (e.g. two producers
 writing one shared key). The run target is wider than the input under
 review: run the *excluded* case (a green exclusion proves the filter fires, not that
 its stated *reason* holds), the downstream *consumer* (its crash-vs-silent-repair-vs-reject
-profile ranks the rules you plan *before* you write code), and the *check itself*:
+profile ranks the rules you plan *before* you write code), a *sibling* implementation of
+the same operation (run the other paths of an N-path design on the same input *before*
+adopting the buggy path's own proposed fix; a sibling that already handles it *names the
+shape* the issue and the ADR missed, and in guide mode this runs before any code, sharper
+than running a neighbor merely to settle a detail), and the *check itself*:
 delete a `case` arm to confirm the type-checker goes red, and run the boundary on the
 *oldest supported environment*; a green check never fed a known-red input is unearned.
 Resolve a default to the value it *produces* and run that, not "the default" as an
