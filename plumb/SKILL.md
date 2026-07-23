@@ -465,10 +465,12 @@ that most shape this solution.
   case or a lying name is a nit until you follow it downstream to the thing it
   breaks: a check it defeats, a caller it silently misleads; the blast radius
   sets the rank, not the size of the local wrongness. The same trace splits *fix*
-  from *note-and-park*: a defect the normal entry point can reach is load-bearing;
-  one whose bad state has no path to a consumer (a lone trusted constructor
-  already upholds it) is real but parkable, so name it, give the cost-vs-risk in
-  a line, and move on.
+  from *note-and-park*, and a park has two reasons. *Unreachable*: the bad state
+  has no path to a consumer (a lone trusted constructor already upholds it), so
+  name it and give the cost-vs-risk in a line. *Out-of-scope*: the defect is
+  reachable and load-bearing, but the fix lives outside the change's agreed
+  boundary (a sibling module's crash on the same input the new rule flags); park
+  it to a *filed follow-up issue*, a routed action, not a note that rots.
 - Prefer the change that makes an illegal state *unrepresentable* over the one that
   adds a guard.
 - Judge against the ideal, not the incumbent. A widespread bad pattern is a bigger

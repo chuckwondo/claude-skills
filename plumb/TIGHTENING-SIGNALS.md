@@ -572,16 +572,19 @@ run target is wider" enumeration as a third run-target (a *sibling* implementati
 input *before* adopting the buggy path's own fix; names the shape the issue/ADR missed; strongest in
 guide mode), homed with its family rather than a standalone note.
 
+**✔ Landed (2026-07-23):** **A6** (a park's reason can be scope): the fix-vs-park Working note now
+names *two* park reasons, *unreachable* (name it, cost-vs-risk in a line) and *out-of-scope*
+(reachable and load-bearing, but outside the change's boundary; resolve to a *filed follow-up issue*,
+a routed action, not a rotting note, linking A1's verifying-is-an-action rule).
+
 **Queued, ranked by leverage:**
 
-1. **A6: park-can-be-scope, resolved as a filed follow-up** (third park class on the fix-vs-park
-   note, SKILL.md fix-vs-park Working note). ×3.
-2. **A5: sounding-1 unreachable-ideal → test** (one-clause rider on sounding 1, not a new bullet). ×1.
-3. **A7: leverage measured against the charter** (one-clause rider on the leverage Working note). ×1.
-4. **A1(g): decode-the-bytes, not a convenient literal** (one-clause rider on sounding 10). ×1.
+1. **A5: sounding-1 unreachable-ideal → test** (one-clause rider on sounding 1, not a new bullet). ×1.
+2. **A7: leverage measured against the charter** (one-clause rider on the leverage Working note). ×1.
+3. **A1(g): decode-the-bytes, not a convenient literal** (one-clause rider on sounding 10). ×1.
 
-*Done/dropped from the queue: **A2** ✔ landed · **A8** ✔ landed · **A9** ✔ landed · **A10** ✔
-already-landed (1e) · **A1(f)** dropped (covered by sounding 6).*
+*Done/dropped from the queue: **A2** ✔ landed · **A6** ✔ landed · **A8** ✔ landed · **A9** ✔ landed ·
+**A10** ✔ already-landed (1e) · **A1(f)** dropped (covered by sounding 6).*
 
 *The combine pass (Section B/C) is now **ready to run** (2026-07-22): the corpus reached saturation, §C
 unfroze, the merge/keep calls are recorded in §C-batch, and the count reconciled to **20** (§E3). Per
