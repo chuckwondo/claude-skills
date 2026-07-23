@@ -461,6 +461,50 @@ whose real fires all come from the external audits, not the self-corpus that fir
   discarded). Verifying a citation is not only "is the line right" but "is this source one worth
   standing on."
 
+### 16. (this session) Stage 4: the references verify the skill's own claims
+
+Stage 4's job was the last reader-facing gap: the named concepts a sounding invokes (information
+hiding, CQS, railway oriented programming) had no followable pointer, only name-drops. The
+decision was *not* to write a third narrative doc. The deep *why* already lives in the
+Correct-by-Construction guide, the build story in this file, the worked examples in EXAMPLES.md; a
+new "why" companion would only restate SKILL.md's already-deep bodies. So Stage 4 is a verified
+REFERENCES.md (one entry per sounding) plus a bidirectional cross-link to the CxC guide. The scope
+call was the model's; the user delegated it ("help me decide") and set two constraints: redundancy
+with CxC is acceptable, and links point to the GitHub repo.
+
+- **Verification changed content, not just confidence, exactly as beat 14 predicted.** The ~20
+  citations were fanned out to four subagents, each told to fetch or confirm every URL and flag
+  anything that did not map. The returns were not rubber stamps: sounding 5 *upgraded* from a
+  proposed park to a clean cite (Wlaschin's "there and back again" is precisely the round-trip
+  property); sounding 10 *stayed* parked (QuickCheck founds random property testing, not the
+  minimal-failing-case shrinking that "hunt the breaking edge" is about); a citation flagged as
+  suspect from memory (a "Google Testing Blog, 2025-10" post) turned out to be real, so verification
+  *kept* a true source a hunch would have cut; and DIP's original objectmentor.com host is dead, so
+  the entry cites the book reprint rather than ship a URL that 404s. A dead link is itself a lie a
+  citation tells. This is sounding 6 turned on the skill's own bibliography.
+- **The user's late paper was a beat-14 catch in miniature.** Mid-assembly the user surfaced
+  Hughes's "Why Functional Programming Matters" and asked whether it added anything. The honest
+  answer required opening it, not recalling it. Fetched and read, the paper turns out *not* to
+  support the cite it most invites: sounding 4 is about pushing effects to the edge, but Hughes
+  explicitly dismisses "no side-effects" as the uninteresting property and argues FP's power is
+  compositional glue. So it was filed as a *foundational* entry (the composition-as-modularity
+  thesis behind soundings 2, 3c, and the pure-core half of 4) with an explicit note that it is not a
+  source for effect-placement, in both REFERENCES.md and the CxC canon. The tempting attribution was
+  subtly wrong, and only reading the source caught it. The user found the paper; the model caught
+  the misfit; the user chose to file it in both homes.
+- **One home for references is the skill's own sounding 2.** SKILL.md's sounding-4 block was the
+  only inline citation set; it was folded out into REFERENCES.md and replaced with a pointer.
+  Consolidating the references into a single authoritative file is DRY applied to the docs.
+- **The em-dash convention caught a fresh-file drift before it landed.** The first REFERENCES.md
+  draft carried 40 em-dashes against a corpus that is deliberately em-dash-free (SKILL.md and
+  EXAMPLES.md have zero). A house-style grep before commit caught it; the file was rewritten with
+  colons, commas, and parentheses. A new file does not inherit the house style automatically; it has
+  to be checked against it.
+- **Lesson:** the references apparatus is where the skill is most exposed to its own sounding 6,
+  because an author's fluency hides a wrong citation better than a wrong claim. The only safe
+  reference is a fetched one, and the delegation to verify each was not ceremony: it moved four real
+  entries and corrected the one the user contributed.
+
 ---
 
 ## The transferable method (to finalize at the end)
