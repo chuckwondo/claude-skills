@@ -100,9 +100,11 @@ setter can break the invariant); an illegal *sequence* made unrepresentable (the
 cannot compile wrong); an ignored *outcome* made unrepresentable (the
 designer half of must-consume, exactly what Rust's `#[must_use]` encodes).
 **Smell:** the same thing validated again and again downstream; a struct whose
-fields permit combinations that are never valid; "remember to check X first."
-**Move:** push the invariant into the constructor/type; parse-don't-validate at
-the edge.
+fields permit combinations that are never valid; "remember to check X first"; a
+shared dict/map written by several producers with no proof the keys are disjoint
+(a collision resolves last-writer-wins, silently binding one key to the wrong
+value). **Move:** push the invariant into the constructor/type;
+parse-don't-validate at the edge.
 
 **1b. Model the domain with types, not primitives.** Give a closed-set or structured
 value its own named type instead of a general-purpose primitive (a plain string,
@@ -379,9 +381,12 @@ Find the legal input that breaks the design's assumption and actually run it, so
 "that can't happen" is tested, not hoped for. Probe with the input that violates the
 assumption: out-of-range, non-ASCII, empty/null, reduced-precision, adversarial. **Smell:** an assumption
 ("a 4-digit ASCII year", "it fits in a datetime") with no case testing its
-boundary. **Move:** name the assumption; find the *legal* input that breaks it, then
-**construct and run** it: a "bounded/negligible" verdict is un-earned until that
-input has actually run; add the case. The run target is wider than the input under
+boundary. **Move:** name the assumption *as a precise invariant*, then find the *legal*
+input that *violates* it, then **construct and run** it: a "bounded/negligible"
+verdict is un-earned until that input has actually run; add the case. A legal
+input the design handles *correctly* is not the breaking edge, however untested;
+the breaking edge is the one that violates the invariant (e.g. two producers
+writing one shared key). The run target is wider than the input under
 review: run the *excluded* case (a green exclusion proves the filter fires, not that
 its stated *reason* holds), the downstream *consumer* (its crash-vs-silent-repair-vs-reject
 profile ranks the rules you plan *before* you write code), and the *check itself*:
@@ -490,4 +495,8 @@ that most shape this solution.
   already green is confirmation bias in a lab coat. Provenance to plan around: a
   self-authored design does not reliably run its own claims even when this note says to,
   so the likeliest real trigger is an external prompt, a reviewer, or the user, who is
-  not the author.
+  not the author. A specific shape to catch yourself in: a sounding firing *positive*
+  on a site (2/DRY: "one clean assembly point") masks a different sounding firing
+  *negative* on the *same* site (1a: "and the exact place a collision hides"), because
+  the flattering read arrives first and you stop; before leaving a site you affirmed,
+  ask which sounding could *indict* it.

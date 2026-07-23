@@ -505,6 +505,38 @@ with CxC is acceptable, and links point to the GitHub repo.
   reference is a fetched one, and the delegation to verify each was not ceremony: it moved four real
   entries and corrected the one the user contributed.
 
+### 17. (this session) A miss, not a fire: the first refinement the clean corpus surfaced by *missing*
+
+- **The reversal.** Self-plumbed a covjson-msgspec `from_xarray` coordinate-classification fix
+  (guide soundings on the root-cause map, then `/plumb review` on the diff). Both passes earned
+  their keep: guide mode surfaced a lost invariant and an over-permissive fallback; review mode
+  caught a 10 (an untested reframe invariant) and a 1b/1e (a two-`str` positional tuple, promoted
+  to a NamedTuple). But on the `add()` closure that assembles the axes I fired 2/DRY *positive*
+  ("one clean assembly point, both branches covered") and stopped. An external `/code-review` then
+  constructed two *legal* datasets that collide on the shared keyed dicts and found silent
+  corruption (a range bound to the wrong axis; longitude values lost). I reproduced both and fixed
+  with a collision-checked composer that raises. Third confirming instance of the provenance rule:
+  the author under-runs, the external reviewer is the real trigger.
+- **The mechanism is sharper than "didn't look hard enough."** The DRY-positive did not merely
+  coexist with the 1a-negative, it *masked* it: same site, opposite verdicts, and the flattering
+  read arrived first, so the review stopped before reaching the indicting one. Landed as a
+  counter-move in the provenance Working note: on your own diff, when a sounding fires positive on
+  a site, ask which sounding could *indict* the same site before leaving it.
+- **Sounding 10 fired, but on a legal-and-correct edge.** I had "verified" 10 by constructing and
+  running a `lon(i)`/`lat(j)` case, which the design handles correctly, not the invariant-violating
+  input (two role coords on one dimension, colliding on one key). Hunting "an untested input"
+  satisfied 10 superficially while missing "the input that violates the invariant." Landed as a
+  10-Move sharpening: name the assumption as a precise invariant, then find the *legal* input that
+  *violates* it; a legal edge, however untested, is not the breaking edge.
+- **Why a miss outranks a fire, and what it proves.** This is the first refinement driven by a
+  false negative instead of fire-frequency, a different signal channel that meets the corpus-bias
+  problem head-on (beats 1 to 4). A clean, author-pre-corrected self-corpus cannot surface a gap by
+  *firing* (it never commits the sin), yet it just surfaced one by *missing*: a sounding that
+  covers the shape failed to fire. The gap was in 1a's *wording*, not its *coverage* (1a owns
+  "illegal states unrepresentable," but its Smell did not name a shared accumulator written by N
+  producers with no uniqueness guarantee). Landed as a Smell clause. A false negative is a
+  legitimate, and here a load-bearing, refinement input.
+
 ---
 
 ## The transferable method (to finalize at the end)

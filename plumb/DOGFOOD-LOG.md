@@ -1834,3 +1834,81 @@ contributor's diff). Those two are the only existing non-`self` data.*
   `__repr__`; 4 titiler-cmr mock cell; 5a #44 `(bands,1)`; 5b zarr `must_understand`; 6 PR
   #130 §6.1.1 MUST-vs-MAY; 7 #37 `CoverageRedundantDomainType`; 8 titiler-cmr `Asset` +
   #113 inverse; 9 zarr RLE + earthaccess split-door; 10 07-07 year-0000 + #41.
+
+- **2026-07-23: covjson-msgspec #163/#164/#165 from_xarray fix** (self-plumbed, clean
+  tree; plumb soundings on the root-cause map + `/plumb review` on the diff, then an
+  external `/code-review` caught what plumb missed). Fixing the three `from_xarray`
+  coordinate-classification bugs the prior entry flagged as latent. One root reframe in
+  `_build_axes` (a coverage axis is a dimension a kept range rides on, keyed by dimension
+  not coordinate name), split into three generators over a new `_AxisEntry` NamedTuple
+  assembled by an `add()` closure.
+
+  **Plumb fired and earned its keep, twice.** Guide-flavored soundings on the root-cause
+  map surfaced two structural findings (a lost invariant: "the dimension a coordinate
+  varies along" was never represented apart from "the coordinate's name"; and a 5×8
+  over-permissive fallback masking a faithfulness violation), and set the #165 raise on
+  sounding 6 (spec §6.1.1, axes MUST be 1-D, verified at source). Review mode on the diff
+  caught sounding 10 (the reframe's core invariant, key-by-dimension, was only tested
+  where the dimension name equalled the role letter, so `key == dim` always; I constructed
+  and ran a `lon(i)`/`lat(j)` case and added the missing test) and sounding 1b/1e (the
+  `(str, Axis, str | None)` positional entry tuple had two same-typed `str` fields, so a
+  key/dim transposition was invisible to the checker; promoted to an `_AxisEntry`
+  NamedTuple).
+
+  **The miss (the load-bearing data point).** Plumb review looked directly at the `add()`
+  closure (`axes[entry.key] = entry.axis; if entry.dim is not None: dim_to_key[entry.dim]
+  = entry.key`) and I rationalized it as clean ("the assembly logic lives in one place,
+  both branches covered": a sounding 2 / DRY positive). It is also a sounding 1a negative
+  I did not fire: three independent producers write into two shared keyed dicts with no
+  uniqueness guarantee, so a duplicate key (a collision) is an illegal state left
+  representable, resolved last-writer-wins. An external `/code-review` adversarial-input
+  pass constructed two legal datasets that collide: (a) two role coords on one dimension
+  (`x(x)` longitude + `depth(x)`) overwriting `dim_to_key['x']`, binding the range to the
+  wrong axis; (b) a leftover dimension literally named `x` overwriting the role-`x` axis
+  key, losing the longitude values. Both silent corruption. I reproduced both, then fixed
+  with a collision-checked composer that raises (same posture as the #165 edge-guard).
+
+  Leverage / co-fire: **1a × 10** was the whole miss. The `add()` closure is the exact
+  "make the illegal state unrepresentable" site (1a), and the verification that would have
+  caught it is the colliding input (10); but I ran the wrong edge under 10: `lon(i)`/
+  `lat(j)` is a legal-and-correct case (a good test), not the illegal-state edge. Hunting
+  "an untested input" satisfied 10 superficially while missing "the input that violates
+  the invariant." The provenance note landed as written: I authored the reframe,
+  self-plumbed it, rationalized the 1a site, and only the external reviewer's constructed
+  input survived the confirmation bias. Third confirming instance of "a self-authored
+  design does not reliably run its own claims; the likeliest real trigger is an external
+  reviewer."
+
+  Signals for the tightening pass:
+  (1) **Sounding 1a should fire on the unguarded shared-accumulator write.** When N
+  producers write `structure[key] = value` into one shared keyed collection with no proof
+  the keys are disjoint, a collision is an illegal state left representable, regardless
+  that each producer is individually correct and the assembly is DRY. Here the 2/DRY
+  positive ("one place for the assembly") actively masked the 1a negative. Candidate: add
+  to 1a's Smell "a shared dict/map written by multiple producers with no uniqueness
+  guarantee (last-writer-wins silently resolves a collision)", and note the 1a × 2
+  tension: a single assembly site is a DRY win and the exact place a collision hides.
+  (2) **Sounding 10 must hunt the invariant-violating edge, not merely an untested one.**
+  I discharged 10 (constructed and ran `lon(i)`/`lat(j)`) and still missed the bug,
+  because that edge exercises a legal case. Refinement: when 10 fires, name the invariant
+  first (here: "each dimension maps to exactly one axis; each axis key is unique"), then
+  construct the input that violates it (two things to one key), not just an input that is
+  untested. A legal edge is not the breaking edge.
+  (3) **Provenance, re-confirmed with a mechanism.** Self-plumbing rationalized the 1a
+  site into a 2/DRY positive: a specific shape of the confirmation-bias failure, where the
+  reviewer sees the sounding that flatters the design (DRY) and stops, not reaching the
+  sounding that indicts it (illegal-state). The external reviewer, not invested in the
+  design, went straight to "what input breaks this?". Candidate: on a self-authored diff,
+  when one sounding fires positive on a site, deliberately ask which sounding could fire
+  negative on the same site before moving on.
+
+  **RESOLVED (same commit): all three landed into SKILL.md.** Triage verdict: a genuine
+  miss (plumb's lane, not a code-review/ponytail deferral), of the *wording* kind (1a
+  covers the shape, its Smell did not name it), not a coverage gap, so no new sounding and
+  the batch's saturation holds. Landings: (1) 1a Smell gained "a shared dict/map written by
+  several producers with no proof the keys are disjoint (a collision resolves
+  last-writer-wins, silently binding one key to the wrong value)"; (2) sounding-10 Move now
+  reads "name the assumption *as a precise invariant*, then find the *legal* input that
+  *violates* it ... a legal input the design handles correctly is not the breaking edge,
+  however untested"; (3) the provenance Working note gained the positive-masks-negative
+  counter-move (ask which sounding could *indict* a site you just affirmed). JOURNEY beat 17.
