@@ -1814,3 +1814,23 @@ contributor's diff). Those two are the only existing non-`self` data.*
   is itself a plumb-relevant smell (check whether the assertion cements an illegal
   state, sounding 1, or a faithfulness violation, sounding 5), extending "hunt the
   breaking edge / run the excluded case" from pragma'd code to test assertions.
+
+- **2026-07-23: worked-examples pass landed as [EXAMPLES.md](EXAMPLES.md) (not a review
+  run).** Stage 3 of the refinement: one concrete example per facet (a real trigger +
+  its move) for all 10 grouped soundings / 19 facets. Mined from this log via
+  [TIGHTENING-SIGNALS.md](TIGHTENING-SIGNALS.md) §F (the old→new facet Rosetta stone) and
+  §A–§D (which entry fired which sounding), opening the raw log only for the ~8 entries
+  carrying the concrete trigger. **Result: zero facets needed inventing** — every one had a
+  real fire, a late vindication of the corpus/saturation work: the three latest promotions
+  (1b primitive-obsession, 1e sound-typing, 3e CQS) all illustrate from the *external*
+  audits (earthaccess, titiler-cmr), not the self-corpus that first suppressed them.
+  Provenance-tagged per example (self / external / generated); specificity non-fires kept
+  beside 1b (pydantic `h_units`), 1e (titiler `Any`-at-edge), 3e (titiler `bounds`). Wired
+  in: a SKILL.md pointer from the soundings intro; REFINEMENT.md Files list; JOURNEY.md
+  beat 15. Per-facet source map: 1a gen-2 Java + 07-07 `Moment`; 1b earthaccess `login`;
+  1c titiler-cmr `parse_datetime`; 1d Java `describeStatus` + gen-3 Go language note; 1e
+  earthaccess `Literal|Any` + #138 `TypeGuard`; 2 #14 `_ROOT_TYPES`; 3a zarr metadata-DTO;
+  3b earthaccess `CustomDict`; 3c/3d Java `OrderService`/`describeStatus`; 3e earthaccess
+  `__repr__`; 4 titiler-cmr mock cell; 5a #44 `(bands,1)`; 5b zarr `must_understand`; 6 PR
+  #130 §6.1.1 MUST-vs-MAY; 7 #37 `CoverageRedundantDomainType`; 8 titiler-cmr `Asset` +
+  #113 inverse; 9 zarr RLE + earthaccess split-door; 10 07-07 year-0000 + #41.

@@ -111,6 +111,8 @@ the why.
 ## Files in this skill
 
 - [SKILL.md](SKILL.md): the live skill (10 grouped soundings / 19 facets + reinforcement map + Working notes).
+- [EXAMPLES.md](EXAMPLES.md): one worked example per facet (a real trigger + its move, sourced from the
+  dogfood log; zero invented), the human-facing companion to SKILL.md's Smell/Move spine. Landed 2026-07-23.
 - [DOGFOOD-LOG.md](DOGFOOD-LOG.md): append-only log of real runs and refinement
   actions, kept separate from this rewrite-in-place status doc so it can grow
   without churning it.

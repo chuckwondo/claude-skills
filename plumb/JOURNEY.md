@@ -409,6 +409,58 @@ party who can confirm (the user) verify the claim the model cannot cleanly self-
   (label, description, name, citation) is a claim, and the author's own fluency is exactly what
   hides the claim from the author.
 
+### 15. (this session) Stage 3: every facet already had a real fire
+
+The plan was "draft one example per facet, from the dogfood log where one exists, *invented only where
+the log has none*." The result: across all 19 facets, **zero needed inventing**. The escape hatch went
+unused. That is itself the finding, and a late vindication of the corpus work (beats 1–2, 7): a corpus
+built and stratified until it saturated turns out to hold a concrete, runnable instance of *every*
+probe the skill carries, including the three latest promotions (primitive-obsession, sound-typing, CQS)
+whose real fires all come from the external audits, not the self-corpus that first suppressed them.
+
+- **The ledger was the Rosetta stone, not the 257KB log.** TIGHTENING-SIGNALS.md §F already mapped every
+  old sounding number to its post-combine facet id, and §A–§D already indexed which entry fired which
+  sounding. Mining ran off that index and only opened the raw log for the ~8 entries that carried the
+  concrete trigger, never a linear read of all 53 entries. The lesson for a future maintainer: the
+  harvested ledger *is* the query surface; re-reading the append-only log end-to-end is the slow path.
+- **Provenance is a property of the example, not just the fire.** Each example is tagged self /
+  external / generated, and the spread is deliberate: the correct-by-construction and faithfulness
+  clusters illustrate best from the *self* covjson work (`_ROOT_TYPES`, the phantom `(bands,1)` axis,
+  the year-0000 mislabel), while the newly-promoted structural soundings illustrate best from the
+  *external* audits (earthaccess's dict-model leak, titiler-cmr's `parse_datetime` tuple-sum, zarr's
+  cross-sibling `must_understand` gap). An example inherits the authority of its source: an external
+  fire proves the probe catches real code, not a self-plumbed artifact.
+- **The specificity contrasts earn their place beside the fires.** For three facets the *non*-fire is
+  as instructive as the fire: 1b did not fire on pydantic's transient `h_units` regex capture, 1e
+  parked titiler's `Any` at a genuine xarray edge, 3e went near-silent on titiler's `bounds`. Keeping
+  the contrast next to the example is what stops the example from reading as "any string-typed closed
+  set fires."
+- **The first cut described code in prose; the user caught that it was indecipherable.** The review
+  table and the first EXAMPLES.md draft narrated each trigger and move ("a `str` standing in for a
+  closed set, dispatched by if/elif..."). The user's correction: an examples doc must show real
+  **before/after code blocks** with enough surrounding context to see both the smell and the repair, not
+  a prose paraphrase of code. The rewrite pairs a **Problem** and a **Fix** fence per facet, in the
+  facet's native language (Python / Java / Go), keeping the same signatures and call sites across the
+  pair so the Fix is a true round-trip of the Problem (the skill's own faithfulness sounding, 5a,
+  applied to its own docs). Lesson for any future example doc: code shows shape, prose only claims it.
+- **Adding commit-pinned links forced verification, and verification caught drift, exactly beat 14's
+  lesson turned on the examples themselves.** The user asked for links to the exact file and line at each
+  audited commit so a reader can open the original. Constructing them meant fetching the real files at
+  their SHAs rather than trusting the audit notes, and the notes had drifted: earthaccess `login` is at
+  L111 not the recalled L147 (147 is the dispatch inside it), titiler-cmr imports `Client` from `httpx2`
+  not `httpx`, the zarr coupling lives in `validate_codecs`'s lazy import (not an `ArrayV3Metadata`
+  method), and `GroupMetadata.from_dict` filters unknown keys for v2 but not v3 (subtler than "the
+  sibling has no handling"). Every example is now faithful to code a reader can click through to. This is
+  sounding 6 / the "verify the source, do not recite from memory" rule applied to the skill's own
+  companion doc: a citation is a claim, and opening it is the verification.
+- **A source's own status is part of verifying it: the pydantic non-fire was dropped as deprecated.** The
+  crisp specificity control for primitive-obsession (pydantic's `parse_hsl(h_units: str)`, a closed-set
+  string that correctly does *not* fire) came from `color.py`, which the user flagged as deprecated code.
+  A deprecated module is a weak thing to hold up as an exemplar, so the code block was cut and 1b's
+  specificity kept as a short prose note (fires on a value a consumer trusts, not a token used and
+  discarded). Verifying a citation is not only "is the line right" but "is this source one worth
+  standing on."
+
 ---
 
 ## The transferable method (to finalize at the end)

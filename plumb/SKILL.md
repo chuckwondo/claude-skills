@@ -69,7 +69,9 @@ Plumb's altitude is above both: *is the design the right shape?*
 > that most often carry the load-bearing finding come first). Cite a facet by its
 > id (`1b`, `3e`) in a finding. A cluster is one review station with several
 > questions, not one blurred principle: each facet keeps its own Smell and Move.
-> How the clusters reinforce each other is mapped at the end.
+> How the clusters reinforce each other is mapped at the end. A worked example for
+> every facet (a real trigger and its move, drawn from the dogfood log) lives in
+> [EXAMPLES.md](EXAMPLES.md).
 
 ### 1. Correct by construction
 
