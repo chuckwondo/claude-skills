@@ -653,21 +653,99 @@ with CxC is acceptable, and links point to the GitHub repo.
 
 ---
 
-## The transferable method (to finalize at the end)
+## The transferable method
 
-*A stub for the closing: the checklist for building a non-mechanical, judgment-based skill, drawn
-from the beats above. Provisional shape:*
+*The checklist for building any skill that encodes **judgment** rather than a mechanical check,
+distilled from the twenty beats above. Finalized 2026-07-24 at beat 20; still revisable if the
+guide-mode watch-candidate (beat 19) lands a beat 21.*
 
-1. Start from a named-provisional seed (beat 0).
-2. Dogfood, but distrust any metric the dogfood corpus can bias (beats 1, 2).
-3. Add a deductive canon sweep for what the corpus can never show you (beats 3, 4).
-4. Treat every label and claim as a hypothesis to run, not a fact to reason from (beat 5).
-5. Match your rigor claims to a single-rater instrument: signal, not statistics (beat 6).
-6. Complete the instrument before you measure with it (beat 7).
-7. Fit the measurement sample to the question, and measure its properties rather than trusting its
-   reputation (beats 5, 9, 11): a saturation test wants a messy prior, a specificity control a clean
-   one, and roughness is measurable at selection time.
-8. Flip the context (language, domain) not only to test coverage but to audit the tool's own wording
-   for smuggled assumptions (beat 10).
-9. Throughout: apply the skill's own discipline to the skill's own construction. If it judges
-   against an ideal, so must its build; if it distrusts unrun claims, so must you.
+Two through-lines run under every step. The first is **the spine** (stated at the top of this file):
+a judgment tool has to be built by the method it embodies, so each phase below is one of plumb's own
+soundings turned back on plumb's construction. The second is the single most-repeated datum in the
+log, and it is quieter: **a solo model reaches for the choice that is plausible from reputation** (the
+famous canon, the official upstream, the well-regarded repo, the remembered citation, the number named
+early) **and the person who knows the ground truth is the one who catches it.** Beats 5, 7, 9, 11, 12,
+13, 14 were user-caught, most of them this exact shape; the recurrence, not any single catch, is why
+the human-in-the-loop is load-bearing and why "verify or measure the thing, do not trust its
+reputation" is a step here, not a footnote.
+
+1. *Seed.* **Start from a named-provisional seed, not a spec** (beat 0). A first list drawn from one head is a
+   convenience sample of one, suspect by construction. Mark it provisional in writing (every item a
+   `[combine?]`) or you will defend it later out of habit.
+2. *Validate, and distrust the instrument that validates.* **Dogfood, but never read a metric the corpus can bias** (beats 1, 2). Fire-frequency on a corpus
+   you wrote *while applying the skill* measures importance times how-often-this-corpus-sins, and the
+   second factor is near zero for the sins you avoid: a cold probe looks unimportant when it is
+   *pre-avoided*. Do not average the confound away; **stratify** by it, and **freeze** every cut
+   decision in writing until the corpus is representative.
+3. **Add a deductive sweep for what runs can never show** (beats 3, 4). An inductive method is silent
+   about the probes you *do not have*. Walk the field's canon to ask "is there a probe for each known
+   principle?", independent of your code and so immune to its bias. Keep both finders: the inductive
+   unhomed-finding (what real code does that you did not model) and the deductive canon walk (what the
+   canon knows that you forgot) catch different misses.
+4. *Measure honestly.* **Treat every label and quality tag as a prior the audit tests, never a fact to reason from**
+   (beat 5). "This repo is clean," asserted from reputation, is the exact unrun claim the skill
+   forbids, one level up. A subject's role (control vs fire-source) is an *output* of the audit, not a
+   pre-assignment.
+5. **Match the rigor claim to the instrument** (beat 6). A single-rater judgment tool (you design the
+   probes *and* score whether they fire) yields *directional* signal: existence, contrast, and
+   stopping-by-saturation, never a p-value. A significance number would be false precision, the same
+   sin as reading module counts as rates.
+6. **Complete the instrument's candidate set before you measure with it** (beat 7). If a later canon
+   pass adds a probe, every audit already run was blind to it. Finish nomination first; changing the
+   ruler after taking readings invalidates the readings.
+7. **Fit the sample to the question, and measure the sample rather than trust its reputation**
+   (beat 11). A saturation test wants a subject you *expect to be messy* (so "zero new" is a
+   surprising, high-information outcome); a specificity control wants a clean one; they are not
+   interchangeable. The prior is measurable at selection time (grep the panic/unwrap density), so do
+   not even *select* on reputation.
+8. *Let the folds and the flips teach you.* **A canon sweep pays off even when it mostly folds** (beats 8, 9). The folds *locate the skill*: the
+   OO canon folding into plumb's type-first stance is what revealed plumb is a type-driven lens, not an
+   OO one, and a reasoned non-gap is a result, not a blank. But a sweep inherits only the authority of
+   the source it *actually opens*: a proxy reconstructed from memory is blind to exactly the real
+   source's own contribution (the CxC guide's recoverable/unrecoverable idea, in no textbook), so open
+   the file or label the proxy a proxy.
+9. **Flip the context to audit the wording, not just the coverage** (beat 10). Sampling a new language
+   family or domain does more than test saturation: a probe phrased as a *compiler guarantee* ("adding
+   a case forces the update") has a language assumption baked into its words, and the flip is what
+   exposes the smuggled premise. State the ideal separately from its enforcement.
+10. *Organize and present.* **Check the frame of the choice you present, not just the options** (beat 12). When you offer a
+    menu, the *axis the menu is built on* is itself a claim that can be wrong, and a menu is a
+    comfortable place to hide an unexamined frame because it looks like deference. (The count dial was
+    the artifact; the real axis was distinctness. Group distinct probes under one headline; fold only a
+    probe with no new Move of its own.)
+11. **A canonical term is a reference, not a label; and verify every citation, do not recall it**
+    (beats 13, 14, 16). Lead with a transparent name the reader meets cold; cite the term-of-art in the
+    body where a gloss can catch it, because a loose cite is worse than none (a reader who knows the
+    term trusts the mapping). Then verify the references by *fetching* them: a document about grounding
+    claims in their source fails its own principle if its citations were pasted from memory, and
+    fetching moves real content (a park becomes a cite, a dead host becomes a book reprint), it is not
+    ceremony. Show code, not prose about code (beat 15): an examples doc needs before/after blocks, and
+    building commit-pinned links forces the same verification that catches drift.
+12. *Vindicate, then maintain.* **Saturation is a finding, and a saturated corpus proves its own worth** (beats 8, 15): built and
+    stratified until it saturated, the corpus held a concrete runnable instance of *every* probe, zero
+    invented. Read a clean pass as a positive signal that the earlier work was thorough, not a wasted
+    run, and that includes a late consistency sweep whose honest verdict is "no change" (beat 20): that
+    is a result, not a skipped step.
+13. **A miss is a distinct, high-value signal channel** (beat 17). A false negative (a real flaw no
+    probe caught) is orthogonal to fire-frequency, so it bypasses corpus bias entirely: a clean corpus
+    that can never surface a gap by *firing* can still surface one by *missing*. Triage it before
+    landing: a missed bug or over-engineering is a correct deferral to a neighbor tool, not a miss; a
+    shape no probe covers is a coverage gap that reopens nomination; a shape a probe covers but did not
+    *name* is a wording gap.
+14. **Know whether you are discovering or transcribing, and do not re-run a closed question** (beat 18).
+    Discovery (is there an unhomed probe? does the ranking hold across languages?) gates on fresh runs
+    and *saturates*; transcription (moving a corroborated signal into the wording) needs no new run.
+    Once discovery saturates, more audits re-run a closed question.
+15. **The load-bearing move often lands between the passes, and a self-authored claim needs an external
+    trigger to be verified** (beat 19). The reshaping happens in the design dialogue *after* a review,
+    not in the review; and a self-authored design rationalizes its own probes, so the likeliest real
+    trigger is a reviewer or user who is not the author. A specific trap to name: a probe firing
+    *positive* on a site can *mask* a different probe firing *negative* on the same site, because the
+    flattering read arrives first and you stop, so before leaving a site you affirmed, ask which probe
+    could *indict* it.
+
+**The single rule beneath all of them:** everything a reader will read, and every claim you make about
+your own corpus, label, source, or frame, is a *claim to be run*, not a fact to reason from. Apply the
+skill's own discipline to its own construction, recursively, and staff the seat the author cannot fill:
+the reader meeting a label cold, the domain owner who knows the live source, and the run that survives
+confirmation bias.
