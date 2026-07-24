@@ -631,6 +631,26 @@ with CxC is acceptable, and links point to the GitHub repo.
   existing-vs-redesign analysis and the plan are target-repo deliverables (brief-and-handoff), not skill
   knowledge, and do not live here.
 
+### 20. (this session) The payoff-line sweep: the polish already landed, so the sweep was a verification, not an edit
+
+- **The last open skill-repo item resolved to "nothing to do," and that is the correct outcome.** The
+  remaining §A-adjacent task was a light consistency sweep of the per-sounding and per-facet "what it buys
+  you" lead lines (landed in Stage 2, beats 13 to 14, as each entry's "what it is, so what it buys"
+  opener). Read fresh, all 22 lead lines (10 group headers + 12 facets) hold the same shape: an imperative
+  directive followed by a benefit-focused `so [payoff]` clause, and every payoff names a concrete win
+  ("so a change in one module doesn't ripple," "so a wrong guess stays cheap to walk back," "so 'that
+  can't happen' is tested, not hoped for"), not a restatement of the mechanism. A sweep whose honest
+  verdict is "consistent" is a real result, not a skipped step: manufacturing edits into an already-polished
+  doc is the churn the sweep exists to avoid.
+- **The two closest calls, both left as-is with reasons.** *1a* is the one structural outlier: its payoff
+  sits inline ("Shape the type so a bad value can't be built in the first place: invariants hold by
+  construction...") rather than as the trailing `, so [payoff]` clause 1b through 1e use. Rewriting it to
+  the trailing form forces a double "so"; the inline form reads cleanly and 1a is the flagship facet, so
+  the variance is stylistic, not out of step. *3c* has the thinnest payoff ("so it's easy to find,
+  understand, and change"), a generic triad next to concrete neighbors, but it is the canonical SRP benefit
+  statement and any sharpening drifts into sounding 2's territory ("in one place"). Both are within range;
+  neither warranted reopening. The lazy call and the right call were the same call.
+
 ---
 
 ## The transferable method (to finalize at the end)
