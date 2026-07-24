@@ -104,7 +104,9 @@ fields permit combinations that are never valid; "remember to check X first"; a
 shared dict/map written by several producers with no proof the keys are disjoint
 (a collision resolves last-writer-wins, silently binding one key to the wrong
 value). **Move:** push the invariant into the constructor/type;
-parse-don't-validate at the edge.
+parse-don't-validate at the edge. When the language closes the type-level rung (the
+invariant can't be made a compile error), drop to an *enforcing test* that fails on the
+regression, never settle at a comment, which only informs.
 
 **1b. Model the domain with types, not primitives.** Give a closed-set or structured
 value its own named type instead of a general-purpose primitive (a plain string,
@@ -382,7 +384,10 @@ Find the legal input that breaks the design's assumption and actually run it, so
 assumption: out-of-range, non-ASCII, empty/null, reduced-precision, adversarial. **Smell:** an assumption
 ("a 4-digit ASCII year", "it fits in a datetime") with no case testing its
 boundary. **Move:** name the assumption *as a precise invariant*, then find the *legal*
-input that *violates* it, then **construct and run** it: a "bounded/negligible"
+input that *violates* it, then **construct and run** it (for a decoder or wire type,
+build the case by *decoding bytes*, not a hand-typed literal: a literal can carry
+runtime types the wire never produces, e.g. a decoded `tuple[Any, ...]` with `list`
+interiors, and miss the very edge it cannot reach): a "bounded/negligible"
 verdict is un-earned until that input has actually run; add the case. A legal
 input the design handles *correctly* is not the breaking edge, however untested;
 the breaking edge is the one that violates the invariant (e.g. two producers
@@ -464,7 +469,10 @@ that most shape this solution.
 - Measure that leverage by tracing the flaw to what *consumes* it. A mislabeled
   case or a lying name is a nit until you follow it downstream to the thing it
   breaks: a check it defeats, a caller it silently misleads; the blast radius
-  sets the rank, not the size of the local wrongness. The same trace splits *fix*
+  sets the rank, not the size of the local wrongness. Trace against a second target
+  too: the work's own *charter* (the issue's stated motivation), since a diff can be
+  flawless in *what it does* and still under-deliver the issue it claims to close, and
+  a half-delivered charter is itself a leverage finding. The same trace splits *fix*
   from *note-and-park*, and a park has two reasons. *Unreachable*: the bad state
   has no path to a consumer (a lone trusted constructor already upholds it), so
   name it and give the cost-vs-risk in a line. *Out-of-scope*: the defect is

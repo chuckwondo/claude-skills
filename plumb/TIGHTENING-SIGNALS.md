@@ -577,14 +577,22 @@ names *two* park reasons, *unreachable* (name it, cost-vs-risk in a line) and *o
 (reachable and load-bearing, but outside the change's boundary; resolve to a *filed follow-up issue*,
 a routed action, not a rotting note, linking A1's verifying-is-an-action rule).
 
-**Queued, ranked by leverage:**
+**✔ Landed (2026-07-23, the ×1 rider batch, one commit):** **A5** (unreachable type-ideal → an
+*enforcing test*, never a comment; rider on 1a's Move), **A7** (trace leverage against the work's
+*charter*, not only what consumes it; a half-delivered charter is a finding; clause in the leverage
+Working note), **A1(g)** (build the breaking input by *decoding bytes*, not a convenient literal that
+carries runtime types the wire never produces; parenthetical in sounding 10's Move).
 
-1. **A5: sounding-1 unreachable-ideal → test** (one-clause rider on sounding 1, not a new bullet). ×1.
-2. **A7: leverage measured against the charter** (one-clause rider on the leverage Working note). ×1.
-3. **A1(g): decode-the-bytes, not a convenient literal** (one-clause rider on sounding 10). ×1.
+**Queue empty — the §A tail is fully landed.** Remaining before the batch closes:
 
-*Done/dropped from the queue: **A2** ✔ landed · **A6** ✔ landed · **A8** ✔ landed · **A9** ✔ landed ·
-**A10** ✔ already-landed (1e) · **A1(f)** dropped (covered by sounding 6).*
+1. **Validation run** (not a landing): one external dogfood pass on a *new* target, honoring the
+   provenance rule, to confirm the reworded notes fire and help rather than merely read well. This is
+   how a self-authored wording change earns "verified" (beats 5, 17, 18).
+2. **Payoff-line polish** (light sweep, likely already done): the per-sounding "what it buys you"
+   lead lines landed in Stage 2; a consistency pass only if a facet reads thin.
+
+*Done/dropped from the queue: **A2 · A5 · A6 · A7 · A8 · A9 · A1(g)** ✔ landed · **A10** ✔
+already-landed (1e) · **A1(f)** dropped (covered by sounding 6).*
 
 *The combine pass (Section B/C) is now **ready to run** (2026-07-22): the corpus reached saturation, §C
 unfroze, the merge/keep calls are recorded in §C-batch, and the count reconciled to **20** (§E3). Per
