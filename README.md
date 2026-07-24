@@ -10,10 +10,10 @@ so edits in this repo are live immediately.
   design-time guide. Reviews a diff, plan, or design for *shape* (are outcomes
   modeled as values? do names encode shape? is it decoupled?), at the altitude
   above `ponytail-review` (over-engineering) and `code-review` (bugs). Principles
-  are called *soundings*; the all-clear is "Plumb is true." **Status: work in
-  progress**, a draft superset of candidate soundings; see
-  [plumb/REFINEMENT.md](plumb/REFINEMENT.md) for the tightening plan and
-  [plumb/LANDSCAPE.md](plumb/LANDSCAPE.md) for prior art & neighboring skills.
+  are called *soundings*; the all-clear is "Plumb is true." The sounding set has
+  converged to **10 grouped soundings (19 facets)**; see
+  [plumb/EXAMPLES.md](plumb/EXAMPLES.md) for a worked example per facet and
+  [plumb/REFERENCES.md](plumb/REFERENCES.md) for the verified bibliography.
 
 ### Python CI
 
