@@ -111,6 +111,56 @@ the why.
 5. **Optional, once stable:** split into `plumb-review` / `plumb-guide` entry points
    (mirroring the ponytail family) if the two modes want separate triggers.
 
+## Triage protocol (for a flagged signal)
+
+When a run surfaces a candidate refinement (a miss, an unhomed finding, a lapse), triage it before
+landing. This is the **MISS-TRIAGE protocol**, referenced by name in JOURNEY beats 17 and 19 and
+consolidated here so it is committed, not memory-only:
+
+1. **Lane check.** A missed *bug* (→ `code-review`) or *over-engineering* (→ `ponytail-review`) is a
+   correct deferral, a boundary note, not a plumb miss. Only a *structural/modeling* miss is in lane.
+2. **Coverage vs execution.** *No sounding covers the shape* = a **coverage gap** = a new `Unhomed:`
+   that BREAKS saturation and reopens nomination (a candidate new sounding). *A sounding covers it but
+   did not fire* = a **wording gap** (add the instance to its Smell/Move, lands like a §A item), OR
+   *ranked-low / parked when load-bearing* (sharpen the leverage-trace), OR an **application lapse**
+   (recurrence means the wording is not salient enough; one instance is a watch, not a landing).
+3. **Verify the miss is real before landing.** Construct the case and confirm plumb *should* have
+   caught it. A confirmed coverage/wording miss OUTRANKS queued §A landings.
+
+Why a miss is high-leverage: it is a *false-negative* channel, orthogonal to fire-frequency, so it
+bypasses corpus bias (a clean corpus surfaces a gap by *missing*, not *firing*). A miss is a reversal
+by construction (Believed / Broke / Corrected), so capture a JOURNEY beat with honest who-caught-it.
+
+## Signal intake (post-publish): how a downstream signal reaches this repo
+
+Publishing hands plumb the representative corpus it could never build by hand, but a corpus you cannot
+*observe* is useless, and a local skill has **no telemetry and should have none** (a review skill that
+uploads a user's diffs is a privacy/trust non-starter and violates the sans-IO / local-first stance
+the skill itself teaches). So the intake is these channels, in fidelity order:
+
+1. **Own dogfooding stays primary.** Highest fidelity: full repo access, you run the full triage
+   yourself. External use *supplements*, never replaces. Keep logging to DOGFOOD-LOG.
+2. **Voluntary user reports (issues on this repo).** The only free external channel, but lossy and
+   self-selected: it catches the loud *misfires* (a fire the user disputes) far better than the silent
+   *misses* (a miss is what plumb did not say, so the user usually cannot see it either). Lower the
+   friction with an issue template shaped like a MISS-TRIAGE input: the design/diff, plumb's verdict,
+   the true shape, who caught it.
+3. **The skill prompts its own capture (the skill-native move).** The distribution unit is a *prompt*,
+   so the feedback mechanism can be too: a line in SKILL.md's output contract so that when a user says
+   plumb missed or misfired, the *downstream* model offers to build the structured report (running the
+   lane-check + coverage-vs-wording at the edge) and hands back a ready-to-file issue body. Every
+   user's Claude becomes a first-pass triage agent emitting a well-formed entry.
+
+This is the skill's own soundings turned on its distribution: keep the skill **pure** (local, no I/O)
+and push the effect (getting the signal back) to the **edge**, a human filing an issue prompted by the
+model (sounding 4); and shape the intake so a well-formed report is the easy path, not a free-text blob
+(sounding 1). Close the loop: triage → land in this repo → re-publish with a version bump → tell
+reporters what changed (a CHANGELOG / release note), because people report again only if the first
+report visibly mattered.
+
+**Build items (decisions, not yet done):** a `.github` issue template; the SKILL.md self-capture line.
+Candidates for the publishing runbook (#2) or their own issue.
+
 ## Files in this skill
 
 - [SKILL.md](SKILL.md): the live skill (10 grouped soundings / 19 facets + reinforcement map + Working notes).
