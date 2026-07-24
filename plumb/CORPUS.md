@@ -205,6 +205,16 @@ standalone (leaked collection / mutable value) on generated, fused into 1 (lifec
 (duplicated derived state) on real OO code. testability-without-mocks fired on mock-heavy Java,
 fully a consequence of 6. All held out of §A pending the five audits.
 
+**Post-batch validation (2026-07-24): a new corpus cell, zero unhomed.** After the batch closed, a
+validation run on `developmentseed/virtualizarr-data-pipelines` (`Corpus: external-raw · poor · python ·
+infra · greenfield`, a CDK template/starter someone forks) exercised the **`infra` / infra-as-code shape
+the batch never touched** (its cells were library/service/cli/frontend-ui). `Unhomed: none`: every finding
+homed to an existing sounding, so saturation strengthens across a new *shape* axis, not only the
+quality/language axes the batch covered. Run purpose was validation of the just-landed §A notes (A7-charter
+and A6-park both fired on the template), not nomination. Detail in DOGFOOD-LOG 2026-07-24 (JOURNEY beat 19);
+one watch-not-land refinement (guide-mode salience of judge-against-ideal) in TIGHTENING-SIGNALS §A11. The
+full redesign deliverable was handed off to the target repo (`docs/redesign/BRIEF.md`), not recorded here.
+
 ## The analysis output
 
 **DONE 2026-07-22.** The batch hit its stopping rule (four external/real audits, zero new

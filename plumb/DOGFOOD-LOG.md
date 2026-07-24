@@ -1912,3 +1912,74 @@ contributor's diff). Those two are the only existing non-`self` data.*
   *violates* it ... a legal input the design handles correctly is not the breaking edge,
   however untested"; (3) the provenance Working note gained the positive-masks-negative
   counter-move (ask which sounding could *indict* a site you just affirmed). JOURNEY beat 17.
+
+- **2026-07-24: developmentseed/virtualizarr-data-pipelines whole-repo audit + design dialogue (the
+  adversarial batch's external validation run)** (`Corpus: external-raw · poor · python · infra ·
+  greenfield`, a GitHub template/starter someone forks; developmentseed, no evident design review; the
+  user's chosen validation target, unseen by the model beforehand. **`Unhomed: none`.**) The close of the
+  adversarial batch: a *validation* run (not nomination, which saturated), chosen to exercise the
+  just-landed §A process notes (A7-charter, A6-park) on a template, and to fill the one corpus cell the
+  batch never touched, **`infra` / infra-as-code (CDK)**. Review mode on the whole repo, then a long design
+  dialogue across five probes.
+
+  **Saturation held across a new domain.** Every finding homed to an existing sounding, zero unhomed.
+  Fires: 1c×2×1d (a `process_file -> bool` the caller ignores, so a conformant fork silently commits and
+  deletes failed files, the DLQ bypassed for the exact case it exists to catch); 1a-config (a
+  `GARBAGE_COLLECTION_FREQUENCY`-without-`VPC_ID` state the pydantic settings *accept*, breaking at synth,
+  verified by *running the model*, A1g) and 1a-sequence (the typestate hazard below); 3b/3c (a 5-method god
+  Protocol at the wrong altitude, only 2 methods vary); 4 (a hardcoded `in_memory_storage()` plus an inline
+  virtual-chunk-container that should be injected); plus final-probe fires 1b (a bare `key` passed where a
+  full `s3://bucket/key` URI is needed), 2 (`synthetic_vds`/`fake_vds` duplicated verbatim), 3a (an
+  implicit name-based import seam). The infra cell added **no new categories**: saturation strengthens
+  across the `data-pipeline`/`infra` shape the batch's library/service/cli/frontend-ui cells never reached.
+
+  **The load-bearing work was the design dialogue, not the review** (A2 three-altitudes, now ×17). The
+  headline review finding was real, but the user redirected ("your findings fix broken things, not the
+  soundness of the design"), and the reshaping happened in the back-and-forth. Three teeth, all user-caught:
+  (1) **incumbent-anchor self-catch**: I recommended a design partly because it "matches how the sample
+  already thinks"; the user flagged it as letting the incumbent pull me off the ideal, the exact
+  anti-pattern "judge against the ideal, not the incumbent" guards, quoted as a point *in favor*.
+  (2) **positive-masks-negative, again**: a per-function-`Protocol` redesign felt clean (2/DRY, 3c: each
+  function does one thing), so I stopped; it left the *call sequence* unconstrained, the 1a
+  illegal-transition (typestate) hazard from EXAMPLES.md Example A (a skeleton maintainer can commit an
+  empty session or open a session on an unseeded repo). The flattering "who implements what" masked the
+  higher-leverage "in what order" on the same design. Same shape as the #163/#165 miss (2026-07-23); I
+  failed to apply the very note that entry landed.
+  (3) **a `_config()` hand-wave hiding the most important knob**: I wrote `_config()`/`_is_empty()` as if
+  they existed (sounding 6, asserting not verifying); pressed on configuration, `_config()` was where the
+  *virtual chunk container* lives, the single most deploy-specific piece, buried next to the hardcoded
+  `in_memory_storage()` that is why the sample is a no-op. Injecting it as a `Backend` (sounding 4) is what
+  unlocked mock-free testing; the existing tests' `@patch(Processor)` + `MagicMock` wall was the sounding-4
+  tell that effects were reached-for.
+
+  **The converged redesign** (full detail handed off to the target repo's `docs/redesign/BRIEF.md`, not
+  this log): per-function `__call__` Protocols (`Seed`, `Parse`), *not* a god Protocol or ABC (the user
+  rejected the ABC: MUST/MAY ambiguity plus a stateless class is useless); stateless customer logic vs
+  template-owned typestate stages (`open_store -> Store -> WriteSession`) making illegal call-orders
+  uncompilable, empty-commit dropped to a runtime guard + test (the language-closed rung, A5); an injected
+  `Backend`; one editable `pipeline.py` exporting `PIPELINE`, import-direction as the wall.
+
+  **Provenance held, and it is the payoff of the run.** An EXTERNAL target, so the author-under-runs bias
+  did not apply, and the self-authored §A wordings (A7/A6, verified here) earn "verified" by firing on
+  someone else's code (beats 5/17/18). Yet the model STILL anchored to the incumbent (tooth 1) and STILL
+  let a positive mask a negative (tooth 2), which shows those risks are **not author-specific**: they are
+  *incumbent*- and *flattering-read*-specific, and both fired at *guide/design* altitude where the two
+  existing notes are phrased for review-mode.
+
+  Signals for the tightening pass:
+  (1) **A guide-mode-specific instance of "judge against the ideal."** Teeth 1 and 2 are *application
+  lapses of existing notes*, not coverage gaps: the skill carries both "judge against the ideal, not the
+  incumbent" and the positive-masks-negative counter-move, and the model failed to fire either proactively
+  at *guide-mode* altitude (designing from scratch), where the incumbent is a sample you consciously depart
+  from yet still anchor to. Both notes are phrased for *review-mode* (judging an artifact that exists).
+  Candidate: a guide-mode rider making "the sample you depart from is not the ideal, name the ideal first"
+  explicit, and "when a redesign flatters one sounding (DRY/cohesion), ask which sounding it leaves
+  representable (illegal state/sequence)." Per the MISS-TRIAGE application-lapse branch this is **watch, not
+  land** on one instance (recurrence means the wording is not salient enough); a second guide-mode lapse
+  confirms it. Logged as TIGHTENING-SIGNALS §A11.
+  (2) **A2 three-altitudes corroborated at ×17, and in a validation run on an external target**: the
+  load-bearing move landed in the design dialogue between passes, not any single pass. The strongest
+  non-self instance of the "dialogue between the passes" theme.
+  (3) **Infra-as-code fills a new corpus cell with zero unhomed** (CORPUS.md updated): saturation now spans
+  the `infra`/`data-pipeline` shape, not only library/service/cli. JOURNEY beat 19. Full redesign
+  deliverable handed off to the target repo (`docs/redesign/BRIEF.md`), brief-and-handoff.

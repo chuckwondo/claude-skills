@@ -271,6 +271,25 @@ type, ask whether it is *stricter* than that type; if so, only a positive-only g
 - **Proposed target:** a rider on sounding 1, or a Working note. Niche (×1) but a real soundness trap,
   not style.
 
+### A11. Judge-against-the-ideal and positive-masks-negative must fire in *guide* mode, not only review *(×1, WATCH: application lapse of existing notes, not a coverage gap)*
+2026-07-24 virtualizarr-data-pipelines validation run (external CDK template): on an EXTERNAL target the
+model twice anchored to the incumbent at *design* altitude, and the user caught both. (1) It recommended a
+redesign partly because it "matches how the sample already thinks", the exact thing "judge against the
+ideal, not the incumbent" forbids, quoted as a point *in favor*. (2) A per-function-`Protocol` redesign
+that fired 2/DRY + 3c *positive* masked a 1a illegal-*sequence* (typestate) it left representable, the same
+positive-masks-negative shape #163/#165 landed the review-mode counter-move for. Both notes already exist
+(the judge-against-ideal Working note; the positive-masks-negative counter-move landed 2026-07-23), but
+both are phrased for *review-mode* (an artifact that exists) and did not fire in *guide-mode* (designing
+from scratch), where the incumbent is a sample you consciously depart from yet still anchor to. Provenance
+twist: an external target removed the author-under-runs bias, yet the anchor still fired, so the risk is
+*incumbent*- and *flattering-read*-specific, not author-specific.
+- **Proposed target (HELD, watch):** a guide-mode rider on the judge-against-ideal and
+  positive-masks-negative notes: in guide mode, name the *ideal* before the incumbent sample, and when a
+  redesign flatters one sounding, ask which sounding it leaves representable. **Not land-ready on ×1:** per
+  the MISS-TRIAGE application-lapse branch, a single lapse of an existing note is a salience *watch*, not a
+  landing; a second guide-mode lapse confirms the wording is not salient enough at design altitude.
+  Corroboration cite: DOGFOOD-LOG 2026-07-24, JOURNEY beat 19. Not in the §F active queue until corroborated.
+
 ---
 
 ## B. Combine dossier: merge candidates (assembled, NOT executed)
