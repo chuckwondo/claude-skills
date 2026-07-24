@@ -575,6 +575,62 @@ with CxC is acceptable, and links point to the GitHub repo.
   the distinction, the exact anti-pattern sounding 2's Boundary warns against. The tail pass keeps
   turning the soundings back on the edits that land them.
 
+### 19. (this session) The validation run: saturation held, but the model anchored to the incumbent twice, and the user caught both
+
+- **The batch's close ran, and it landed clean.** The validation target was the user's
+  `developmentseed/virtualizarr-data-pipelines` CDK template (external, unseen: an Icechunk/Virtualizarr
+  ingestion starter someone forks). Every finding homed to an existing sounding, no unhomed candidate
+  surfaced, so the infra-as-code cell added zero categories and saturation strengthened across a new
+  corpus cell. The predicted process notes all bore weight: A7-charter (measure against "does this shape
+  hurt the person who forks it," not "is it production-complete"), A6-park (routed correctness to
+  code-review and over-engineering to ponytail by name), 9-reversibility (the template's contract is a
+  one-way door inherited by every fork, which set the ranking), and A1g (verify the synthesized artifact,
+  not the Python: I ran the pydantic settings model to confirm it *accepts* the deploy-breaking
+  GC-without-VPC state and that the shipped `.env.sample` fails to load at all, rather than eyeballing the
+  constructs). Per the provenance rule (beats 5/17/18) this is how the self-authored §A wordings earn
+  "verified": an external target, author-under-runs.
+
+- **But the load-bearing work was the design dialogue after the review, not the review.** The headline
+  review finding (a `process_file` returning a `bool` the caller ignores, so a conformant fork silently
+  commits and deletes failed files) was real, but the user redirected: "your findings fix broken things,
+  not the soundness of the design." Everything that followed (is the `Protocol` even needed, what is the
+  true contract, how to make illegal call-orders uncompilable, where the config knobs live) landed in the
+  back-and-forth, not in any single pass. A live ×17 corroboration of the A2 three-altitudes note that the
+  load-bearing move often lands in the dialogue between the passes, and here it happened in a *validation*
+  run, not a refinement pass.
+
+- **Tooth 1, the incumbent-anchor self-catch.** I recommended a two-method ABC partly because it "matches
+  how the sample already thinks." The user caught it: "you are letting the incumbent influence you away
+  from the ideal." That is the exact anti-pattern the "judge against the ideal, not the incumbent" note
+  guards against, and I had quoted the incumbent as a point *in favor*. A plumb-on-plumb miss while running
+  the anti-anchoring tool.
+
+- **Tooth 2, positive-masks-negative, again.** My per-function-`Protocol` redesign felt clean (2/DRY, 3c:
+  each function does one thing), so I stopped. The user pointed out it left the *call sequence*
+  unconstrained: a maintainer of the skeleton can commit an empty session or open a session on an unseeded
+  repo, exactly the 1a illegal-transition (typestate) hazard from EXAMPLES.md Example A. The flattering
+  "who implements what" reading masked the higher-leverage "in what order" one on the same design. Same
+  shape as the covjson MISS-TRIAGE (beat 17), and I failed to apply the very note that names it.
+
+- **Tooth 3, a hand-wave that was hiding the most important knob.** I wrote `_config()` and `_is_empty()`
+  as if they existed (sounding 6, asserting instead of verifying). Pressed on configuration, `_config()`
+  turned out to be where the *virtual chunk container* lives, the single most deploy-specific piece in the
+  system, buried next to a hardcoded `in_memory_storage()` that is *why the sample is a no-op*. Injecting
+  it as a `Backend` (sounding 4) is what unlocks mock-free testing: the existing tests' wall of `MagicMock`
+  and `@patch(Processor)` was the sounding-4 tell that effects were reached-for, not injected. The config
+  probe converted a hand-wave into the design's testability seam.
+
+- **The meta-observation worth a future decision.** Two of the three teeth (anchor, masking) are
+  *application lapses of existing notes*, not coverage gaps: the skill already carries "judge against the
+  ideal" and "positive-masks-negative," and the model failed to fire either proactively at *guide/design
+  altitude*, where the incumbent is a sample you consciously depart from yet still anchor to. Both notes
+  are phrased for review-mode (judging an artifact that exists); neither fired in guide-mode (designing
+  from scratch). Candidate refinement, NOT landed here: a guide-mode-specific instance of
+  judge-against-the-ideal. Per the MISS-TRIAGE protocol this is the "application lapse" branch (recurrence
+  means the wording is not salient enough), and one session is a watch, not yet a landing. The full
+  existing-vs-redesign analysis and the plan are target-repo deliverables (brief-and-handoff), not skill
+  knowledge, and do not live here.
+
 ---
 
 ## The transferable method (to finalize at the end)
