@@ -162,7 +162,10 @@ catch-all "any" or unchecked cast to launder past them, so the static type check
 sees the real shape and can enforce the rest. **Smell:** a
 `Literal[...] | Any` that collapses the whole union back to `Any` (defeating the
 Literal's point); a public function annotated `-> Any` that in fact returns one
-known type; a `Mapping[str, str]` under-specifying two distinct record shapes; a
+known type; a function that always raises but is annotated with its nominal
+return type (`__bool__ -> bool` instead of `NoReturn`), so the checker cannot see
+it never returns and cannot flag `if x:` / `bool(x)` as unreachable; a
+`Mapping[str, str]` under-specifying two distinct record shapes; a
 `cast(...)` (a *named* escape) or a bare annotated assignment (a *silent* one)
 vouching for what wasn't checked; a `TypeIs` predicate *stricter* than the type it
 narrows, whose false-branch narrowing is then unsound (only a positive-only
@@ -425,6 +428,10 @@ of them meet. The map (from the observed co-fires):
   breaking input that the true shape would have handled.
 - **6 × 2, 6 × 3a:** an over-claimed severity and a coupling both trace back to a
   single authority read wrong; verify the source once and both rank correctly.
+- **1a × 1e:** a guard that raises to make an operation unrepresentable (1a) is
+  enforced *statically* only if the raising method is annotated `-> NoReturn` (1e);
+  the nominal return type leaves the guard runtime-only, and the checker passes
+  `if x:` / `bool(x)` green.
 
 ## Output
 

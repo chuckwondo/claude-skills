@@ -1983,3 +1983,126 @@ contributor's diff). Those two are the only existing non-`self` data.*
   (3) **Infra-as-code fills a new corpus cell with zero unhomed** (CORPUS.md updated): saturation now spans
   the `infra`/`data-pipeline` shape, not only library/service/cli. JOURNEY beat 19. Full redesign
   deliverable handed off to the target repo (`docs/redesign/BRIEF.md`), brief-and-handoff.
+
+- **2026-07-25: covjson-msgspec #157 `ValidationReport` (the `validate()` outcome
+  model)** (`Corpus: self-plumbed · clean · python · library · brownfield`.
+  **`Unhomed: none`**: every finding homed to an existing facet; one
+  *smell-wording* gap surfaced, A12 below. Provenance twist: mostly self-authored,
+  but the diff-review ran as an **adversarial subagent workflow** whose finders
+  *ran* their claims, and the two largest reshapes came from **external prompts**
+  (a ponytail pass the user pushed on, and a `/code-review` pass).) A full
+  multi-altitude cycle on ONE type, across five lenses: guide (before code), build,
+  plumb diff-review, ponytail, design dialogue, code-review. The design question:
+  how should `validate()` model its outcome (a `list[Issue]`, a lazy stream, or a
+  report value)?
+
+  **What fired.** Guide: `1c × 2` (the headline: model the verdict as a value with
+  one home, `report.ok`, reused by `mode="raise"`; the "is it valid?" definition
+  previously lived only inside the raise branch and was re-derived at every call
+  site), the impossibility result (validity is not a lazy question, since errors
+  and warnings interleave in document order), `1a` (omitting `__bool__` does not
+  remove the truthiness trap: `__len__` makes `bool(report)` mean "has issues", the
+  inverse of the "if valid" it reads like), `7` (Report vs Result naming, per the
+  repo's ADR-0007 split), `9` (the wire-form one-way door), plus a ponytail cut
+  (`iter_issues` is YAGNI: laziness buys nothing for a provably-non-lazy verdict).
+  Diff-review: the `1e` headline below, `6` (TypeError vs ValueError), `7`
+  (`.warnings` named-vs-shape), `2` (a round-trip doctest duplicated), `5b` (a
+  stale `_Issue` docstring), `2` (a test hand-rolling the verdict filter). **34 of
+  40 candidates were affirmations that stood** (faithful round-trip, functional
+  core preserved, re-iterable, hashable, verdict single-sourced, the wire-form door
+  deliberate). Code-review: `6` (docstring and ADR overstating the raised message),
+  `A8` (a stale `list[Issue]` in ADR-0006), `2` (a declined `ok` short-circuit).
+
+  **The load-bearing co-fire: `1a × 1e`, a guide-fix that introduced a higher
+  hole.** The guide fired `1a` correctly and its move landed: make the ambiguous
+  truth-value unrepresentable by raising in `__bool__`. But that fix, as written,
+  *introduced* a `1e` hole. `__bool__` was annotated `-> bool`, which lies to the
+  checker, so all four strict checkers passed `if report:` green and the guard
+  fired only at runtime. The diff-pass caught it, verified by *running* `mypy
+  --warn-unreachable`: `-> bool` gives 0 errors, `-> NoReturn` flags `if report:`
+  and `bool(report)` as unreachable. A clean confirming instance of the Working
+  note "the diff catches structural debt a fix introduced; re-rank the *landed* fix
+  against all soundings, not just the one it targeted". The guide could not have
+  caught it: at guide time no annotation existed to review, exactly A2's "some
+  errors are only legible once code exists".
+
+  **Three lenses, three different moves on one member (A2).** The same `__bool__` /
+  container surface drew a different load-bearing move from each altitude. Guide
+  said *raise in `__bool__`* (`1a`). Diff said *annotate `-> NoReturn`* (`1e`).
+  Ponytail plus the user's ambiguity read said *drop the `__iter__` / `__len__`
+  protocols that made the guard necessary at all* (`7` / `1a`: a report bundles
+  three views (issues, errors, warnings), so an implicit iteration or length
+  silently picks one). And the largest reshape landed in none of the passes but in
+  the dialogue between them. The strongest single-surface instance of the
+  three-altitudes theme so far.
+
+  **Provenance held, and it is the payoff.** The `1e` hole was the author's, and
+  would have shipped; only the adversarial diff-pass (running mypy) caught it. The
+  two biggest reshapes (dropping the protocols, and the code-review doc plus
+  efficiency notes) came from external prompts, not the author. Run-based
+  verification fired throughout (A1): mypy unreachability, the pandas and numpy
+  exception types, all executed rather than reasoned. A further confirming instance
+  of "a self-authored design does not reliably run its own claims; the likeliest
+  real trigger is external".
+
+  Signals for the tightening pass:
+
+  (1) **NEW candidate A12: `1e` should fire on a function that always raises but is
+  annotated with its nominal return type.** A `__bool__ -> bool` whose body only
+  raises is a lie to the checker (it never returns a bool); the honest type is
+  `NoReturn`. The nominal annotation blinds the checker to unreachable misuse, so
+  `if x:` and `bool(x)` stay green, especially under `warn_unreachable`. This is
+  verified (by running mypy), inside plumb's lane, and present nowhere in the skill
+  (SKILL, EXAMPLES, and TIGHTENING all clean for it). It is of the *wording* kind,
+  not a coverage gap: 1e's principle ("no lies to the checker") already covers it,
+  but its Smell list does not name the shape. Two edits are proposed for the
+  tightening pass to weigh. 1e **Smell** gains "a function that always raises,
+  annotated with its nominal return type (`__bool__ -> bool`) rather than
+  `NoReturn`, so the checker cannot flag `if x:` / `bool(x)` as unreachable". The
+  **cluster map** gains a **`1a × 1e`** co-fire: "a guard that raises to make an
+  operation unrepresentable (1a) is enforced *statically* only if the raising
+  method is annotated `-> NoReturn` (1e); the nominal type leaves the guard
+  runtime-only". Ecosystem precedent: pandas annotates `DataFrame.__bool__` as
+  `NoReturn`. **HELD, not landed.** The author of the #157 design and of this
+  analysis cannot land their own claim, so A12 awaits a non-author tightening pass;
+  it is recorded here per step 2 ("dogfood, then tighten") and deliberately not
+  written into SKILL.md or TIGHTENING-SIGNALS.md this session.
+
+  (2) **A8 corroborated (a 4th instance), with a mechanism sharpening.** The
+  `list[Issue]` to `ValidationReport` reversal turned prose stale, and the author
+  swept for it and still missed ADR-0006, because the stale phrase wrapped across a
+  line and the grep matched a hand-typed phrase. Sharpening, for whoever tightens
+  A8: on a reversal sweep, grep the *concept* broadly (`list\[Issue\]` across all
+  of `docs/`), not a phrase. The `/code-review` pass, not the author, caught it:
+  provenance again.
+
+  (3) **A2, A3, and A1 corroborated.** A2: three lenses, three moves on one
+  surface, plus the dialogue-carried reshape. A3 (verify the source): the pandas
+  citation was wrong on both the exception type and the annotation, so one "verify
+  the cited precedent by running" (sounding 6) sharpened two things at once. A1:
+  run-based verification of self-authored claims throughout. Counts are left for
+  the tightening pass to reconcile, not stamped here.
+
+  (4) **A minor disposition worth a future note: "decline" as a third
+  review-response outcome beyond fix and park.** The `/code-review`
+  `ok`-short-circuit suggestion was rejected on principle, because the
+  micro-optimization would put the "error-severity issue" predicate in two places
+  and trade away the 2/DRY single source of the verdict the whole type exists to
+  hold. Not every review note is a fix or a scoped park; some are declines, each
+  traced to the higher sounding the fix would cost. Offered as a possible one-line
+  sharpening of the fix-vs-park note.
+
+  **Verdict: saturation held (zero unhomed), with one smell-wording candidate
+  (A12) surfaced and HELD under the author-does-not-land-own-claims rule.** No
+  SKILL.md, TIGHTENING-SIGNALS.md, JOURNEY, or CORPUS edits this session, by
+  instruction and by provenance: the entry records the run and the candidate;
+  landing is a separate, non-author step, and the JOURNEY beat and CORPUS
+  fire-count bump are deferred to it.
+
+  **RESOLVED 2026-07-25 (non-author landing, branch `feat/plumb-land-a12`):** A12 verified independently by
+  re-running `mypy --warn-unreachable` (`-> bool` reports "Success"; `-> NoReturn` flags the `if report:`
+  body unreachable), then LANDED as a 1e wording gap: SKILL.md 1e Smell + a `1a × 1e` cluster co-fire;
+  recorded TIGHTENING-SIGNALS §A12; JOURNEY beat 23. **No CORPUS edit:** #157 is the home cell (self-plumbed
+  library), no new cell or axis, so the directional picture is unchanged and the signal lives in §A12. (The
+  entry's "CORPUS fire-count bump" expectation does not apply: CORPUS tracks representative cells directionally,
+  never a fire-rate, so there is no count to bump.)
