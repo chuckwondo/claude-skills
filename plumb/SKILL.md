@@ -435,16 +435,46 @@ of them meet. The map (from the observed co-fires):
 
 ## Output
 
-**Review mode**: a list ranked most-leverage-first, one line per finding:
+**Review mode**: a list ranked most-leverage-first. When there are findings, lead
+the list with the line `Soundings violated (most-leverage first):`, then one line
+per finding:
 
 ```
-<sounding> · <file:line or component> · <what's off> → <the move>
+<id>: <name> · <file:line or component> · <what's off> → <the move>
 ```
 
-Lead with the single highest-leverage change if there is one. End with
+`<id>` is the sounding or facet id and `<name>` its short label from the legend
+below. The id is the key (it cross-references EXAMPLES, TIGHTENING, and the cluster
+map); the name gives the reader context, so a finding never renders as a bare
+number. Example: `1a: Make illegal states unrepresentable · store.py:88 · two
+producers write one key with no coordination → make the pairing a single owned
+type`. Lead with the single highest-leverage change if there is one. End with
 `net: <the one change that matters most>`, or `Plumb is true.` when nothing
 structural is off. Route correctness bugs to code-review and over-engineering to
 ponytail-review *by name*, not here.
+
+**Sounding labels** (the canonical `<name>` per id, and the one source of truth for
+the output line):
+
+- **1a** Make illegal states unrepresentable
+- **1b** Model with types, not primitives
+- **1c** Model outcomes as typed values
+- **1d** Handle every case (totality)
+- **1e** Keep declared types honest
+- **2** Keep one source of truth
+- **3a** Keep coupling low (one-way dependencies)
+- **3b** Expose intent, hide representation
+- **3c** Keep one concern per unit (cohesion)
+- **3d** Keep behavior near its data
+- **3e** Separate commands from queries
+- **4** Push effects to edges
+- **5a** Preserve input faithfully
+- **5b** Complete inverse pairs (symmetry)
+- **6** Match strictness to requirement
+- **7** Make names encode shape
+- **8** Put checks in correct tier
+- **9** Weigh walk-back cost before committing
+- **10** Prove claims by running breaking cases, not reasoning
 
 **Expand the load-bearing findings.** The one-liner is the scannable spine, not
 the whole report. For the highest-leverage finding, and for *every* note-and-park
