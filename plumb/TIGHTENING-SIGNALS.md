@@ -290,6 +290,21 @@ twist: an external target removed the author-under-runs bias, yet the anchor sti
   landing; a second guide-mode lapse confirms the wording is not salient enough at design altitude.
   Corroboration cite: DOGFOOD-LOG 2026-07-24, JOURNEY beat 19. Not in the §F active queue until corroborated.
 
+### A12. Sound typing fires on an always-raising function annotated with its nominal return type, not `NoReturn` *(×1, LANDED 2026-07-25)*
+`#157` `ValidationReport`: a `__bool__` that only raises (a 1a guard making ambiguous truthiness
+unrepresentable) was annotated `-> bool`, which lies to the checker: it never returns a bool, so `if report:`
+and `bool(report)` stayed green under all four strict checkers and the guard fired only at runtime. The honest
+type is `NoReturn`. A 1e *wording* gap, not a coverage gap: 1e's principle ("no lies to the checker") already
+covers it, but the Smell list did not name the shape, which is the dual of the existing "`-> Any` that returns
+a known type" smell (an annotation that under-claims what it returns rather than over-claiming). Verified
+NON-AUTHOR by re-running `mypy --warn-unreachable`: `-> bool` reports "Success: no issues found", `-> NoReturn`
+flags the `if report:` body "Statement is unreachable".
+- **Landed 2026-07-25:** 1e Smell gains the always-raises / `-> NoReturn` shape; the cluster map gains a
+  `1a × 1e` co-fire (a 1a raising-guard is enforced statically only if annotated `NoReturn`). Ecosystem
+  precedent (pandas `DataFrame.__bool__ -> NoReturn`) noted but not cited in-skill: the #157 run found its own
+  pandas citation wrong twice, so it is left unverified rather than repeated. Corroboration: DOGFOOD-LOG
+  2026-07-25 (#157), JOURNEY beat 23.
+
 ---
 
 ## B. Combine dossier: merge candidates (assembled, NOT executed)
