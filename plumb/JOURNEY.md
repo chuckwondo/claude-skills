@@ -651,13 +651,43 @@ with CxC is acceptable, and links point to the GitHub repo.
   statement and any sharpening drifts into sounding 2's territory ("in one place"). Both are within range;
   neither warranted reopening. The lazy call and the right call were the same call.
 
+### 21. (this session) Wiring the feedback loop: the crux of continuous improvement, and where "reference, don't restate" breaks
+
+- **Believed:** with the sounding set converged and publishing next, the remaining intake work read as
+  mechanical: build the two pieces issue #5 specifies (a `.github` issue form and a self-capture line in
+  `SKILL.md`), and follow the issue's instruction to *reference* the committed MISS-TRIAGE doctrine in
+  `REFINEMENT.md` rather than restate it, on both pieces.
+- **Broke (a design-time catch, not a shipped reversal), triggered by the user's prior question "should we
+  spin plumb off to its own repo?":** verifying the plugin mechanics (via `claude-code-guide`, against the
+  docs, not recalled) surfaced that a Claude Code plugin has *no manifest file-exclusion*: the whole plugin
+  directory is copied into every installer's cache. So the ship-vs-internal split must be structural, and
+  `REFINEMENT.md` is dev scaffolding that *does not ship*. That breaks the instruction on one side: the
+  shipped `SKILL.md` line cannot "reference" a doctrine the downstream user will never receive. Single
+  source of truth is satisfiable across files in one repo, not across the *ship boundary*.
+- **Corrected:** split the two pieces by altitude. The issue *template* lives in the repo (viewed on
+  GitHub, where `REFINEMENT.md` also lives), so it links the doctrine. The shipped `SKILL.md` line is
+  *self-contained*: it states the minimal edge-triage (the lane check + coverage-vs-wording) by leaning on
+  the routing `SKILL.md` already carries, and leaves `REFINEMENT.md`'s full maintainer-side protocol
+  unshipped and unreferenced. Two altitudes, not duplication.
+- **Lesson (the crux, and why this is a beat, not a checkbox):** a skill that encodes *judgment* improves
+  almost entirely from its *misses*, and a miss is a false negative the user usually cannot see either (it
+  is what plumb did not say). A local skill has, and should have, *no telemetry*. So the only way step 13's
+  miss-channel stays open once strangers use the skill is to wire the loop *into the skill itself*: the
+  distribution unit is a prompt, so the feedback mechanism is a prompt too, a self-capture line that turns
+  every user's model into a first-pass triage agent emitting a well-formed report. This is sounding 4 (pure
+  core, effect at the edge) turned on plumb's own distribution: the skill stays pure, the human filing the
+  issue is the edge. The second, reusable lesson is the boundary itself: **"reference, don't restate" stops
+  at the ship line**, a shipped artifact must be self-contained, so single-sourcing ends there and the
+  shipped side re-states the minimum or splits the content by altitude.
+
 ---
 
 ## The transferable method
 
 *The checklist for building any skill that encodes **judgment** rather than a mechanical check,
-distilled from the twenty beats above. Finalized 2026-07-24 at beat 20; still revisable if the
-guide-mode watch-candidate (beat 19) lands a beat 21.*
+distilled from the beats above. Finalized 2026-07-24 at beat 20; beat 21 (wiring the feedback loop
+at publish) then added step 16, a *sustain* phase, without disturbing the twenty-beat distillation.
+The guide-mode watch-candidate (beat 19) remains open as a possible later beat.*
 
 Two through-lines run under every step. The first is **the spine** (stated at the top of this file):
 a judgment tool has to be built by the method it embodies, so each phase below is one of plumb's own
@@ -743,6 +773,17 @@ reputation" is a step here, not a footnote.
     *positive* on a site can *mask* a different probe firing *negative* on the same site, because the
     flattering read arrives first and you stop, so before leaving a site you affirmed, ask which probe
     could *indict* it.
+16. *Sustain.* **Publishing hands you a corpus you could never build by hand, but only if the signal can
+    travel back, so wire the loop before you ship** (beat 21). Step 13's miss-channel goes silent the moment
+    strangers use the skill: a miss is invisible to telemetry (a review skill that uploads a user's work is a
+    trust non-starter, and violates the local-first stance the skill teaches) and usually invisible to the
+    user too. The distribution unit is a prompt, so make the feedback mechanism one: a self-capture line that
+    offers to build a triage-shaped report turns every user's model into a first-pass triage agent, and a
+    structured issue form makes the well-formed report the easy path, not a free-text blob. Keep the skill
+    pure and put the effect (the signal returning) at the edge, a human filing an issue, not the skill
+    phoning home. And note the boundary this exposes: single-sourcing (step 11's "reference, don't restate")
+    stops at the *ship line*, a shipped artifact must be self-contained, so the shipped side re-states the
+    minimum or splits the content by altitude.
 
 **The single rule beneath all of them:** everything a reader will read, and every claim you make about
 your own corpus, label, source, or frame, is a *claim to be run*, not a fact to reason from. Apply the
