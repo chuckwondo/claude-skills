@@ -680,14 +680,38 @@ with CxC is acceptable, and links point to the GitHub repo.
   at the ship line**, a shipped artifact must be self-contained, so single-sourcing ends there and the
   shipped side re-states the minimum or splits the content by altitude.
 
+### 22. (this session) Half a loop is a suggestion box: the consumption side the intake beat skipped
+
+- **Believed:** beat 21 "wired the feedback loop." With the issue form and the self-capture line built and
+  merged (PR #6), #5 was done and the loop was closed.
+- **Broke:** the user asked two questions the build had never answered, "how do we actually make use of
+  reported feedback to refine plumb?" and then, sharper, "once I see an issue filed, what do I
+  *specifically* do?" Beat 21 had built the *intake* and never described the *consumption*: how a report
+  becomes a refinement, and how the reporter learns it mattered. An intake with no consumption is a
+  suggestion box no one empties, not a loop.
+- **Corrected:** the consumption half was mostly already doctrine, the MISS-TRIAGE protocol committed in
+  `f2a65f5`, but nothing connected "an issue arrived" to "run that protocol." Landed a maintainer-facing
+  *Processing an incoming report* runbook in REFINEMENT.md (open with `gh issue view`, triage, verify by
+  reconstructing and running the case, land as a branch + PR editing SKILL.md / DOGFOOD-LOG / JOURNEY,
+  close the loop with a reply plus a version bump), and added transferable-method step 17 (close the loop)
+  beside step 16 (open it). The form pre-answers the two cheap triage steps (lane, coverage) but never the
+  expensive one: reconstruct the reporter's case and run it, because the report is a claim, not proof.
+- **Lesson:** "wire the loop" is only half a loop. A feedback mechanism is not closed until the consumption
+  path is described, including its least glamorous step, telling the reporter what changed, because people
+  report again only if the first report visibly mattered. And the division of labor is the build's recurring
+  datum once more: the model drafts the triage, but "plumb missed X" is itself a reputation-plausible claim,
+  so the human who holds ground truth verifies and merges. This beat exists because the user caught the
+  missing half by asking how they would actually operate it.
+
 ---
 
 ## The transferable method
 
 *The checklist for building any skill that encodes **judgment** rather than a mechanical check,
-distilled from the beats above. Finalized 2026-07-24 at beat 20; beat 21 (wiring the feedback loop
-at publish) then added step 16, a *sustain* phase, without disturbing the twenty-beat distillation.
-The guide-mode watch-candidate (beat 19) remains open as a possible later beat.*
+distilled from the beats above. Finalized 2026-07-24 at beat 20; the *sustain* phase then grew from the
+feedback-loop work, beat 21 adding step 16 (open the loop) and beat 22 step 17 (close it), without
+disturbing the twenty-beat distillation. The guide-mode watch-candidate (beat 19) remains open as a
+possible later beat.*
 
 Two through-lines run under every step. The first is **the spine** (stated at the top of this file):
 a judgment tool has to be built by the method it embodies, so each phase below is one of plumb's own
@@ -784,6 +808,13 @@ reputation" is a step here, not a footnote.
     phoning home. And note the boundary this exposes: single-sourcing (step 11's "reference, don't restate")
     stops at the *ship line*, a shipped artifact must be self-contained, so the shipped side re-states the
     minimum or splits the content by altitude.
+17. **Opening the loop is half of it; closing it is the other half** (beat 22). An intake with no
+    consumption path is a suggestion box no one empties. Describe how a report becomes a refinement:
+    triage it by the skill's *own* method (a report is a claim, so verify the miss by reconstructing and
+    running the case, do not trust the report), then land it or decline it, and either way tell the
+    reporter what changed, because people report again only if the first report visibly mattered. Keep the
+    human who holds ground truth on the merge gate: "the tool missed X" is a reputation-plausible claim
+    like any other.
 
 **The single rule beneath all of them:** everything a reader will read, and every claim you make about
 your own corpus, label, source, or frame, is a *claim to be run*, not a fact to reason from. Apply the
