@@ -111,6 +111,47 @@ the why.
 5. **Optional, once stable:** split into `plumb-review` / `plumb-guide` entry points
    (mirroring the ponytail family) if the two modes want separate triggers.
 
+## Capturing a dogfood entry from another repo
+
+Most real runs happen where the work is (covjson-msgspec, virtualizarr, and other local
+repos), not here, but the log and its house style live in this repo. Two paths, chosen by
+whether the run's context survives the trip back:
+
+**Default (one step).** Carry the raw run back to a session with this repo as the working
+directory and paste it: the log, the `Corpus:` tags, and the HELD/landable rule are all
+loaded here, so the entry renders in house style directly. This is the right path whenever
+the material still fits in a paste.
+
+**When context will not survive** (a long session in the other repo, an imminent `/clear`, a
+transcript too large to carry), have that session emit a compact *field note* first, while
+its context is hot. The field note is the intake-form schema (subject, verdict, true shape,
+lane, coverage, provenance) plus the four maintainer-only fields, captured raw so a later
+session in this repo can render it:
+
+> Emit a plumb dogfood field-note for this run. Capture, do not prose it up. Fill every
+> field; write `unknown` rather than guess.
+>
+> - **Corpus:** self-plumbed/external, clean/mixed, lang, shape, greenfield/brownfield
+> - **Subject:** what was reviewed (diff, plan, design), one line
+> - **Fired:** which soundings by number, and any co-fires
+> - **Breaking case + downstream trace:** the concrete instance and what consumes it
+>   (non-negotiable: a fire without it is filler)
+> - **Verdict vs true shape:** what plumb said / what was correct
+> - **Provenance:** who caught each thing (me, the model, or /code-review)
+> - **Drove:** into the work or into the skill (tag which); if the skill, coverage-gap or
+>   wording-gap
+> - **Authored by the model?** yes = HELD (the author cannot land their own claim); no =
+>   landable
+
+The four maintainer-only fields (corpus, fired-by-number, drove-work-vs-skill, HELD/landable)
+are what lift the intake-form schema up one tier to a log entry; the shared six are exactly
+the [issue form](../.github/ISSUE_TEMPLATE/plumb-report.yml)'s fields, so a downstream report
+and a maintainer field-note are the same capture at two audience levels.
+
+The one thing to hold across the handoff is the concrete breaking case, verbatim: it is what
+every strong entry in the log is built on, and it is the first casualty of a session
+summarizing itself.
+
 ## Triage protocol (for a flagged signal)
 
 When a run surfaces a candidate refinement (a miss, an unhomed finding, a lapse), triage it before
