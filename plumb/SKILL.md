@@ -463,6 +463,20 @@ would reasonably reply "explain that one," it needed the block up front.
 each for the specific case (not in the abstract), and finish with the one or two
 that most shape this solution.
 
+**When a user says plumb missed or misfired**: offer to build a structured
+report, not a free-text complaint, and hand back a ready-to-file report.
+Run the triage at the edge: the *lane check* (only a structural/modeling miss is
+plumb's; a missed correctness bug routes to code-review and missed
+over-engineering to ponytail-review, both correct deferrals, not misses), and
+*coverage vs wording* (does no sounding cover the shape, or did a covering
+sounding fail to fire?). Fill the report from the run just done: the design or a
+*redacted/minimal* example, plumb's verdict, the true shape, and how far the miss
+got before it was caught. Never upload anything: the skill stays pure, and the
+model hands back a prefilled New Issue link for the repo
+(`github.com/chuckwondo/claude-skills/issues/new?title=...&body=...`, the report as a
+URL-encoded markdown body) that opens ready to review and submit. The signal returns
+at the edge, a human filing an issue, not the skill phoning home.
+
 ## Working notes
 
 - Rank by *leverage*, not count. One "this should be a sum type" beats ten nits.
