@@ -111,7 +111,7 @@ The log has fractured it into distinct, nameable sub-cases:
   landed fix against *all* soundings): `#92` (plan headline 5/10 → diff headline 1).
 - **Diff can *miss* fresh debt the implementation introduced**, the inverse of the above: `#90`.
 - **Same-altitude re-probe finds more** (re-running the *same* pass, not switching altitude, hunts a
-  different breaking edge each time; a clean pass is weak evidence when the reviewer is the author):
+  different breaking case each time; a clean pass is weak evidence when the reviewer is the author):
   `#131`, a self-authored plan reviewed three times, surfaced three disjoint failure classes (a
   spec-depth misread, then `str` duck-typing the arity check, then a wire-vs-literal decode-type), all
   of which literal-built unit tests would have passed.

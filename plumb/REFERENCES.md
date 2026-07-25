@@ -195,12 +195,12 @@ don't already carry.
   deserving proportionally less deliberation than irreversible one-way doors.
   <https://ir.aboutamazon.com/files/doc_financials/annual/2015-Letter-to-Shareholders.PDF>
 
-## 10. Hunt the breaking edge
+## 10. Verify by running the breaking case, not by reasoning
 
 **Park: the obvious cite doesn't fit.** Property-based testing (Koen Claessen &
 John Hughes, "QuickCheck," ICFP 2000, DOI 10.1145/351240.351266) is the tempting
 anchor, but it founds *random property testing* broadly; the minimal-failing-case
-*shrinking* that would make it about hunting the breaking edge is not this
+*shrinking* that would make it about running the breaking case is not this
 sounding's claim either. The round-trip half of QuickCheck's lineage is already
 cited under sounding 5 (Wlaschin). Rather than force a loose match, this sounding
 stays uncited: it is an operating discipline (name the assumption, construct the
