@@ -703,6 +703,29 @@ with CxC is acceptable, and links point to the GitHub repo.
   so the human who holds ground truth verifies and merges. This beat exists because the user caught the
   missing half by asking how they would actually operate it.
 
+### 23. (this session) The loop's first live run: a self-dogfooded candidate, verified by a non-author, and a channel it could never reach
+
+- **Believed:** with the loop wired (beats 21, 22) and the consumption runbook committed, a candidate the
+  discovery session was confident about (it proposed that "A12 should land in SKILL.md") was ready to land,
+  and the intake form was the channel a refinement signal travels.
+- **Broke, two ways, both caught by the machinery just built:** (1) the discovery session proposed editing
+  SKILL.md itself. The author-does-not-land-own-claims rule stopped it: the session HELD A12 and captured
+  only, and the consumption runbook then ran for the first time with a *non-author* verifying A12 by
+  re-running `mypy --warn-unreachable`, not trusting the session's report (`-> bool` reports "Success";
+  `-> NoReturn` flags the guard's `if x:` body unreachable). (2) Testing whether A12 could travel through the
+  *intake form* showed it could not: A12 is a wording sharpening from a run where plumb *worked* (its
+  diff-pass caught the `1e` hole by running mypy). An external user would have had no misfire to file.
+- **Corrected:** A12 landed as a 1e wording gap (the Smell did not name the always-raises / `-> NoReturn`
+  shape) via the runbook, verified independently. And the channel model gained a boundary: the form catches
+  misfires and misses ("plumb was wrong"); own-dogfooding catches wording-sharpenings from *successful* runs,
+  which are invisible to the form by construction.
+- **Lesson:** the loop is not only for external complaints. Its highest-fidelity input is the maintainer's
+  own successful runs, where the signal is "the principle covered this but the wording did not *name* it", a
+  class that never reaches a "plumb was wrong" form. And a confident self-proposed candidate is not a landing
+  until a non-author re-runs it: the author-does-not-land rule plus an independent run is what turned A12 from
+  a claim into a verified change. Caught by the user, who insisted the discovery session capture-only and land
+  nothing, and whose broad-design/form question surfaced the channel boundary.
+
 ---
 
 ## The transferable method
