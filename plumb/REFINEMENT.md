@@ -158,8 +158,34 @@ model (sounding 4); and shape the intake so a well-formed report is the easy pat
 reporters what changed (a CHANGELOG / release note), because people report again only if the first
 report visibly mattered.
 
-**Build items (decisions, not yet done):** a `.github` issue template; the SKILL.md self-capture line.
-Candidates for the publishing runbook (#2) or their own issue.
+**Build items:** the `.github/ISSUE_TEMPLATE/plumb-report.yml` issue form and the SKILL.md self-capture
+line landed in PR #6 (2026-07-25). The maintainer-side consumption procedure follows.
+
+## Processing an incoming report
+
+The intake channels above put a triage-ready report in the issue tracker; this section is how the loop
+actually closes. Run it from a session with this repo as the working directory: the triage reads this
+file, and a landing edits SKILL.md / DOGFOOD-LOG / JOURNEY, all here. The plumb skill loads from its
+symlink; the model does the drafting and the human holds the merge gate.
+
+1. **Open it.** `gh issue view <n>`. The form auto-labels the report `plumb`. Treat it as a *claim*, not
+   ground truth: a well-filed report pre-answers the lane check and coverage-vs-wording (its two
+   dropdowns), which moves you past the two cheap triage steps, not past verification.
+2. **Triage it** by the Triage protocol above (lane check → coverage vs execution → verify the miss is
+   real). The load-bearing step is the last: reconstruct the reporter's case and *run* it to confirm
+   plumb should have caught it. A report you only reason about is un-verified.
+3. **Land or decline**, per that protocol's coverage-vs-execution split: a *coverage gap* becomes a
+   candidate new sounding (reopen nomination), a *wording gap* adds the instance to a sounding's
+   Smell/Move, an *application lapse* is a watch (one instance is not a landing), and *out of lane, or
+   plumb was right* is no change at all. A landing is a branch + PR editing SKILL.md, a DOGFOOD-LOG
+   entry, and a JOURNEY beat with honest who-caught-it.
+4. **Close the loop** (the last line of Signal intake above): merge, then *reply to the reporter* with
+   what changed or why not, and on a landing bump the version and add a CHANGELOG line. Even a decline
+   gets an explanation. (Versioning and CHANGELOG mechanics: the publishing runbook, #2.)
+
+The report is a reputation-plausible claim like any other ("plumb missed X"), so the human who holds
+ground truth verifies and merges while the model fetches, triages, constructs-and-runs, and drafts the
+branch. This is the same human-in-the-loop that caught the model throughout the build.
 
 ## Files in this skill
 
