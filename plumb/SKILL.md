@@ -17,8 +17,8 @@ description: >-
   / hexagonal architecture / dependency injection); faithful round-trips
   (faithfulness, symmetry); match strictness to the requirement (proportional
   response grounded in the source, RFC 2119); names that encode shape; put each
-  check in the right tier; reversibility (one-way vs two-way doors); and hunting
-  the breaking edge. Works on a
+  check in the right tier; reversibility (one-way vs two-way doors); and verifying by
+  running the breaking case. Works on a
   greenfield repo (nothing to conform to) and a brownfield one (where the
   established pattern may itself be the fault to push against). Use when reviewing
   structure/modeling, or when designing a new type, module, API, or check and you
@@ -380,7 +380,7 @@ one-way door; a wrong guess whose blast radius is the whole codebase. **Move:**
 spend care in proportion to reversibility; keep two-way doors cheap; isolate the
 risky bet behind a seam.
 
-### 10. Hunt the breaking edge
+### 10. Verify by running the breaking case, not by reasoning
 
 Find the legal input that breaks the design's assumption and actually run it, so
 "that can't happen" is tested, not hoped for. Probe with the input that violates the
@@ -392,8 +392,8 @@ build the case by *decoding bytes*, not a hand-typed literal: a literal can carr
 runtime types the wire never produces, e.g. a decoded `tuple[Any, ...]` with `list`
 interiors, and miss the very edge it cannot reach): a "bounded/negligible"
 verdict is un-earned until that input has actually run; add the case. A legal
-input the design handles *correctly* is not the breaking edge, however untested;
-the breaking edge is the one that violates the invariant (e.g. two producers
+input the design handles *correctly* is not the breaking case, however untested;
+the breaking case is the one that violates the invariant (e.g. two producers
 writing one shared key). The run target is wider than the input under
 review: run the *excluded* case (a green exclusion proves the filter fires, not that
 its stated *reason* holds), the downstream *consumer* (its crash-vs-silent-repair-vs-reject

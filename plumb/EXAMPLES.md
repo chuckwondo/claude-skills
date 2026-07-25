@@ -1465,7 +1465,7 @@ the one-way change deliberately, and land the two-way fixes immediately.
 
 ---
 
-## 10. Hunt the breaking edge
+## 10. Verify by running the breaking case, not by reasoning
 
 *Python. Self-authored: covjson-msgspec.*
 
