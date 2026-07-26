@@ -2198,3 +2198,41 @@ contributor's diff). Those two are the only existing non-`self` data.*
   9 (reversibility) held as an affirmation. One landable fact (the 1e icechunk
   mechanism); everything else HELD. `Unhomed: (candidate, HELD)` the 1a
   process/serialization-boundary shape, classification pending the triage.
+
+  **ENRICHMENT 2026-07-25 (harvested from the same session's two self-capture
+  reports, which were NOT filed as issues because they duplicate this entry's
+  signal one audience tier down; all HELD candidate wordings for the non-author
+  triage).** On the **1a process/serialization-boundary rider** (skill candidate 1
+  above): the wording fix touches **EXAMPLES.md Example A too**, not only SKILL.md
+  1a, because Example A presents typestate as if one process holds the token end to
+  end. The sharpest illustrative case is the **GC job**: a cron-triggered Batch
+  process runs in isolation and cannot be handed a `Store` token, so routing it
+  through the sole seeding constructor re-seeds an empty store just to
+  garbage-collect it, the exact re-init bug the typestate was meant to kill. The
+  true shape has three parts, which connect this rider to sounding 1's
+  parse-don't-validate layer (REFINEMENT Open question 6): across a process or
+  serialization boundary each entrypoint re-derives its state from durable storage
+  (parse at the edge); the invariant travels as a **capability** handed only to
+  entrypoints allowed the operation (a `seed` function), not as a passed token; and
+  non-creators open with a **raise-on-absent** primitive, never open-or-create.
+  Candidate rider text (HELD): *"Typestate holds only within one process. A token
+  cannot cross a process or serialization boundary; each entrypoint re-derives its
+  state from durable storage, the invariant is carried by a capability handed only
+  to entrypoints allowed the operation (not a passed token), and non-creators open
+  with raise-on-absent, never open-or-create."* **Provenance correction:** the
+  boundary/coverage concept was **caught first by the repo owner in the design
+  dialogue**, then corroborated by the adversarial plumb workflow (run-verified
+  against the icechunk API); the entry's earlier provenance line under-credited the
+  human catch.
+
+  On the **2-vs-9 adjudication gap** (skill candidate 3 above): the fix's home is
+  the **"how the clusters reinforce each other" map** (add a 2-vs-9 co-fire entry
+  near 2 and 9), and the collision site is **1a and 2**, not 2 alone (the additive
+  field both admits an illegal state and dual-sources schema knowledge). Candidate
+  cue text (HELD): *"Adding an optional field can be genuinely reversible (9, a
+  two-way door at the API) and still leave a representable illegal state or a second
+  source of truth (1a/2). Adjudicate by target: 9 judges the signature's walk-back
+  cost; 1a/2 judge the state the field admits. File under the state flaw and affirm
+  the reversibility separately, rather than recasting a DRY/illegal-state finding as
+  a reversibility one."* The cue restates this run's own positive-masks-negative
+  move (affirm 9 separately, file the finding under the state flaw).
