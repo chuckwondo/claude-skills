@@ -749,6 +749,39 @@ with CxC is acceptable, and links point to the GitHub repo.
   them. Caught entirely by the user: the truncation-and-not-copyable observation, the "why not just two
   values" simplification, and the "that means dropping the template" insight that turned it into a DRY fix.
 
+### 25. (this session, 2026-07-26) The non-author triage: a claimed recurrence that was a first instance, and a right principle mis-delivered
+
+- **Believed:** the enrichment session HELD three virtualizarr candidates for a non-author triage and framed
+  two of them concretely: candidate 1 (typestate does not survive a process boundary) as a rider on SKILL.md
+  1a plus a caveat on EXAMPLES.md Example A, and candidate 3 (a 2-vs-9 adjudication cue) as a landable
+  sharpening because the collision had recurred, "this is again."
+- **Broke, two ways, both caught by an independent five-agent pass (blind reconstruction ×2, a
+  recurrence-history audit, adversarial refute ×2), none shown the author's classification:** (1) candidate
+  3's "recurrence" had *zero clean priors*. The audit walked every reversibility co-fire in the log and found
+  each paired 9 with a *different* sounding (naming/4, locality/17, the earthaccess split), while the one true
+  prior 2-vs-9 co-fire (#892) was *harmonious*, handled correctly without any cue, which cuts *against* "the
+  wording is not salient enough." Worse, the finding was already homed by the existing positive-masks-negative
+  Working note (SKILL.md:579–583), so a dedicated cluster-map row would be the same knowledge in three homes,
+  a sounding-2 violation inside the skill about DRY. (2) candidate 1's *principle* was real and landable (a 1a
+  wording enrichment, since 1a fired and saturation held), but its proposed *delivery* was not: the Example A
+  caveat would graft persistence prose onto a generated *Java*, in-memory example (against
+  examples-as-before/after-code), and the SKILL.md rider as worded restated 1a's existing parse-at-the-edge
+  Move.
+- **Corrected:** candidate 1 landed reshaped, a real Python before/after (EXAMPLES.md Example C, from the
+  run's own run-verified icechunk fire) plus a minimal SKILL.md 1a qualifier naming *only* the boundary limit,
+  not the remedy (TIGHTENING §A13). Candidate 3 was DECLINED as a standalone landing and folded into the
+  existing A11 watch as a second guide-mode positive-masks-negative data point (its PMN half now ×2). Candidate
+  2 was a bare affirmation, no action.
+- **Lesson:** the non-author gate is not a rubber stamp for the author's convenient reads, and "again" and
+  "land it here" are exactly the reads it exists to test. A claimed recurrence is a claim to be *run* against
+  the log's actual history, not accepted, and the same discipline that kills a fire kills a mis-counted one.
+  And a landing has two reviewable parts, the *verdict* (is the principle real and in-lane?) and the
+  *delivery* (does the edit respect the skill's own soundings?): a right principle can still ship in a
+  DRY-violating or doctrine-violating form. Provenance, once more the payoff: the author half-saw both flaws
+  (it deferred the coverage-vs-wording call and conceded the cue "restates" the PMN move) yet still leaned
+  land on both, and only the non-author pass resolved them, the author-does-not-land-own-claims rule earning
+  its keep a second time (after A12, beat 23).
+
 ---
 
 ## The transferable method

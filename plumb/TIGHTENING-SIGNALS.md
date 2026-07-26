@@ -271,7 +271,7 @@ type, ask whether it is *stricter* than that type; if so, only a positive-only g
 - **Proposed target:** a rider on sounding 1, or a Working note. Niche (×1) but a real soundness trap,
   not style.
 
-### A11. Judge-against-the-ideal and positive-masks-negative must fire in *guide* mode, not only review *(×1, WATCH: application lapse of existing notes, not a coverage gap)*
+### A11. Judge-against-the-ideal and positive-masks-negative must fire in *guide* mode, not only review *(judge-against-ideal ×1; positive-masks-negative ×2 as of 2026-07-26; WATCH: application lapse of existing notes, not a coverage gap)*
 2026-07-24 virtualizarr-data-pipelines validation run (external CDK template): on an EXTERNAL target the
 model twice anchored to the incumbent at *design* altitude, and the user caught both. (1) It recommended a
 redesign partly because it "matches how the sample already thinks", the exact thing "judge against the
@@ -289,6 +289,15 @@ twist: an external target removed the author-under-runs bias, yet the anchor sti
   the MISS-TRIAGE application-lapse branch, a single lapse of an existing note is a salience *watch*, not a
   landing; a second guide-mode lapse confirms the wording is not salient enough at design altitude.
   Corroboration cite: DOGFOOD-LOG 2026-07-24, JOURNEY beat 19. Not in the §F active queue until corroborated.
+- **Corroboration (2026-07-26, non-author triage of the virtualizarr PLAN.md run):** a second guide-mode
+  instance of the *positive-masks-negative* half (not the judge-against-ideal half): a "two-way door" (9)
+  reading masked a 1a/2 illegal-state / DRY flaw on the same additive field and was pulled back only on the
+  *refute* pass, never caught proactively. That run's own 2-vs-9 adjudication-cue candidate was DECLINED as a
+  standalone landing (first-instance per the recurrence audit; already covered by the SKILL.md:579–583 PMN
+  note, so a dedicated cluster-map row would triple-source it) and folded here instead. A11's PMN half now
+  stands at ×2 in guide mode; whether that tips it from watch to land-ready is a maintainer call, and its
+  landing is a distinct guide-mode rider, not this run's boundary edit (§A13). Cite: DOGFOOD-LOG 2026-07-25
+  (virtualizarr PLAN.md) RESOLVED 2026-07-26, JOURNEY beat 25.
 
 ### A12. Sound typing fires on an always-raising function annotated with its nominal return type, not `NoReturn` *(×1, LANDED 2026-07-25)*
 `#157` `ValidationReport`: a `__bool__` that only raises (a 1a guard making ambiguous truthiness
@@ -304,6 +313,25 @@ flags the `if report:` body "Statement is unreachable".
   precedent (pandas `DataFrame.__bool__ -> NoReturn`) noted but not cited in-skill: the #157 run found its own
   pandas citation wrong twice, so it is left unverified rather than repeated. Corroboration: DOGFOOD-LOG
   2026-07-25 (#157), JOURNEY beat 23.
+
+### A13. Typestate holds only within one process; a compile-time token cannot cross a process or serialization boundary *(×1, LANDED 2026-07-26)*
+2026-07-25 virtualizarr-data-pipelines redesign PLAN.md (guide/plan mode): the proposed typestate stages
+(`open_store → Store → WriteSession`) make an illegal call order uncompilable *within a process*, but the
+pipeline runs as separate AWS entrypoints. A cron-triggered garbage-collection job never receives the
+in-memory `Store` token, so it re-derives one through the only constructor available, which opens with
+`Repository.open_or_create`; on an absent store that *creates* an empty repository instead of raising
+(run-verified against real icechunk), silently re-seeding the exact empty store the typestate was meant to
+forbid. A 1a *wording* enrichment, not a coverage gap: 1a fired and 8 co-fired (the two facts that make the
+state illegal sit on opposite sides of the process boundary, so no tier sees both), so saturation held; the
+principle covered it but neither 1a nor Example A named the process-boundary limit of a compile-time token.
+- **Landed 2026-07-26 (non-author triage):** a new EXAMPLES.md Example C (real Python before/after from this
+  run's own icechunk fire: `open_or_create` re-seeds vs `open` raise-on-absent), plus a minimal SKILL.md 1a
+  qualifier naming *only* the boundary limit (an in-memory token cannot cross a process/serialization
+  boundary), NOT the remedy (which would restate 1a's parse-at-the-edge Move and bloat the densest sounding).
+  The two novel points: a typestate token dies at the boundary, and non-creators must open fail-closed
+  (raise-on-absent), never create-if-absent. The author's proposed delivery (a caveat on the *Java* Example A
+  plus a remedy-restating rider) was reshaped by the refute pass. Corroboration: DOGFOOD-LOG 2026-07-25
+  (virtualizarr PLAN.md) + its 2026-07-26 RESOLVED line, JOURNEY beat 25.
 
 ---
 

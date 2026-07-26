@@ -26,8 +26,9 @@ linked original is recognizable.*
 
 ### 1a. Make illegal states unrepresentable
 
-Two examples: a lifecycle modeled as a flat bag of independently-settable
-fields, and an invariant pairing left merely checkable rather than impossible.
+Three examples: a lifecycle modeled as a flat bag of independently-settable
+fields, an invariant pairing left merely checkable rather than impossible, and a
+typestate token expected to hold across a process boundary it cannot cross.
 
 #### Example A (generated: a state machine)
 
@@ -198,6 +199,71 @@ rather than fix immediately. It is a clean illustration of the fix-versus-park
 judgment.
 
 *Source: covjson-msgspec `feat/temporal`, 2026-07-07 (self-authored).*
+
+#### Example C (external design: a typestate token across a process boundary)
+
+*Python. External design review: virtualizarr-data-pipelines; the icechunk
+mechanism run-verified.*
+
+Typestate stages (`open_store` returns a `Store`, and only a `Store` yields a
+`WriteSession`) make an illegal call order uncompilable *within one process*.
+But the pipeline runs as separate AWS entrypoints, and a cron-triggered
+garbage-collection job is its own process: it never receives a `Store` token, so
+it re-derives one through the only constructor it has. That constructor opens the
+store with `Repository.open_or_create`, which on an absent store creates a
+brand-new empty repository instead of raising, so the GC job silently re-seeds
+the exact empty store the typestate was meant to forbid, then garbage-collects
+it.
+
+##### Problem
+
+```python
+def open_store(cfg) -> Store:
+    # create-if-absent: right for the seeding entrypoint, wrong for everyone else
+    repo = icechunk.Repository.open_or_create(cfg.storage)
+    return Store(repo)
+
+
+def garbage_collect(cfg) -> None:
+    store = open_store(cfg)       # absent store -> CREATES an empty repo...
+    store.expire_snapshots(...)   # ...GC now runs against a freshly re-seeded store
+```
+
+The typestate stages are honored: `garbage_collect` does hold a real `Store`. The
+hole is that `open_store` is the wrong way to obtain one at an entrypoint that is
+not allowed to create, and no compile-time token can carry that distinction
+across the process boundary.
+
+##### Fix
+
+Give the create capability to the seeding entrypoint alone; every other
+entrypoint opens with a raise-on-absent primitive, so a non-creator cannot bring
+a store into being:
+
+```python
+def seed(cfg) -> Store:              # the only entrypoint that may create
+    return Store(icechunk.Repository.open_or_create(cfg.storage))
+
+
+def open_existing(cfg) -> Store:     # raise-on-absent
+    return Store(icechunk.Repository.open(cfg.storage))  # raises if absent
+
+
+def garbage_collect(cfg) -> None:
+    store = open_existing(cfg)       # absent store -> IcechunkError, not a silent re-seed
+    store.expire_snapshots(...)
+```
+
+A compile-time typestate token lives in memory and does not survive a process or
+serialization boundary: a separate entrypoint (a cron job, another Lambda) never
+receives it. Across that boundary, re-derive the state from durable storage at
+the edge, hand the create capability only to the entrypoint allowed to seed, and
+make every non-creator open with a raise-on-absent primitive, never
+create-if-absent (which silently re-seeds the state the typestate forbids).
+
+*Source: developmentseed/virtualizarr-data-pipelines redesign dialogue,
+2026-07-25 (guide/plan mode; icechunk `open_or_create` vs `open` behavior
+run-verified).*
 
 ### 1b. Model the domain with types, not primitives
 

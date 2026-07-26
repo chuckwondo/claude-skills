@@ -97,7 +97,9 @@ be built in the first place: invariants hold by construction, not by remembering
 check them. The same discipline pointed at other axes: an *immutable* value (no later
 setter can break the invariant); an illegal *sequence* made unrepresentable (the
 *typestate* pattern: a capability the next call requires, so "log in before use"
-cannot compile wrong); an ignored *outcome* made unrepresentable (the
+cannot compile wrong within one process, though an in-memory token cannot cross a
+process or serialization boundary to a separate entrypoint); an ignored *outcome*
+made unrepresentable (the
 designer half of must-consume, exactly what Rust's `#[must_use]` encodes).
 **Smell:** the same thing validated again and again downstream; a struct whose
 fields permit combinations that are never valid; "remember to check X first"; a
