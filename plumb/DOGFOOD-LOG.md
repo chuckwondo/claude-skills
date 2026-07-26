@@ -2106,3 +2106,95 @@ contributor's diff). Those two are the only existing non-`self` data.*
   library), no new cell or axis, so the directional picture is unchanged and the signal lives in §A12. (The
   entry's "CORPUS fire-count bump" expectation does not apply: CORPUS tracks representative cells directionally,
   never a fire-rate, so there is no count to bump.)
+
+- **2026-07-25: virtualizarr-data-pipelines redesign PLAN.md** (guide/plan mode on
+  the *described redesign* before any code: the proposed Seed/Parse/optional
+  DeclareFullShape contract, injected Backend, typestate stages, seed-capability
+  split, backfill extension). `Corpus: self-plumbed · mixed · python + aws-cdk ·
+  forkable-template · brownfield`. Run as **6 independent adversarial lenses + a
+  refute pass per finding + one execution check** (plumb the skill actually invoked
+  this pass, unlike the superseded first attempt). Fired: **1a** (headline; two
+  illegal states: `BACKFILL_ENABLED` × `declare_full_shape=None`, and
+  `open_or_create` reachable from non-creator entrypoints), **1e** (headline; the
+  `open_for_backfill` docstring and the declared-branch knob both lie), **2** (the
+  dominant sounding this run: the append-dim coord convention lives in *three* homes
+  seed/declare/parse, the branch in two, "runs backfill" in two), **5a**
+  (faithfulness: seed-vs-declare schema, parse's placeable-return invariant), **7**
+  (`open_for_backfill` promises open-semantics it lacks), **8** (the
+  enabled-implies-declared check has *no tier that sees both facts*), **10**
+  (verify-by-running, used on the 1e finding). **Affirmed: 9** (reversibility: the
+  additive optional `DeclareFullShape` field is a genuine two-way door; the design
+  got this right, so 9 held as an affirmation, not a fire).
+
+  **The breaking case + downstream trace.** *Headline 1a (confirmed by
+  construction):* with `BACKFILL_ENABLED=true` and `PIPELINE = Pipeline(seed=seed,
+  parse=parse, append_dim="time")` (so `declare_full_shape` defaults `None`), `cdk
+  synth` is green; at runtime the init Lambda calls `ensure_backfill_branch(backend,
+  declare=PIPELINE.declare_full_shape, sizes={"time": N})`, which
+  `delete_branch`/`create_branch` *first*, then executes `None(sizes)` and dies with
+  `TypeError: 'NoneType' object is not callable`. Consumer: the init Lambda mid-DAG,
+  dead opaquely after a branch delete+create has already left a dirty half-state,
+  and no synth-time or load-time cross-check is possible because `infra/` never
+  imports `src/pipeline.py` (the two facts that make the state illegal sit on
+  opposite sides of a process boundary, which is why 8 co-fired). *Headline 1e
+  (confirmed by run):* `fork`/`reduce`/`promote` call `open_for_backfill(backend) ->
+  backend.open_repo() -> icechunk.Repository.open_or_create(storage=<absent>)`,
+  which *creates a brand-new empty repo with an empty `main`* instead of raising, so
+  the docstring's claim that these entrypoints "structurally cannot create
+  structure" is false. Consumer: the plan's own
+  `test_gc_on_unseeded_store_raises_and_does_not_seed` is *unsatisfiable* against
+  Backend's exposed API.
+
+  **Verification status.** The 1e *mechanism* was RUN in the authoring session
+  against real icechunk (`exists()` False, then `open_or_create`, then `exists()`
+  True with `branches=['main']`; `Repository.open` on an absent store raised
+  `IcechunkError` and `exists()` stayed False), which matches icechunk's documented
+  `open_or_create` contract (the method name is the contract). **That mechanism fact
+  is landable; its *application* to the plan stays HELD.** It was not independently
+  re-run in this claude-skills session (icechunk is not in this repo's env; the
+  offer stands to install it or run in the target repo). The 1a finding is **HELD**:
+  it is reasoning about a described-but-unimplemented plan, so there is no
+  system-level artifact to run, and executing a bare `None(sizes)` would be
+  triviality-theater, not the invariant-violating system path.
+
+  **Provenance.** Findings A and B were model pre-reads, then *confirmed by
+  independent neutrally-framed subagents* (a bias check on the author's own read); B
+  was additionally RUN by the user. **The model MISSED C (the dead declared-branch
+  knob) in its pre-read** (the subagents surfaced it). On D and E (schema and coord
+  homes) the model gestured and the subagents corrected the *mechanism*, killing a
+  mis-cited 7 and a "reintroduces the old B3 problem" overreach. `/code-review`: not
+  run.
+
+  **Drove (into the work, HELD, not yet applied).** PLAN.md needs four fixes: a
+  synth-time gate plus reordering the init so the `None`-call cannot follow the
+  branch mutation; Backend exposing `open()` distinct from `open_or_create()`; a
+  single source for the coord-delta convention; and threading the branch. All HELD
+  (model-authored plan), pending the user.
+
+  **Drove (into the skill, HELD candidates for a non-author triage; nothing landed
+  here).** (1) **1a needs a process/serialization-boundary rider, reinforcing the
+  first-attempt coverage-gap candidate.** Finding B is literally "a capability guard
+  across a process boundary is convention, because the shared `open` primitive can
+  create." The run's own data must be reconciled by the triage: 1a *and* 8 both
+  fired on the same site (an illegal state that cannot be made unrepresentable
+  *because* no tier sees both facts), so it may home as a **1a × 8 co-fire (a
+  wording gap)** rather than an uncovered shape. Classification (coverage vs
+  wording) is the triage step and is deferred, not decided here; the second
+  corroborating instance is the signal to weigh. (2) **Sounding 10 earned its
+  keep.** The one finding that was RUN went reasoned-to-proven, and the refute
+  station downgraded two model overreaches, so a self-review-by-subagent *without a
+  run* would have shipped them: an affirmation of verify-by-running, recorded as
+  valuable output. (3) **The 2-vs-9 collision recurred.** The "two-way door"
+  finding was first filed under 9 (reversibility) and correctly re-filed to 2 (DRY)
+  by the refute pass; the skill still gives no cue for adjudicating 2 vs 9 when a
+  change is both duplicated and reversible. Recurrence (this is "again") is the
+  MISS-TRIAGE tell that the wording is not salient enough: a candidate
+  adjudication-cue sharpening.
+
+  **Verdict:** plumb refused the plan's own "correct by construction" thesis and was
+  right to: two construction claims are false (it does not type-check as written,
+  `DeclareFullShape | None` passed into a non-optional param; and the capability
+  split is convention, proven by run), plus one silent DRY hole across three homes.
+  9 (reversibility) held as an affirmation. One landable fact (the 1e icechunk
+  mechanism); everything else HELD. `Unhomed: (candidate, HELD)` the 1a
+  process/serialization-boundary shape, classification pending the triage.
