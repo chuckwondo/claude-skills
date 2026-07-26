@@ -2236,3 +2236,37 @@ contributor's diff). Those two are the only existing non-`self` data.*
   the reversibility separately, rather than recasting a DRY/illegal-state finding as
   a reversibility one."* The cue restates this run's own positive-masks-negative
   move (affirm 9 separately, file the finding under the state flaw).
+
+  **RESOLVED 2026-07-26 (non-author triage, branch `feat/plumb-land-boundary-example`).**
+  Triaged the three HELD candidates by the MISS-TRIAGE protocol through five independent
+  bias-controlled agents (blind reconstruction ×2, a recurrence-history audit, adversarial
+  refute ×2), none shown the author's classification. Outcome:
+  **(1) The 1a process/serialization-boundary rider — LANDED, reshaped.** In lane, and a
+  *wording enrichment*, not a coverage gap: 1a fired and 8 co-fired, so saturation held. But
+  the author's proposed *delivery* did not survive the refute pass. Caveating EXAMPLES.md
+  Example A (a generated *Java*, in-memory order machine) would graft persistence prose onto
+  an example that never touches storage, against examples-as-before/after-code; and the
+  SKILL.md 1a rider as worded ("re-derive at the edge") restated 1a's existing
+  parse-at-the-edge Move, a DRY bloat of the densest sounding. Landed instead as a real Python
+  before/after built from this run's own icechunk fire (EXAMPLES.md Example C) plus a minimal
+  SKILL.md 1a qualifier naming *only* the boundary limit (an in-memory token cannot cross a
+  process or serialization boundary), not the remedy. Recorded TIGHTENING-SIGNALS §A13.
+  **(2) Sounding 10 earned its keep — no action** (an affirmation, already recorded).
+  **(3) The 2-vs-9 adjudication cue — DECLINED, recorded as a WATCH under A11.** The author's
+  landing rested on a claimed *recurrence* ("this is again"); the independent recurrence audit
+  found *zero clean priors*. The historical near-misses pair reversibility with *other*
+  soundings (naming/4 at #129/#134; locality/17 at the resolver aside, DOGFOOD-LOG.md:1455;
+  10/PO/7/CQS at the earthaccess split, :1662), and the one true prior 2-vs-9 co-fire
+  (2026-07-15, :892) was *harmonious* (DRY the headline, 9 a same-direction "defer it" rider,
+  handled correctly *without* a cue), which actively undercuts "the wording is not salient
+  enough." It is also already covered: the finding was homed on the refute pass by the
+  existing positive-masks-negative Working note (SKILL.md:579–583), so a dedicated cluster-map
+  row would be the same knowledge in three homes, a sounding-2 violation inside the skill about
+  DRY (the author half-conceded this: the cue "restates this run's own positive-masks-negative
+  move"). Per the MISS-TRIAGE application-lapse branch (one instance = watch), the reviewer's
+  stop-at-9 is recorded as a second guide-mode data point for the existing **A11 watch**
+  (positive-masks-negative must fire *proactively*, not only on a refute pass); if a second
+  genuine mis-route appears, the DRY-respecting home is a one-clause enrichment of the
+  SKILL.md:581 parenthetical, never a new map row. **Provenance:** the non-author triage
+  overturned the author on candidate 3 and reshaped candidate 1, exactly the correction the
+  author-does-not-land-own-claims gate exists to make.
