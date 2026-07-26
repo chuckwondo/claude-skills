@@ -726,6 +726,29 @@ with CxC is acceptable, and links point to the GitHub repo.
   a claim into a verified change. Caught by the user, who insisted the discovery session capture-only and land
   nothing, and whose broad-design/form question surfaced the channel boundary.
 
+### 24. (this session) The barrier-reducer had a barrier: dogfooding the intake through its own delivery surface
+
+- **Believed:** beat 21 shipped the intake as a rich issue *form* (six fields, dropdowns) plus a
+  self-capture line that hands back a *prefilled New Issue URL*, and that this was the low-friction path a
+  downstream user would take.
+- **Broke, on the first real use:** running the self-capture in another repo's session showed the prefilled
+  URL is unusable, the report overflows GitHub's URL limit and truncates in a terminal, and the rendered
+  issue body was styled markdown, not copy-paste-ready raw text. The first fix (a code block *per field*)
+  reintroduced the barrier from the other side: more than two paste targets is itself tedious. And a step
+  back exposed a DRY smell in plumb's own repo: the report schema lived in *two* homes (the YAML form and
+  the self-capture line), a sounding-2 finding on the skill's own infrastructure.
+- **Corrected:** the self-capture now hands back *exactly two* copy-pasteable values, a title and a body,
+  each in its own code block, with lane / coverage / how-surfaced as labeled lines in the body (the form's
+  dropdowns render as body text anyway, so nothing is lost). The YAML form was dropped to a `config.yml`
+  chooser pointer, collapsing the schema to one home. Folded in the same pass: a steelman guardrail, a
+  model reporting a verdict *it* gave must advocate for the user's objection, not soften the report toward
+  agreeing with itself.
+- **Lesson:** a barrier-reducer must be dogfooded through its *actual delivery surface* (a terminal, a URL
+  length limit, a markdown renderer), not just designed on paper; and "more structured" can be *more*
+  friction: six fields and a long URL lose to two copyable values once the model, not the user, is filling
+  them. Caught entirely by the user: the truncation-and-not-copyable observation, the "why not just two
+  values" simplification, and the "that means dropping the template" insight that turned it into a DRY fix.
+
 ---
 
 ## The transferable method

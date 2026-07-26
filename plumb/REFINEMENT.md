@@ -184,8 +184,8 @@ the skill itself teaches). So the intake is these channels, in fidelity order:
 2. **Voluntary user reports (issues on this repo).** The only free external channel, but lossy and
    self-selected: it catches the loud *misfires* (a fire the user disputes) far better than the silent
    *misses* (a miss is what plumb did not say, so the user usually cannot see it either). Lower the
-   friction with an issue template shaped like a MISS-TRIAGE input: the design/diff, plumb's verdict,
-   the true shape, who caught it.
+   friction by shaping the report like a MISS-TRIAGE input (the design/diff, plumb's verdict, the true
+   shape, who caught it), which the self-capture line (channel 3) now drafts automatically.
 3. **The skill prompts its own capture (the skill-native move).** The distribution unit is a *prompt*,
    so the feedback mechanism can be too: a line in SKILL.md's output contract so that when a user says
    plumb missed or misfired, the *downstream* model offers to build the structured report (running the
@@ -199,8 +199,10 @@ model (sounding 4); and shape the intake so a well-formed report is the easy pat
 reporters what changed (a CHANGELOG / release note), because people report again only if the first
 report visibly mattered.
 
-**Build items:** the `.github/ISSUE_TEMPLATE/plumb-report.yml` issue form and the SKILL.md self-capture
-line landed in PR #6 (2026-07-25). The maintainer-side consumption procedure follows.
+**Build items:** the SKILL.md self-capture line landed in PR #6 (2026-07-25). Its delivery was later
+reshaped to two copy-pasteable values (a title and a body), and the `.github` YAML issue form was replaced
+by a `config.yml` chooser pointer, so the report schema lives in one home (the self-capture line), not two.
+The maintainer-side consumption procedure follows.
 
 ## Processing an incoming report
 
@@ -209,9 +211,10 @@ actually closes. Run it from a session with this repo as the working directory: 
 file, and a landing edits SKILL.md / DOGFOOD-LOG / JOURNEY, all here. The plumb skill loads from its
 symlink; the model does the drafting and the human holds the merge gate.
 
-1. **Open it.** `gh issue view <n>`. The form auto-labels the report `plumb`. Treat it as a *claim*, not
-   ground truth: a well-filed report pre-answers the lane check and coverage-vs-wording (its two
-   dropdowns), which moves you past the two cheap triage steps, not past verification.
+1. **Open it.** `gh issue view <n>`. A self-captured report arrives as a plain issue whose body states the
+   lane and coverage calls as labeled lines (an unassisted report may omit them). Treat it as a *claim*,
+   not ground truth: a well-filed report pre-answers the lane check and coverage-vs-wording, which moves you
+   past the two cheap triage steps, not past verification.
 2. **Triage it** by the Triage protocol above (lane check → coverage vs execution → verify the miss is
    real). The load-bearing step is the last: reconstruct the reporter's case and *run* it to confirm
    plumb should have caught it. A report you only reason about is un-verified.
