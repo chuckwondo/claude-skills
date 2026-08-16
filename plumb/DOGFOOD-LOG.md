@@ -2270,3 +2270,130 @@ contributor's diff). Those two are the only existing non-`self` data.*
   SKILL.md:581 parenthetical, never a new map row. **Provenance:** the non-author triage
   overturned the author on candidate 3 and reshaped candidate 1, exactly the correction the
   author-does-not-land-own-claims gate exists to make.
+
+- **2026-08-16: covjson-msgspec issue #110 implementation plan** (plan mode, on the
+  *plan* before any code: aligning the error contracts across `NdArray`'s
+  value-conversion surface, `values_as` / `to_numpy` / `from_numpy`; the plan was
+  self-authored by the same model that then plumbed it, on the user's explicit
+  "plumb the plan"). `Corpus: self-plumbed · clean · python · library · brownfield`
+  (20 ADRs, an established `match`/`assert_never` idiom at `references.py:399-405`,
+  `validation.py:1282-1301`, `temporal.py:175-185`, and prescribed in prose at
+  `referencing.py:223`). **Rendered here from a field note the work session emitted
+  while its context was hot**, per REFINEMENT.md's "capturing a dogfood entry from
+  another repo": the first live run of that two-step path (raw capture committed as
+  `d55fb31`, this entry is the render). Fired: **1e** (headline), **1d**, **1a** ×2,
+  **6**.
+
+  **Co-fires.** *1e × 1d on one site:* the proposed `_PROJECTION` dict is both a type
+  lie and a lost exhaustiveness check, and one move (a `match` with `assert_never`)
+  fixes both. *1a × 10:* the validate-versus-`to_numpy` divergence cannot be made a
+  compile error, so the 1a move *is* an enforcing test; 10 is the verification arm of
+  the 1a claim, not a separate finding. *6 × charter:* the missing `Raises` sections
+  traced not to a consumer but to the issue's own acceptance criterion ("reflects what
+  it actually raises"), that is, to the work's charter rather than to code downstream.
+
+  **The breaking case + downstream trace (headline 1e).** The plan's §1 sketch was
+  `_PROJECTION: Final = {"float": float, "integer": int, "string": str}` consumed as
+  `projected = self.values_as(_PROJECTION[self.data_type])`. What triggered the probe
+  was the plan's own hedge, a caveat standing in for a run: it predicted `_ScalarT`
+  would bind to the whole union so the projection would type as
+  `tuple[float | int | str | None, ...]`, "fine for feeding `np.array`, but confirm it
+  under both mypy strict and basedpyright strict before committing to the map." Run,
+  not reasoned: `reveal_type(a.values_as(_PROJECTION[a.data_type]))` reveals
+  `tuple[None, ...]`, with `Success: no issues found`. No single `_ScalarT` binding
+  fits a union of `type[...]`, so mypy settles on `None`: green, and wrong about a
+  tuple that holds floats at runtime. The plan predicted a merely *imprecise* type
+  and got a *false* one, so it was wrong in the direction that hides errors instead
+  of surfacing them. **Consumer:** `to_numpy`'s body, where `projected` feeds
+  `np.array(...)` and (in the sketch)
+  `[math.nan if v is None else v for v in projected]`. The checker
+  believes every element is `None`, so every downstream expression over `projected` is
+  checked against the wrong element type and passes, inside the very method whose
+  purpose in this diff is to stop silently-wrong conversions. The recommended move
+  types precisely per arm: `values_as(str)` gives `tuple[str | None, ...]`,
+  `values_as(int)` gives `tuple[int | None, ...]`, `values_as(float)` gives
+  `tuple[float | None, ...]`.
+
+  **1d, same site**, verified by feeding a known-red input (drop the `case "float"`
+  arm): `error: Argument 1 to "assert_never" has incompatible type "Literal['float']";
+  expected "Never"  [arg-type]`. A dict lookup degrades that compile-time error to a
+  runtime `KeyError`.
+
+  **1a (validate versus `to_numpy`).** The plan's remedy for the divergence was a
+  docstring sentence. Concrete instance:
+  `NdArray(data_type="float", values=(10**400,), shape=(1,), axis_names=("x",))` gives
+  `validate(arr, check_values=True).ok -> True` while `arr.to_numpy()` raises
+  `msgspec.ValidationError: value out of range for float`. **Consumer that breaks the
+  prose:** `validation.py:3615`,
+  `_NARROW_VALUE_TYPE["float"] = tuple[int | float | None, ...]`. Tidying that to
+  `tuple[float | None, ...]` reads as an obvious cleanup (it makes the two rules
+  agree), silently closes the divergence, stales the docstring, and leaves the suite
+  green, because the plan's `test_to_numpy_float_out_of_range_is_validation_error`
+  pins only the `to_numpy` half. That is what promoted the finding from "add a
+  sentence" to "pin the pair".
+
+  **Verification status: the 1e/1d mechanism is landable, not merely transcribed.**
+  Re-run in *this* session (non-author), with the repo's own `mypy --strict` against
+  the merged `NdArray`: the dict form still reveals `tuple[None, ...]` and reports
+  `Success`, and the three `match` arms still reveal the precise element types. The
+  1a instance and the `assert_never` red were run in the authoring session and are
+  reflected in landed code (below), not re-run here.
+
+  **Verdict versus true shape.** Plumb said "not plumb-true; five findings, 1e
+  highest-leverage," and that held. The one *park* was also correct: `from_numpy`'s
+  arity guard is enforced at one door while `NdArray(...)` still accepts a rank
+  mismatch, which is legitimate because ADR-0002 requires the wire door stay
+  permissive so `validate` can report `ndarray.shape-rank`. But the park needed its
+  reason written into the docstring, or a later reader files it as an inconsistency.
+  No sounding misfired, and **2 was explicitly considered and closed rather than
+  fired**: the two `data_type` matches look like one duplicated mapping, but a shared
+  helper cannot serve `to_numpy` at all (it reintroduces the union to
+  `tuple[None, ...]` collapse), which is exactly the 2-boundary test ("could one
+  helper serve every site without a parameter that re-encodes the very difference?").
+
+  **Provenance (doubly weak).** All five findings are the model's, reviewing its own
+  plan, and not spontaneously: the user's "plumb the plan" was the trigger, matching
+  the skill's own note that a self-authored design does not reliably run its own
+  claims. The `_PROJECTION` sketch that 1e indicted was the model's too, and it
+  **survived a Plan subagent's adversarial pass**, which not only failed to flag it
+  but *recommended* it as step 1 of its implementation checklist ("Do not inline the
+  dict literal in the method body (it would rebuild per call...)"). So the sole
+  external check endorsed the construct under indictment. The counterweight: the
+  load-bearing claims were settled by *running* (`reveal_type`, a deleted `case` arm
+  going red, a fourth `Literal` member erroring at the index site), not by argument.
+  The *selection* of what to probe was still the author's. Later rounds were
+  **user-driven**: the user caught a loop-invariant dispatch in `from_numpy` and then
+  asked to merge the resulting match block, which surfaced that an *annotated*
+  `Mapping[Literal[...], Callable[...]]` **does** preserve exhaustiveness
+  (`error: Invalid index type "Literal['float', 'integer', 'string', 'boolean']" for
+  "Mapping[Literal['float', 'integer', 'string'], Callable[[Any], float | int | str]]"
+  [index]`). That refines the 1e finding's scope and was not visible at plan altitude.
+
+  **Drove (into the work).** All five landed: PR #188, **merged 2026-08-16** (verified
+  with `gh`). Verified in the merged tree: the `match` plus `assert_never` in
+  `to_numpy` (`range.py:331-364`, with the collapse rationale as a comment at
+  `range.py:328-330`); `test_validate_clean_does_not_guarantee_to_numpy`
+  (`tests/test_numpy.py:120`) pinning the *pair* rather than either half, so the
+  "obvious tidy" at `validation.py:3616` now goes red; `ModuleNotFoundError` added to
+  `range.py` plus four bridge `Raises` sections; and the arity park's rationale
+  written into `from_numpy`'s docstring.
+
+  **Drove (into the skill): nothing.** No coverage gap and no wording gap observed on
+  the run itself. `Unhomed: none.`
+
+  **Recorded, not claimed as a gap (HELD candidate, misfire-prevention channel).** The
+  later rounds sharpened 1e's *scope*: a lookup table is a type lie **when its values
+  are a union of `type[...]` consumed as a type argument**, and is sound when the
+  values are homogeneous and the key type is annotated. Both forms now sit in the same
+  file: `_PROJECTION` rejected in `to_numpy`, `_CONVERTERS` accepted in `from_numpy`
+  (`range.py:1059-1061`, `Mapping[Literal["float", "integer", "string"],
+  Callable[[Any], _Scalar | None]]`), with a comment on the latter explaining why the
+  former cannot share it. Classification offered for the triage, not decided here:
+  this is **not a miss** (1e fired correctly and its finding was right), so it belongs
+  to a different channel from MISS-TRIAGE's coverage-versus-wording split. It guards
+  against a *future over-fire*, 1e firing on any lookup table, and its two candidate
+  homes (a scope qualifier in SKILL.md 1e versus a real before/after in EXAMPLES.md
+  built from the two tables in one file) are exactly the delivery question the A13
+  triage reshaped last time. **HELD:** the finding, the plan, and this scope
+  refinement are all the same author's, so a non-author triage decides whether and
+  where it lands.
