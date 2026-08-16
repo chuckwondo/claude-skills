@@ -2397,3 +2397,22 @@ contributor's diff). Those two are the only existing non-`self` data.*
   triage reshaped last time. **HELD:** the finding, the plan, and this scope
   refinement are all the same author's, so a non-author triage decides whether and
   where it lands.
+
+  **TRIAGED 2026-08-16 (same day, second session; classification only, nothing
+  landed in the skill).** The "misfire-prevention channel" framing was **declined**
+  as a new MISS-TRIAGE branch and recorded as TIGHTENING §A14. It fails four checks
+  against the repo's own history: §A12 already homed a candidate from a *successful*
+  run as a wording gap; the specificity apparatus already lives in three homes (a
+  sounding's own Boundary clause, EXAMPLES.md's per-facet "Specificity: where it
+  correctly stays quiet" subsection, and CORPUS.md's specificity controls with the
+  pydantic `h_units` correct-negative on record); the intake runbook already disposes
+  of the case ("*out of lane, or plumb was right* is no change at all"); and the log
+  records **×0 misfires** across its whole history while the skill is still
+  unpublished, so the external misfire channel has delivered nothing. What survives
+  is narrower and stays a WATCH: step 2 splits on *did not fire*, so a **confirmed**
+  misfire has no disposition even though Signal intake courts that report class as
+  its loudest external channel. **The 1e item itself is reclassified with a home:**
+  it is a *specificity* item, and it belongs in EXAMPLES.md 1e's existing specificity
+  subsection as a `_PROJECTION` versus `_CONVERTERS` contrast pair from the merged
+  code. Still HELD for that content edit, because the triaging session authored the
+  candidate and the non-author gate has not been applied to it. JOURNEY beat 27.

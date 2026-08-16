@@ -333,6 +333,43 @@ principle covered it but neither 1a nor Example A named the process-boundary lim
   plus a remedy-restating rider) was reshaped by the refute pass. Corroboration: DOGFOOD-LOG 2026-07-25
   (virtualizarr PLAN.md) + its 2026-07-26 RESOLVED line, JOURNEY beat 25.
 
+### A14. MISS-TRIAGE has no disposition for a *confirmed misfire* (a sounding that fired where it should not) *(×0 observed; DECLINED as framed 2026-08-16; WATCH on the narrow form)*
+2026-08-16 covjson-msgspec #110 plan run: the render surfaced a 1e *scope* item (a lookup table is a type
+lie only when its values are a union of `type[...]` consumed as a type argument, and is sound when the
+values are homogeneous and the key type is annotated), observed that it fits neither branch of MISS-TRIAGE
+step 2 (not a coverage gap, not a wording gap, because 1e fired and was right), and proposed a third branch
+for *misfire-prevention* candidates arriving from a run where plumb was right.
+- **DECLINED as framed**, on four checks run against the repo's own history:
+  1. **Not novel on the successful-run axis.** §A12 was harvested from a run where plumb *worked* and homed
+     cleanly as a wording gap; JOURNEY beat 23 states the case outright (there was no misfire to file). So
+     "arrives from a correct run" selects nothing the existing branches cannot already take.
+  2. **The specificity apparatus already exists, in three homes.** A per-sounding **Boundary** clause (1e's
+     own: an `Any` at a genuine dynamic edge "is parked, not a violation; the fire is an `Any` that
+     *defeats a declared type*"); a per-facet **"Specificity: where it correctly stays quiet"** subsection
+     in EXAMPLES.md (1e already has one, EXAMPLES.md:585); and corpus-level **specificity controls** in
+     CORPUS.md (the pydantic `h_units` correct-negative, DOGFOOD-LOG:1644). A fourth home for the same
+     knowledge is the sounding-2 violation §A11's decline turned on.
+  3. **The runbook already disposes of the case:** "*out of lane, or plumb was right* is no change at all"
+     (REFINEMENT.md, Processing an incoming report, step 3).
+  4. **×0 observed instances.** No misfire is recorded anywhere in the log's history (the only hits are
+     this run's own "no sounding misfired" and the candidate itself), and the skill is unpublished (issue
+     #1 open), so the external misfire channel has by construction delivered nothing. The protocol's own
+     rule is that one instance is a watch; zero is not even that.
+- **What survives, narrowed (WATCH, not land-ready):** step 2 splits on *did not fire*, so a **confirmed**
+  misfire (a fire the reporter disputes and is right about) has no disposition, while Signal intake
+  explicitly courts that class as the loudest external channel ("it catches the loud *misfires* (a fire the
+  user disputes) far better than the silent *misses*"). The runbook therefore advertises an input its
+  triage cannot classify. Draft clause, held until a first real instance or until publication makes the
+  channel live: *a sounding that fired where it should not is a **specificity gap**: narrow the Smell or
+  sharpen the Boundary, and record the correct-negative in that facet's EXAMPLES.md specificity subsection.*
+- **Byproduct, home identified, content edit pending:** the covjson 1e scope item is a *specificity* item,
+  and its home is EXAMPLES.md 1e's existing specificity subsection, as a real Python contrast pair from
+  merged code (`_PROJECTION` rejected in `to_numpy` versus the annotated `_CONVERTERS` accepted in
+  `from_numpy`, one file, with the comment saying why the former cannot share the latter: `range.py:328-330`
+  and `range.py:1059-1061`). Not landed here: this triage's author also authored the candidate (beat 26), so
+  the gate that reshaped §A13 has not yet been applied to the content edit.
+- Cite: DOGFOOD-LOG 2026-08-16 (#110 plan) + its TRIAGED line, JOURNEY beats 26 and 27.
+
 ---
 
 ## B. Combine dossier: merge candidates (assembled, NOT executed)

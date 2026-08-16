@@ -817,6 +817,38 @@ with CxC is acceptable, and links point to the GitHub repo.
   exactly the asymmetry that makes the second station worth having); the user asked for the render, then
   directed the deletion and this beat.
 
+### 27. (this session, 2026-08-16) Triaging my own candidate: the "missing branch" was three-quarters already built
+
+- **Believed:** beat 26 recorded that MISS-TRIAGE's coverage-versus-wording split has no branch for a
+  candidate arriving from a run where plumb was *right*, one that guards against a future over-fire, and
+  framed that as a real hole deserving its own triage.
+- **Broke, on four checks run against the repo's own history:** (1) **not novel**, since §A12 was harvested
+  from a run where plumb worked and homed cleanly as a wording gap, so "arrives from a correct run" selects
+  nothing the existing branches cannot take. (2) **The over-fire machinery already exists, in three homes:**
+  a per-sounding **Boundary** clause (1e's own park for an `Any` at a genuine dynamic edge), a per-facet
+  **"Specificity: where it correctly stays quiet"** subsection in EXAMPLES.md (1e already has one), and
+  CORPUS.md's **specificity controls**, with a real correct-negative on record (pydantic's `h_units`, a
+  closed-set string that primitive-obsession correctly did *not* fire on). (3) The intake runbook already
+  disposes of the case in step 3: "*out of lane, or plumb was right* is no change at all." (4) **×0
+  instances**: no misfire appears anywhere in the log's history, and the skill is unpublished, so the
+  external misfire channel has by construction delivered nothing. A new branch would have been a fourth
+  home for knowledge already in three, the same sounding-2 ground beat 25 declined its own candidate on.
+- **Corrected:** DECLINED as framed, recorded as §A14 with the narrower residue that does survive the
+  refute: step 2 splits on *did not fire*, so a **confirmed** misfire (a fire the reporter disputes and is
+  right about) has no disposition, while Signal intake explicitly courts that class as the loudest external
+  channel. The runbook advertises an input its triage cannot classify. At ×0 instances and pre-publication
+  that is a watch with a drafted clause, not a landing. The byproduct got its home: the covjson 1e scope
+  item is a *specificity* item and belongs in EXAMPLES.md 1e's existing specificity subsection as a
+  `_PROJECTION` versus `_CONVERTERS` contrast, still HELD for the content edit.
+- **Lesson:** "the protocol has no branch for X" is a claim about a *document*, and the cheap test is to
+  read that document's neighbours before drafting the branch. Three-quarters of what the candidate wanted
+  was already built, just not in the file the candidate was staring at, which is what looking for a
+  *disposition* (a triage step) instead of a *home* (where the knowledge lands) reliably misses. The
+  residue was real but far smaller than the claim, the same shape as beat 25: a right instinct in a wrong
+  delivery. **Provenance, with a caveat on the record:** the candidate's author ran its own refute here, the
+  arrangement the author-does-not-land rule exists to prevent. The *decline* is safe (the bias runs against
+  it), but the surviving WATCH is the author's own narrowing and has not faced an independent pass.
+
 ---
 
 ## The transferable method
