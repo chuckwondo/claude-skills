@@ -126,7 +126,9 @@ the material still fits in a paste.
 transcript too large to carry), have that session emit a compact *field note* first, while
 its context is hot. The field note is the intake-form schema (subject, verdict, true shape,
 lane, coverage, provenance) plus the four maintainer-only fields, captured raw so a later
-session in this repo can render it:
+session in this repo can render it. **Delete the capture once it is rendered**, so one run's
+signal has one home and a later reader cannot double-count it; the git history keeps the raw
+text. The prompt:
 
 > Emit a plumb dogfood field-note for this run. Capture, do not prose it up. Fill every
 > field; write `unknown` rather than guess.
