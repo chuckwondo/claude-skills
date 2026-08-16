@@ -782,6 +782,41 @@ with CxC is acceptable, and links point to the GitHub repo.
   land on both, and only the non-author pass resolved them, the author-does-not-land-own-claims rule earning
   its keep a second time (after A12, beat 23).
 
+### 26. (this session, 2026-08-16) The field-note path's first live run: rendering is a station, not a transcription
+
+- **Believed:** REFINEMENT.md's two-step path for a run that happened in another repo (emit a raw field note
+  there while context is hot, render it into DOGFOOD-LOG.md here) divided the work as *discovery there,
+  formatting here*. The render looked like transcription: reshape capture prose into house style, append,
+  done.
+- **Broke on the first live run** (a covjson-msgspec plan-mode review of issue #110's implementation plan):
+  every load-bearing line moved on the way through, because the rendering session is by construction a
+  *non-author* who still has repo access. The capture's "PR #188, merged-pending" was stale (merged, per
+  `gh`). The headline claim was re-run rather than trusted: the repo's own `mypy --strict` against the
+  merged `NdArray` still reveals `tuple[None, ...]` for the dict form and precise per-arm types for the
+  `match`. The capture's account of its own error was *directionally* wrong, recording the plan's
+  mis-prediction as merely "wrong" when the plan predicted an *imprecise* type and got a *false* one, the
+  direction that hides errors rather than surfacing them. And the capture had explicitly deferred one
+  judgment to the rendering session ("whether that belongs in EXAMPLES.md"), which forced a classification
+  it could not make for itself.
+- **Corrected:** that deferred candidate is neither branch MISS-TRIAGE offers. It is not a coverage gap and
+  not a wording gap, because plumb did not miss: 1e fired and was right. It is a **scope** sharpening that
+  guards against a future *over-fire*, 1e firing on any lookup table, when the lie is specific to a union of
+  `type[...]` consumed as a type argument (the same file's annotated
+  `Mapping[Literal[...], Callable[...]]` is sound, and now carries a comment saying why the other table
+  cannot share it). Recorded HELD with both candidate homes named, landing left to a non-author triage.
+  Second correction, the process one: the capture file was **deleted** once rendered. Keeping it leaves one
+  run's signal in two homes, so a later reader can double-count it, a sounding-2 finding on the log's own
+  workflow; the git history (`d55fb31`) is the archive.
+- **Lesson:** the handoff's second step is a *station*, not a format pass. A claim survives a context
+  handoff; its *verification* does not, so the renderer re-runs what it can still reach, re-dates what it
+  cannot, and expects to overturn the capture's own framing rather than polish it. The path's honest shape
+  is therefore capture, render, *delete*. Two candidate sharpenings recorded, not landed: REFINEMENT.md's
+  field-note section does not say the capture is deleted on render, and MISS-TRIAGE's coverage-versus-wording
+  split has no branch for a *misfire-prevention* candidate that arrives from a run where plumb was right.
+  Provenance: the corrections came out of the render itself (the model, with the repo in reach, which is
+  exactly the asymmetry that makes the second station worth having); the user asked for the render, then
+  directed the deletion and this beat.
+
 ---
 
 ## The transferable method
