@@ -44,7 +44,12 @@ matrix `include`.
       - name: Install (lowest-direct floors)
         if: matrix.resolution == 'lowest-direct'
         run: uv sync --resolution lowest-direct
-      - run: uv run pytest
+      # --no-sync is load-bearing, not tidiness: `uv run` re-locks and syncs
+      # before running, which restores the lockfile's resolution and discards
+      # the floors the previous step just installed. Without it the
+      # lowest-direct leg tests the locked versions twice and no floor can
+      # ever turn it red.
+      - run: uv run --no-sync pytest
 ```
 
 Notes:
