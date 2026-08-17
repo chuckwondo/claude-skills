@@ -362,12 +362,17 @@ for *misfire-prevention* candidates arriving from a run where plumb was right.
   triage cannot classify. Draft clause, held until a first real instance or until publication makes the
   channel live: *a sounding that fired where it should not is a **specificity gap**: narrow the Smell or
   sharpen the Boundary, and record the correct-negative in that facet's EXAMPLES.md specificity subsection.*
-- **Byproduct, home identified, content edit pending:** the covjson 1e scope item is a *specificity* item,
-  and its home is EXAMPLES.md 1e's existing specificity subsection, as a real Python contrast pair from
-  merged code (`_PROJECTION` rejected in `to_numpy` versus the annotated `_CONVERTERS` accepted in
-  `from_numpy`, one file, with the comment saying why the former cannot share the latter: `range.py:328-330`
-  and `range.py:1059-1061`). Not landed here: this triage's author also authored the candidate (beat 26), so
-  the gate that reshaped §A13 has not yet been applied to the content edit.
+- **Byproduct, LANDED 2026-08-16 (same session, on the maintainer's instruction):** the covjson 1e scope
+  item is a *specificity* item, and it landed in EXAMPLES.md 1e's existing "Specificity: where it correctly
+  stays quiet" subsection as a real Python contrast pair (`_PROJECTION`, proposed and rejected, versus the
+  annotated `_CONVERTERS` accepted in the same file). **No SKILL.md edit, deliberately:** 1e's Smell never
+  names lookup tables, so the skill as written cannot over-fire on one; the fire case and its qualifier
+  enter together, in the same place, and a Boundary clause repeating the example would be a second home for
+  one idea. Both halves verified NON-AUTHOR by running `mypy --strict` in this session: the dict form
+  reveals `tuple[None, ...]` while reporting success, and a widened `Literal` key against `_CONVERTERS`
+  errors at the index site (`Invalid index type ... expected type "Literal['float', 'integer', 'string']"`)
+  with the value type intact (`def (Any) -> float | int | str | None`). The author-gate caveat stands: the
+  triage's author authored the candidate, and the maintainer held the merge gate.
 - Cite: DOGFOOD-LOG 2026-08-16 (#110 plan) + its TRIAGED line, JOURNEY beats 26 and 27.
 
 ---

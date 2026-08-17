@@ -848,6 +848,12 @@ with CxC is acceptable, and links point to the GitHub repo.
   delivery. **Provenance, with a caveat on the record:** the candidate's author ran its own refute here, the
   arrangement the author-does-not-land rule exists to prevent. The *decline* is safe (the bias runs against
   it), but the surviving WATCH is the author's own narrowing and has not faced an independent pass.
+- **Landed the same session, on the maintainer's instruction** (the human merge gate the intake runbook
+  names, which is what resolved the HELD status): the specificity contrast in EXAMPLES.md 1e, both halves
+  re-run under `mypy --strict` here rather than cited. **No SKILL.md edit, and that is the point of putting
+  it in EXAMPLES.md:** 1e's Smell never names lookup tables, so the skill as written cannot over-fire on
+  one, and the fire case and its qualifier now enter together in the same place. A Boundary clause echoing
+  the example would have been the second home §A14 had just declined a fourth home for.
 
 ---
 

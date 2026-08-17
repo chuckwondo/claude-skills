@@ -2414,5 +2414,8 @@ contributor's diff). Those two are the only existing non-`self` data.*
   its loudest external channel. **The 1e item itself is reclassified with a home:**
   it is a *specificity* item, and it belongs in EXAMPLES.md 1e's existing specificity
   subsection as a `_PROJECTION` versus `_CONVERTERS` contrast pair from the merged
-  code. Still HELD for that content edit, because the triaging session authored the
-  candidate and the non-author gate has not been applied to it. JOURNEY beat 27.
+  code. **That edit LANDED the same session on the maintainer's instruction**, with
+  both halves re-run under `mypy --strict` by the non-authoring session and no
+  SKILL.md change (1e's Smell never names lookup tables, so the fire case and its
+  qualifier enter together in EXAMPLES.md rather than in two homes). The author-gate
+  caveat stands and is recorded in §A14. JOURNEY beat 27.
