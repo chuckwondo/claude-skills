@@ -857,6 +857,34 @@ with CxC is acceptable, and links point to the GitHub repo.
 
 ---
 
+### 28. (this session, 2026-08-17) The render's second run: a skill candidate you can execute instead of believe
+
+- **Believed:** beat 26 settled *what* a render is (a station, not a transcription: re-run what you can
+  still reach, re-date what you cannot). What it buys was assumed to be freshness, catching a stale
+  "merged-pending" or a claim that no longer reproduces.
+- **The second live run bought something stronger** (covjson-msgspec #189, both altitudes, capture
+  `7731ce5`). That note's top skill candidate *is a run instruction*: sounding 10 enumerates run targets
+  and omits *the previous revision*, and the diff-pass headline (a dtype that changed in a file the diff
+  never touched) was reachable no other way. Verifying the note therefore meant **performing the
+  candidate**: `git worktree add <scratch> a6918a9`, then a `PYTHONPATH` swap against the merged tree. The
+  two-axis table reproduced on both revisions. So the candidate now carries an independent second run
+  rather than its author's testimony, which is the one thing a HELD finding is short of.
+- **And performing it found what neither run found.** Checking the merged tree meant running the
+  *excluded* case, which is sounding 10's own move, and the exclusion's stated reason did not hold: an
+  object-dtype array of `np.timedelta64(1, "D")` converts to `"1 days"` where the typed array gives
+  `"P1D"`, pinned by a test whose comment justifies it as "an object array carries no array-level unit to
+  read," while `np.datetime_data` on the *element* returns `('D', 1)` and the ISO helper already exists.
+  That is the plan-pass headline's own divergence surviving inside the PR that unified it. It is not a new
+  candidate: sounding 10 predicts it verbatim ("a green exclusion proves the filter fires, not that its
+  stated *reason* holds"), so it corroborates candidate 1 and leaves the skill unchanged, reported to the
+  maintainer as a covjson finding.
+- **Lesson:** a coverage candidate phrased as "add this run target" is *testable during the render*, at
+  the cost of running it once. Do that, and the render returns a candidate plus evidence, and usually a
+  finding besides, because the un-run target is un-run in the subject repo too. The author gate is
+  unmoved: the runs, the note, and this render are one model's, so all three candidates stay HELD and the
+  §A14 caveat applies. Provenance: the user asked for the render; the verification runs and the excluded
+  case were the render session's.
+
 ## The transferable method
 
 *The checklist for building any skill that encodes **judgment** rather than a mechanical check,
