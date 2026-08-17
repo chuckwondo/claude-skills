@@ -1,0 +1,82 @@
+[
+  {
+    "query": "can you set up github actions for this project? we use uv. tests + ruff + mypy on every PR please",
+    "should_trigger": true
+  },
+  {
+    "query": "I want to publish raindrop-py to PyPI automatically when I cut a release tag. no api tokens, I heard there's an OIDC thing now",
+    "should_trigger": true
+  },
+  {
+    "query": "add dependabot and codeql to this repo",
+    "should_trigger": true
+  },
+  {
+    "query": "we just open sourced our internal lib at github.com/acme/pressure-calc and it has zero CI. can you bootstrap the standard workflows? security matters since it's public now",
+    "should_trigger": true
+  },
+  {
+    "query": "setup ci for this python package",
+    "should_trigger": true
+  },
+  {
+    "query": "my boss wants our actions pinned to commit SHAs after that tj-actions supply chain thing, can you redo our workflows properly",
+    "should_trigger": true
+  },
+  {
+    "query": "need a release pipeline: tag push -> build wheel -> pypi. project uses uv + hatchling",
+    "should_trigger": true
+  },
+  {
+    "query": "how about some repo hygiene automation - stale issue bot and conventional commit PR title checks",
+    "should_trigger": true
+  },
+  {
+    "query": "make CI run pytest on python 3.11 thru 3.13 for this repo, and add whatever security scanning github offers for free",
+    "should_trigger": true
+  },
+  {
+    "query": "i keep forgetting to update action versions in our workflows, set up something to keep them fresh automatically",
+    "should_trigger": true
+  },
+  {
+    "query": "our gitlab ci pipeline needs the same test matrix as the github one, can you write the .gitlab-ci.yml",
+    "should_trigger": false
+  },
+  {
+    "query": "the CI on this repo is failing on the mypy step, can you figure out why and fix it",
+    "should_trigger": false
+  },
+  {
+    "query": "add CI to my node/typescript app, we use pnpm and vitest",
+    "should_trigger": false
+  },
+  {
+    "query": "set up pre-commit hooks for ruff and mypy so they run before each commit",
+    "should_trigger": false
+  },
+  {
+    "query": "why is pypa/gh-action-pypi-publish giving me 'invalid-publisher' OIDC errors? the workflow already exists, here's the run log",
+    "should_trigger": false
+  },
+  {
+    "query": "write a github action in typescript that comments benchmark results on PRs",
+    "should_trigger": false
+  },
+  {
+    "query": "can you run the tests and linter locally before I push",
+    "should_trigger": false
+  },
+  {
+    "query": "how much do github actions minutes cost for private repos? trying to budget our org's usage",
+    "should_trigger": false
+  },
+  {
+    "query": "migrate our Jenkins pipelines over to CircleCI, starting with the nightly build job",
+    "should_trigger": false
+  },
+  {
+    "query": "bump the version in pyproject.toml and tag v0.4.0 for me",
+    "should_trigger": false
+  }
+]

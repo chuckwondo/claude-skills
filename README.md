@@ -1,8 +1,8 @@
 # claude-skills
 
 Personal [Claude Code](https://claude.com/claude-code) skills, versioned here so
-they're durable and portable across machines, and symlinked into `~/.claude/skills/`
-so edits in this repo are live immediately.
+they're durable and portable across machines, and symlinked into
+`~/.config/claude/skills/` so edits in this repo are live immediately.
 
 ## Skills
 
@@ -21,6 +21,13 @@ Narrow, single-purpose skills for a Python library's GitHub CI. Kept as distinct
 skills (not one broad "python-ci" skill) so each has a sharp trigger; if the
 family grows, they can be bundled into a distributable plugin later.
 
+- **[github-workflows](github-workflows/SKILL.md)** -- generate GitHub Actions
+  workflows for a Python/uv project that a security-conscious reviewer would
+  approve unchanged: CI (test/lint/typecheck), release via PyPI Trusted
+  Publishing, security scanning (CodeQL, dependency review, Dependabot), and
+  repo hygiene. Actions are pinned to commit SHAs, `permissions` blocks are
+  least-privilege, releases use OIDC rather than long-lived secrets, and shell
+  steps are injection-safe. Output is validated with actionlint and zizmor.
 - **[uv-minimum-versions](uv-minimum-versions/SKILL.md)** -- choose and *verify*
   a library's dependency lower bounds (floors) as a deliberate, tested
   compatibility contract: the floor is the lowest version that provides the APIs
@@ -49,11 +56,10 @@ belongs to.
 ## How it's wired
 
 Each skill lives in its own directory (`<skill>/SKILL.md`) and is symlinked into
-the machine-local skills directory:
-
-```sh
-ln -s "$PWD/plumb" ~/.claude/skills/plumb
-```
+the machine-local skills directory, `~/.config/claude/skills/` (the location
+follows `CLAUDE_CONFIG_DIR`). The symlinks themselves are managed by chezmoi in
+`chuckwondo/dotfiles`, which stores them as `symlink_<skill>` entries rather
+than copying any content, so this repo stays the single source of truth.
 
 Editing `plumb/SKILL.md` in this repo *is* editing the live skill. Reload Claude
 Code to pick up a newly-added skill.
@@ -62,12 +68,19 @@ Code to pick up a newly-added skill.
 
 ```sh
 git clone <this-repo> ~/src/chuckwondo/claude-skills
-cd ~/src/chuckwondo/claude-skills
-mkdir -p ~/.claude/skills
-ln -s "$PWD/plumb" ~/.claude/skills/plumb
-ln -s "$PWD/uv-minimum-versions" ~/.claude/skills/uv-minimum-versions
+chezmoi apply
 ```
 
-Once a skill stabilizes, it can graduate to a distributable Claude Code **plugin**
-(a git repo + manifest, installable via a marketplace) for one-command install and
-sharing.
+`chezmoi apply` creates all three symlinks under `~/.config/claude/skills/`.
+Clone this repo first, or they will dangle until you do.
+
+To add a new skill to the arrangement:
+
+```sh
+ln -s "$PWD/<skill>" ~/.config/claude/skills/<skill>
+chezmoi add ~/.config/claude/skills/<skill>
+```
+
+Once a skill stabilizes, it can graduate to a distributable Claude Code
+**plugin** (a git repo + manifest, installable via a marketplace) for
+one-command install and sharing.
