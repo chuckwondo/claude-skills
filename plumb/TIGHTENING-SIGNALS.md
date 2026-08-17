@@ -271,7 +271,7 @@ type, ask whether it is *stricter* than that type; if so, only a positive-only g
 - **Proposed target:** a rider on sounding 1, or a Working note. Niche (×1) but a real soundness trap,
   not style.
 
-### A11. Judge-against-the-ideal and positive-masks-negative must fire in *guide* mode, not only review *(judge-against-ideal ×1; positive-masks-negative ×2 as of 2026-07-26; WATCH: application lapse of existing notes, not a coverage gap)*
+### A11. Judge-against-the-ideal and positive-masks-negative under-fire wherever the incumbent is not a line of code in front of you *(judge-against-ideal ×3 as of 2026-08-17, across guide, design and plan altitude; positive-masks-negative ×2 as of 2026-07-26; WATCH: application lapse of existing notes, not a coverage gap)*
 2026-07-24 virtualizarr-data-pipelines validation run (external CDK template): on an EXTERNAL target the
 model twice anchored to the incumbent at *design* altitude, and the user caught both. (1) It recommended a
 redesign partly because it "matches how the sample already thinks", the exact thing "judge against the
@@ -298,6 +298,31 @@ twist: an external target removed the author-under-runs bias, yet the anchor sti
   stands at ×2 in guide mode; whether that tips it from watch to land-ready is a maintainer call, and its
   landing is a distinct guide-mode rider, not this run's boundary edit (§A13). Cite: DOGFOOD-LOG 2026-07-25
   (virtualizarr PLAN.md) RESOLVED 2026-07-26, JOURNEY beat 25.
+- **Corroboration + count correction (2026-08-17, non-author triage of covjson-msgspec `#189`): the
+  judge-against-ideal half was understated at ×1, and it is ×3.** The recurrence audit surfaced an
+  **unbooked prior five days earlier than this item's own cited instance**: DOGFOOD-LOG:1526 (2026-07-19,
+  `#147`, guide mode), where the model placed a check in `validate()` by pattern-matching two checks it
+  had landed days before, and self-critiqued it in the rule's own words ("*judge against the ideal, not
+  the incumbent* turned inward, where the incumbent is a pattern *I* set two issues ago"). `#189` adds a
+  third at *plan* altitude: the plan's own out-of-scope line warranted a park purely by "every ADR since
+  0015 has skipped it" (a premise that verifies **true**, and does no normative work), and the pass did
+  not challenge it; the user did, and the repair shipped in the same PR. So the half stands at ×3 across
+  three altitudes and the item is re-titled off "*guide* mode", which was never the operative variable:
+  the note under-fires wherever the incumbent is not a line of code in front of the reviewer. Whether ×3
+  tips watch to land-ready is a maintainer call. **Two held riders belong to this one row, not to rows of
+  their own** (the same DRY argument that declined §A11's own 2026-07-26 candidate and §A14): (a) *the
+  incumbent is neither an excuse nor an oracle, its observed behavior is not the definition of correct
+  while evidence is being gathered*, which is the evidence-gathering face of the note and the half that
+  would have prevented `#189`'s wrong first verdict; (b) *a plan's own scope exclusion* as three words
+  added to the "Affirmed" note's list of un-run assertions (SKILL.md:573), which adds a **site** to an
+  existing rule rather than restating the rule, and so survives the §F `A1(f)` note-defending-a-note
+  precedent that a seventh home for the incumbent rule would not. Rider (b) is gated on a second instance
+  where the plan is **not** self-authored: `#189`'s was, so the first-person park doctrine
+  (SKILL.md:534-540) applied verbatim and was simply not applied, which is the application-lapse branch,
+  and any wording of the form "a park justified by provenance is a finding" would contradict
+  DOGFOOD-LOG:917-926, where a park warranted by "it was in the approved plan" is recorded as *correct*
+  (the live line is ratification by the decider versus dead precedent). Cite: DOGFOOD-LOG 2026-08-17
+  (`#189`) + its TRIAGED paragraph, JOURNEY beat 29.
 
 ### A12. Sound typing fires on an always-raising function annotated with its nominal return type, not `NoReturn` *(×1, LANDED 2026-07-25)*
 `#157` `ValidationReport`: a `__bool__` that only raises (a 1a guard making ambiguous truthiness
@@ -592,7 +617,12 @@ comparison: cold-in-self / hot-elsewhere = **bias-suppressed → keep**; cold-in
 - **Reversibility (15) routes the "is this over-care?" question to ponytail-review by name** rather
   than manufacturing a plumb finding (`#21` three-rounds-of-IA).
 - Clean deferrals logged where plumb correctly stayed out of ponytail/code-review's lane: `#90`
-  (`_temporal_keys` single-caller wrapper), `#69`/`#44`/`#94` (various).
+  (`_temporal_keys` single-caller wrapper), `#69`/`#44`/`#94` (various), `#189` (the
+  `hasattr(v, "__float__")` gap probe that raises on `np.timedelta64`: nominated as an `Unhomed:`
+  coverage gap, declined at step 1 on 2026-08-17, since the whole remedy is one predicate body). The
+  reusable tell from that triage: **a finding whose *phrasing* reads structural ("`hasattr` asks whether
+  the attribute exists, not whether the operation works") can have a fix that moves four lines inside one
+  predicate, and it is the fix, not the phrasing, that locates the lane.**
 - **Both-directions handoff, corroborated:** the partition is not a one-way dump. plumb defers a
   correctness class → code-review finds the leak → the fix rises back to *shared infrastructure*, a
   structural/altitude win: `#131` (a `TypeError` leak in `coordinate_identifiers` plumb routed away by

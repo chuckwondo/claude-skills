@@ -2419,3 +2419,270 @@ contributor's diff). Those two are the only existing non-`self` data.*
   SKILL.md change (1e's Smell never names lookup tables, so the fire case and its
   qualifier enter together in EXAMPLES.md rather than in two homes). The author-gate
   caveat stands and is recorded in §A14. JOURNEY beat 27.
+
+- **2026-08-17: covjson-msgspec #189, one issue at two altitudes** (plan mode on a
+  self-authored plan to fix `NdArray.from_numpy` crashing on a `timedelta64` array,
+  then review mode on the implemented, tests-green, uncommitted diff; both runs
+  user-triggered). `Corpus: self-plumbed · clean · python · library · brownfield`
+  (20 ADRs, written design tenets, CONTRIBUTING as the conventions source of truth,
+  1093 tests green at the start, four typecheckers with two of them blocking).
+  **Rendered here from a field note the work session emitted while its context was
+  hot**, the second live run of REFINEMENT.md's two-step path (raw capture committed
+  as `7731ce5` and deleted by this render, so the git history is its one archive).
+  Fired, **plan pass**: **2** (headline), **1e**, **5a**, **2** again plan-internal,
+  **7**; parked **5b** and **1a**; **10** affirmed by the run. **Diff pass**: **5b**
+  (headline), **1a** parked, one probe-shape park that homes to no numbered sounding,
+  **10** affirmed three times.
+
+  **Co-fires.** *Plan pass, 2 × 1e × 5a on one site:* `_axis_from_coord` /
+  `_coord_values` stored a raw `datetime.timedelta` in `Axis.values`, which is at once
+  a second home for the duration spelling (2), a value outside the declared
+  `AxisValue = float | int | str | tuple[Any, ...]` (1e), and a unit silently dropped
+  on the `ns` path (5a). One site, three soundings, one root cause, and 10 was the
+  instrument that exposed all three: none were visible by reading. *Diff pass, the
+  affirm-masks-indict pair:* the run affirmed `_coord_values` as a **2** win ("one
+  place a coordinate is read") while the indicting sounding on that same site was
+  **1a**, because unifying three readers also loosened one caller's `_scalar`
+  contract. The skill's working note predicts exactly this shape ("a sounding firing
+  *positive* on a site masks a different sounding firing *negative* on the *same*
+  site"), and this is a verbatim instance of it in the wild.
+
+  **The breaking case + downstream trace (plan headline, 2).** msgspec encodes
+  `timedelta` as ISO 8601 natively (`b'"PT21600S"'`, `b'"P1D"'`, `b'"-P3D"'` for six
+  hours, a day, and minus three days), and the axis path leaned on that instead of
+  deciding a spelling. One dataset shape, three source dtypes, three wire forms:
+  `[h]` gives `"lead":{"values":["P0D","PT3600S"]}` (seconds-normalized), `[D]` gives
+  `["P0D","P1D"]`, and `[ns]` gives `{"start":0.0,"stop":1.0,"num":2}`, the unit
+  dropped entirely. The plan would then have added `PT6H` on the *range* path while
+  the axis path said `PT21600S`. **Consumer:** any external CoverageJSON reader
+  handed one document that carries both a duration coordinate and a duration data
+  variable, which is the exact CF shape #189's own motivation names. Second consumer,
+  the repo's own record: ADR-0021 would have been false at the moment it was written.
+
+  **The shortcut that looked like the lazy right answer, killed by running it.**
+  "Just let msgspec encode the `timedelta`" survives reading and dies on
+  `.tolist()`: `Y`, `M`, `ns`, `ps` (and `fs`, `as`) return a bare `int`, while `W`,
+  `D`, `h`, `s` return a `datetime.timedelta`. So the shortcut emits the number `1`
+  for one nanosecond and the string `"P1D"` for one day: two JSON *types* for one
+  concept.
+
+  **The second crash, same root cause, absent from the issue.** The gap probe was
+  LBYL, `hasattr(v, "__float__") and not math.isfinite(v)`. Across the object-array
+  cases the suite already pins (eleven at the time of the run, five of them re-run
+  here), the old and new probes agree except on two, where the old one returns no
+  verdict at all: `np.timedelta64`
+  and `np.datetime64` both *have* `__float__`, and calling it raises `TypeError`.
+  `hasattr` asks whether the attribute exists, not whether the operation works.
+  **Downstream trace:**
+  `NdArray.from_numpy(np.array([np.timedelta64(1,"D")], dtype=object), ("x",))` dies
+  in the gap probe *before* any converter runs, for every `data_type`.
+
+  **The breaking case + downstream trace (diff headline, 5b): a behavior change in a
+  function the diff never touched.** No changed line in the consumer to read, so the
+  case is the same input run through both revisions, tabulated on two axes:
+
+  ```text
+                  in-memory          after JSON round trip
+  main            timedelta64[us]    <U7
+  this branch     <U7                <U7
+  ```
+
+  The stored axis values are `(datetime.timedelta(0), datetime.timedelta(seconds=3600))`
+  on `main` and `('PT0S', 'PT3600S')` on the branch. The sibling that grounds the
+  asymmetry is a **time** axis, which survives the wire on both revisions
+  (`datetime64[ns]`), because `xarray.py:781` keys off the declared reference system,
+  `data = _parse_times(column, system.calendar)`. Nothing declares a duration axis.
+  **Downstream trace:** `to_xarray(from_xarray(ds))["lead"].dtype` changed for anyone
+  pairing the bridges without serializing, and no changed line sits in `to_xarray`
+  (defined at `xarray.py:100`, while every hunk lands in the `from_xarray` half at
+  `xarray.py:1900-2023`) or anywhere in `pandas.py`, which the diff does not touch at
+  all. *(Corrected 2026-08-17 by the triage below: this paragraph first read "a
+  regression in a file the diff never touched", which is false, `xarray.py` is in the
+  diff.)*
+
+  **Verification status: re-run here, by a non-author, on both revisions.** The
+  mechanics the field note recommends were used to check the field note:
+  `git worktree add <scratch> a6918a9` (the pre-#190 merge commit) and then
+  `PYTHONPATH=<scratch>/src .venv/bin/python probe.py` against
+  `PYTHONPATH=src ...`, viable because the package is pure Python. Reproduced
+  exactly: the msgspec encodings, the `.tolist()` split by unit, the old probe
+  raising on both numpy scalar types while `range._is_nonfinite` returns `False`
+  (and still `False` for a genuine `"nan"` *string*), the two-axis table above on
+  both revisions including the `main` wire form `["P0D","PT3600S"]`, the time-axis
+  sibling, and the crash: pre-#190 the object-array call raises
+  `TypeError: float() argument must be a string or a real number, not
+  'datetime.timedelta'`, merged it returns a value. Cited sites confirmed in the
+  merged tree (`xarray.py:781`, `xarray.py:2091`, `docs/adr/0021-durations-as-iso-8601-strings.md`),
+  and PR #190 is `MERGED` at 2026-08-17T17:08:13Z as `9791bbf` per `gh`.
+
+  **Verdict versus true shape.** *Plan pass:* plumb said the headline was **2** and
+  that the scope was wrong, "decide how the library represents a duration" rather
+  than "fix `from_numpy` inference." **Correct**, and it drove a real scope change (a
+  shared `_duration.py`, both bridges, a library-wide ADR) that incidentally fixed two
+  live bugs. *Diff pass:* plumb's **first verdict was wrong and the run corrected
+  it**. It was written up as "a regression I introduced," and the two-axis table
+  showed the old in-memory behavior existed *only* because of the type lie being
+  removed, and was already unreachable for anyone who serialized. True shape:
+  a divergence between an object and its own bytes, collapsed. That is a materially
+  different claim and the only defensible one. **Corollary worth keeping:** a
+  one-axis before/after table would have produced a confident wrong verdict.
+
+  **Provenance (weak, and legibly so).** Every correction to a self-authored artifact
+  came from the user, and both plumb runs were user-triggered: "plumb the design"
+  arrived *after* `ExitPlanMode` had already been called, and `/plumb` was invoked on
+  the diff. The user also caught an ADR nav gap wrongly scoped out (justified in the
+  plan by *"every ADR since 0015 has skipped it"*, which is the incumbent-pattern
+  fallacy the skill's own preamble names, and plumb ran on that plan without flagging
+  it), an ADR-0021 count slip that swept up a worse second instance (the Alternatives
+  section called `"PT6H"` and `"P1D"` "the same duration spelled two ways" when they
+  are different durations, so the sentence failed to demonstrate its own argument),
+  and a milestone lookup error. The model's own catches were the plan-pass scope error
+  and the diff-pass `to_xarray` regression, both by running. `/code-review` was never
+  run this session. **Second pattern, sharper than the first:** all three user catches
+  were in **prose** (ADR text, the plan's out-of-scope section, a spoken summary) and
+  none in code. The code was doctested, typechecked, and tested; nothing executed the
+  prose.
+
+  **Drove (into the work).** The scope change to both bridges, `_duration.py`, the
+  EAFP probe, the `_coord_values` unification, ADR-0021, the nav repair plus a
+  `validation.nav.omitted_files: warn` guard, and three tests (two new, one enforcing
+  the diff-pass finding). Merged as PR #190.
+
+  **Drove (into the skill): three candidates, all HELD.** (1) **Coverage gap, highest
+  value.** Sounding 10 enumerates run targets (the excluded case, the downstream
+  consumer, a sibling implementation, the check itself, the oldest supported
+  environment) and does **not** list *the previous revision*. Running `main` and the
+  branch side by side was the only thing that could find the diff-pass headline, since
+  there is no changed line to read, and the tabulation has to be two-axis because the
+  one-axis version yields a wrong verdict. (2) **Coverage gap, smaller.** The
+  probe-then-call LBYL shape (test for an attribute, then call it, where the attribute
+  exists and calling it raises) homes to no numbered sounding; nearest are 1e and 10
+  and neither is really about it. The same shape sits unfixed at `xarray.py:2091`
+  (`hasattr(value, "isoformat")` then calling it), parked as unreachable. (3)
+  **Wording or application gap.** "Judge against the ideal, not the incumbent" is in
+  the preamble and is aimed at the *code under review*; a plan's own **Out-of-scope /
+  park list** is also a set of claims needing that test, and plumb-on-a-plan did not
+  audit it, so a park justified purely by incumbent practice survived the pass.
+
+  **Found by the render, not by either run (a covjson finding, nothing about the
+  skill).** Verifying candidate 1 meant running the *excluded* case, which is
+  sounding 10's own move, and it paid immediately on the merged tree:
+  `np.array([np.timedelta64(1, "D")], dtype=object)` converts to `"1 days"` while the
+  typed `timedelta64[D]` array converts to `"P1D"`. That is the plan-pass headline's
+  divergence surviving inside the PR that unified it, one duration with two spellings,
+  and the object-path spelling is not a valid ISO 8601 duration. It is pinned by
+  `tests/test_numpy.py:278`, whose comment states the reason: "An object array carries
+  no array-level unit to read, so a duration inside one falls back to `str()`." The
+  run refutes the stated reason at element level:
+  `np.datetime_data(np.timedelta64(1, "D"))` returns `('D', 1)`, and
+  `_duration._iso_duration(count, unit)` already exists and yields `'P1D'`, `'PT15M'`,
+  `'PT3600S'` for the elements whose `str()` gives `'1 days'`, `'15 minutes'`,
+  `'3600 seconds'`. This is exactly what sounding 10 predicts about exclusions ("a
+  green exclusion proves the filter fires, not that its stated *reason* holds"), so it
+  corroborates candidate 1 rather than adding a candidate: reported to the maintainer
+  for the covjson repo, not landed anywhere here.
+
+  **HELD.** Everything the runs produced is self-authored: 2, 1e, 5a, 7 (plan pass),
+  5b and the 1a park (diff pass), and all three skill candidates. The plan, the diff,
+  and the review of both had one author, so none can be landed on that author's own
+  say-so, and the render session is a different session of the same model, so the
+  author-gate caveat recorded in §A14 stands here too. Not held, because their
+  provenance is external: the nav-gap incumbent-pattern miss, the ADR-0021 count slip
+  and the wrong "same duration" example, and the milestone lookup error, all
+  user-caught and standing independently of the review.
+
+  `Unhomed: 1.` The probe-then-call LBYL shape (an attribute test standing in for a
+  successful call), second sighting in this entry alone (`range.py` gap probe, fixed;
+  `xarray.py:2091`, parked).
+
+  **TRIAGED 2026-08-17 (same day, second session, non-author; nothing landed in
+  SKILL.md).** All three candidates are **DECLINED as framed**, and all three of the
+  field note's own classifications were overturned: two "coverage gaps" that are not
+  coverage gaps under the protocol's own definition, and one wording gap whose stated
+  diagnosis the run disproves. Method, following the 2026-07-26 precedent: three blind
+  reconstructions (never shown the author's classification), three recurrence audits,
+  six adversarial refuters (two lenses per candidate, defaulting to refuted), and one
+  delivery review, with every load-bearing claim re-run in the subject repo by this
+  session rather than read.
+
+  **(1) "The previous revision" as a sixth run target: DECLINED, one clause held as a
+  watch.** Not a coverage gap. The protocol reserves that branch for "no sounding
+  covers the shape", and the candidate names its own home in its own sentence; the
+  finding itself homes to **5b** (verified by a single-tree probe with no baseline at
+  all: on `a6918a9`, `cov == msgspec.json.decode(msgspec.json.encode(cov),
+  type=Coverage)` is `False`, and on `9791bbf` it is `True`, which is "a round-trip
+  that doesn't round-trip" stated exactly) and its cause to **1e**. The four nearest
+  ancestors, A1(h), A1(j), A1(k) and A9, all added run targets to this same
+  enumeration and every one was filed in §A, whose header says "behavior/notes, **not
+  the sounding count**". The necessity claim also failed on a run: the diff *does*
+  contain the producer line (`- values = np.atleast_1d(coord.values).tolist()`), and
+  resolving it to the value it produces (A1(m)) and pushing that through the untouched
+  consumer (A1(h)) reproduced the baseline row from the branch alone, cell for cell,
+  with no worktree. Two independent operators were then bitten by the proposed
+  mechanic's own failure mode: an editable-install `.pth` makes a bad `PYTHONPATH`
+  silently load HEAD, so the move can compare a revision against itself and say
+  nothing. **Held, not landed:** *the incumbent is neither an excuse nor an oracle, its
+  observed behavior is not the definition of correct while evidence is being
+  gathered*, a rider on the judge-against-ideal Working note, ×1, filed beside §A11.
+
+  **(2) The probe-then-call (LBYL) shape: DECLINED, out of lane, and it was never
+  homeless.** MISS-TRIAGE step 1 disposes of it: the entire remedy is one predicate
+  body (`hasattr(v, "__float__") and not math.isfinite(v)` becoming a `try` with
+  `except TypeError: return False`), no type appeared, no seam moved, so step 2, the
+  only step that can mint an `Unhomed:`, never runs. And the coverage claim is false on
+  its own terms: numpy's stub declares `def __float__(self: timedelta64[int], /) ->
+  float` at `numpy/__init__.pyi:5398` for a method that always raises, so
+  `mypy --strict` on `float(np.timedelta64(1, "s"))` reveals `float` and reports
+  "Success". That is **1e**'s always-raises-annotated-with-its-nominal-return-type
+  Smell (the §A12 landing) seen from the consumer side of a third-party declaration,
+  and `hasattr` is merely the runtime spelling of the same lie. The `xarray.py:2091`
+  sibling is a *latent idiom, not a second sighting*: run-confirmed, every value that
+  reaches that branch has a working `isoformat`, and the two that would raise do not
+  carry the attribute at all. **Read this entry's `Unhomed: 1.` as `none`** (the log is
+  append-only, so the count is corrected here rather than rewritten above): saturation
+  holds. Logged as one more clean deferral beside §D's partition row. Two residues,
+  both ×1 and both held: the 1e consumer-side clause above, and a **6** instance, since
+  the guard's own comment justifies itself with a false API claim ("A genuine `"nan"`
+  string converts to no float at all", while `float("nan")` is a float and
+  `np.str_("nan")` even carries `__float__`).
+
+  **(3) Auditing a plan's own park list: DECLINED as framed, because the diagnosis is
+  wrong, and it produced the one thing the maintainer did not already have.** The
+  candidate rests on a first-person asymmetry (the skill teaches plumb to classify
+  *its own* park and never turns the lens outward), but the #189 plan was
+  **self-authored**, as this entry says twice, so the park doctrine applied verbatim in
+  the person it is already written in and simply was not applied. That is the
+  application-lapse branch, where one instance is a watch. Landing the "outward"
+  framing would write a disproven diagnosis into the skill, and a clause of the form "a
+  park justified by provenance is a finding" would contradict DOGFOOD-LOG:917-926,
+  where a park warranted by "it was in the approved plan" is recorded as **correct**
+  (the live distinction is ratification by the decider versus dead precedent). Two
+  further checks: the park's premise is factually **true** (nav lists 0001 to 0014
+  only, so six consecutive ADRs were unlisted), which is why sounding 6 *closes* the
+  item rather than opening it, the fallacy being normative rather than factual; and
+  sounding 10's existing "resolve a default to the value it produces" sinks the park in
+  one config line, run-verified (`--strict` exits 0 with the omissions at `info`, and
+  exits 1 once `validation.nav.omitted_files` is `warn`). **Held, not landed:** three
+  words into the "Affirmed" note's list of un-run assertions, *a plan's own scope
+  exclusion*, gated on a second instance where the plan is not self-authored.
+
+  **What the triage did land, in the ledger only: §A11 was understated.** An unbooked
+  prior sits at DOGFOOD-LOG:1526 (2026-07-19, `#147`), where the model placed a check
+  by pattern-matching two checks it had landed days earlier and self-critiqued it in
+  the rule's own words ("judge against the ideal, not the incumbent, turned inward,
+  where the incumbent is a pattern *I* set two issues ago"). With that prior and this
+  run, the judge-against-ideal half stands at **×3 across guide, design and plan
+  altitude**, not ×1, and the note under-fires wherever the incumbent is not a line of
+  code in front of the reviewer, so A11's guide-mode-specific title no longer fits.
+  Whether ×3 tips it from watch to land-ready is a maintainer call. Candidate 1's held
+  rider is the same salience problem seen from the evidence-gathering side and is filed
+  in that one row rather than a new one, since two rows for one problem is the
+  sounding-2 violation both §A11's and §A14's declines turned on.
+
+  **Two live covjson bugs surfaced by the triage, reported to the maintainer and not
+  filed:** `NdArray.from_numpy(np.array([np.void(b"ab")], dtype=object), ("x",),
+  data_type="string")` still raises `ValueError: could not convert string to float`
+  from `_is_nonfinite` at `range.py:1096`, because the landed EAFP fix catches
+  `TypeError` only; and the object-dtype duration path returns `"1 days"` where the
+  typed array returns `"P1D"` (the render's own finding, above). Both are code-review's
+  lane, which is the partition holding exactly as (2) says it should. JOURNEY beat 29.
