@@ -590,8 +590,41 @@ the probe correctly stays silent there. The fire is an `Any` or cast that
 *defeats a type the code otherwise declares*, not one that sits honestly at a
 boundary where no better type exists.
 
+Nor is every lookup table. Both forms below live in one file. The first is a
+lie, because its values are a union of `type[...]` *consumed as a type
+argument*: no single `_ScalarT` binding fits the union, so the checker settles
+on `None` and then checks every downstream expression against the wrong element
+type, in green.
+
+```python
+# covjson-msgspec #110, proposed and rejected
+_PROJECTION: Final = {"float": float, "integer": int, "string": str}
+
+# reveal_type -> tuple[None, ...], and mypy --strict reports success,
+# for a tuple that holds floats at runtime
+projected = self.values_as(_PROJECTION[self.data_type])
+```
+
+The second is sound, and 1e correctly stays quiet on it: the values are
+homogeneous callables, the key type is annotated, and nothing is consumed as a
+type argument, so the table keeps the exhaustiveness a `match` would give.
+
+```python
+# covjson_msgspec/range.py, accepted in the same file
+_CONVERTERS: Final[
+    Mapping[Literal["float", "integer", "string"], Callable[[Any], _Scalar | None]]
+] = {"float": _float_or_none, "integer": int, "string": str}
+
+# a fourth dataType fails at the index site, not at runtime:
+#   Invalid index type "Literal['float', 'integer', 'string', 'boolean']"
+#   ... expected type "Literal['float', 'integer', 'string']"  [index]
+convert = _CONVERTERS[data_type]
+```
+
 *Source: [earthaccess/virtual/_types.py#L10-L19][src4] @ bbbced0b (external,
-2026-07-21); the narrowing case from covjson-msgspec #138 (self-authored).*
+2026-07-21); the narrowing case from covjson-msgspec #138 (self-authored); the
+lookup-table contrast from covjson-msgspec #110 / PR #188 (self-authored, both
+forms verified by running `mypy --strict`).*
 
 ---
 
