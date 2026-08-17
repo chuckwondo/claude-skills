@@ -89,9 +89,10 @@ the why.
 ## How to continue (recommended)
 
 1. **Move plumb out of its origin repo. [DONE]** Plumb lives here in
-   `chuckwondo/claude-skills`, the versioned source of truth; `~/.claude/skills/plumb`
-   symlinks to it, so `/plumb` runs live from this repo in any project. Refinement
-   without dogfooding was guesswork, and now it dogfoods live.
+   `chuckwondo/claude-skills`, the versioned source of truth;
+   `~/.config/claude/skills/plumb` symlinks to it, so `/plumb` runs live from
+   this repo in any project. Refinement without dogfooding was guesswork, and
+   now it dogfoods live.
 2. **Dogfood, then tighten. [dogfooding done and ongoing]** Review mode has run on
    many real diffs and guide mode on real designs. Which soundings *fire*, which
    *never* do (cut candidates), and which *co-fire* (merge candidates) is tracked in

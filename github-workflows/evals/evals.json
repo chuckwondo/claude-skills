@@ -1,0 +1,57 @@
+{
+  "skill_name": "github-workflows",
+  "evals": [
+    {
+      "id": 0,
+      "name": "add-ci",
+      "prompt": "can you add CI to this repo? it's a python package managed with uv. I want tests, lint, and type checking to run on PRs",
+      "expected_output": "A .github/workflows/ci.yml with SHA-pinned actions, top-level least-privilege permissions, concurrency cancellation, timeout-minutes, persist-credentials: false, a Python matrix matching requires-python >=3.11 (3.11/3.12/3.13), uv sync --locked, and only the tools the project uses",
+      "files": ["fixtures/solarwatt"],
+      "assertions": [
+        "ci-workflow-runs-all-checks: a workflow file under .github/workflows/ runs on pull_request and includes pytest, ruff check, and mypy steps",
+        "actions-sha-pinned: every `uses:` reference is pinned to a full 40-character commit SHA with a human-readable version tag in a trailing comment",
+        "least-privilege-permissions: the workflow declares an explicit top-level permissions block restricted to contents: read (or {} with per-job grants)",
+        "python-matrix-matches-requires-python: the test job matrix covers Python 3.11, 3.12, and 3.13 (matching requires-python >=3.11), with versions quoted as strings",
+        "checkout-credentials-not-persisted: every actions/checkout step sets persist-credentials: false",
+        "concurrency-cancellation: the workflow defines a concurrency group with cancel-in-progress: true",
+        "jobs-have-timeouts: every job sets timeout-minutes",
+        "locked-dependency-sync: dependencies are installed with uv sync --locked (uv.lock is committed in the repo)"
+      ]
+    },
+    {
+      "id": 1,
+      "name": "pypi-release",
+      "prompt": "set up automated releases for this package so that pushing a version tag publishes it to PyPI. I don't want to deal with API tokens",
+      "expected_output": "A .github/workflows/release.yml using PyPI Trusted Publishing (OIDC): tag trigger, separate build and publish jobs with artifact handoff, id-token: write only on the publish job, environment: pypi, SHA-pinned actions, plus instructions for the one-time PyPI trusted publisher and GitHub environment setup",
+      "files": ["fixtures/solarwatt"],
+      "assertions": [
+        "tag-triggered-release: a workflow under .github/workflows/ triggers on version tag pushes (e.g., tags: ['v*'])",
+        "oidc-trusted-publishing: publishing uses pypa/gh-action-pypi-publish with OIDC (id-token: write) and references no PyPI API token or password secrets",
+        "id-token-scoped-to-publish-job: id-token: write is granted only at the publish job level, not workflow-wide",
+        "build-publish-job-separation: building (uv build or equivalent) and publishing happen in separate jobs with the artifact passed via upload/download-artifact",
+        "environment-gate: the publish job specifies a GitHub environment (e.g., environment: pypi)",
+        "actions-sha-pinned: every `uses:` reference is pinned to a full 40-character commit SHA with a version tag comment",
+        "setup-instructions-provided: the summary tells the user how to configure the PyPI Trusted Publisher and the matching GitHub environment (one-time setup that YAML cannot do)",
+        "jobs-have-timeouts: every job sets timeout-minutes",
+        "least-privilege-permissions: the workflow declares an explicit top-level permissions block ({} or contents: read), with elevated scopes granted only per-job",
+        "checkout-credentials-not-persisted: every actions/checkout step sets persist-credentials: false"
+      ]
+    },
+    {
+      "id": 2,
+      "name": "security-scanning",
+      "prompt": "i want security scanning on this repo - dependabot, codeql, that kind of thing. set it up please",
+      "expected_output": "codeql.yml (schedule trigger, security-events: write scoped to the job), dependency-review.yml, and .github/dependabot.yml covering github-actions and uv ecosystems; all actions SHA-pinned with least-privilege permissions",
+      "files": ["fixtures/solarwatt"],
+      "assertions": [
+        "codeql-workflow-complete: a CodeQL workflow exists with languages: python, a schedule trigger (to re-scan unchanged code for new CVE patterns), and security-events: write granted at the job level",
+        "dependabot-covers-actions-and-python: .github/dependabot.yml exists and covers both the github-actions ecosystem and the Python dependency ecosystem (uv or pip)",
+        "dependency-review-on-prs: a dependency review workflow runs on pull_request",
+        "actions-sha-pinned: every `uses:` reference is pinned to a full 40-character commit SHA with a version tag comment",
+        "least-privilege-permissions: every workflow declares an explicit top-level permissions block, with elevated scopes (security-events: write) granted only per-job",
+        "checkout-credentials-not-persisted: every actions/checkout step sets persist-credentials: false",
+        "jobs-have-timeouts: every job sets timeout-minutes"
+      ]
+    }
+  ]
+}
