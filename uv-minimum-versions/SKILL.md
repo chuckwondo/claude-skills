@@ -117,10 +117,13 @@ green*? The first is legitimate; the second is the anti-pattern in point 3.
 ## The procedure
 
 1. **Baseline.** With current floors, run `uv sync --resolution lowest-direct`
-   then your tests, on the Python floor. Green here means the current floors
-   already hold; failures point at floors that are too low (or too low to have a
-   wheel). This first run is often the first time the declared floors are ever
-   exercised at all.
+   then your tests **via `uv run --no-sync`**, on the Python floor. Green here
+   means the current floors already hold; failures point at floors that are too
+   low (or too low to have a wheel). This first run is often the first time the
+   declared floors are ever exercised at all. `--no-sync` is what makes it a
+   real run: a bare `uv run` re-locks and syncs first, restoring the lockfile's
+   versions and discarding the floors the sync just installed, so the "floor"
+   test silently tests current dependencies instead.
 2. **Decide each floor.** For every runtime dependency, find the lowest version
    satisfying (a) and (b). Lower the arbitrary ones; keep the deliberate ones;
    write a one-line rationale for each in `pyproject.toml`. Watch the traps
@@ -129,9 +132,12 @@ green*? The first is legitimate; the second is the anti-pattern in point 3.
    green. A red run is the signal a floor must rise; raise that one floor. This
    is why floor selection and the CI job are one change: the job is how you know
    the floors are right.
-4. **Wire the gate.** Add a blocking CI leg that runs lowest-direct on the
-   Python floor (recipe in `reference.md`). Land it green *with* the floor
-   changes.
+4. **Wire the gate, then prove it.** Add a blocking CI leg that runs
+   lowest-direct on the Python floor (recipe in `reference.md`), and land it
+   green *with* the floor changes. Then make it go red once, on purpose: drop
+   one floor below a version you know fails, confirm the leg catches it, and
+   restore. A gate that has never failed is indistinguishable from a gate that
+   cannot fail.
 5. **Stop the drift + record it.** Set Dependabot `versioning-strategy:
    lockfile-only` so it never rewrites floors, and record the policy in an ADR.
 
@@ -233,7 +239,11 @@ The verification job tests both ends of the declared range:
   no users.
 
 Both legs block -- the `lowest-direct` leg is the entire point, so it must be
-able to fail the build. Gate branch protection on a single stable **aggregator
+able to fail the build. It can only fail if the test step runs
+`uv run --no-sync`; without that flag the leg installs the floors and then
+discards them, and a floor set arbitrarily low still shows green (procedure
+step 4 is where you prove otherwise). Gate branch protection on a single stable
+**aggregator
 check** (a job that `needs:` the matrix job and fails if any needed job did not
 succeed), not the per-leg names: a matrix job is one node in `needs:`, so the
 aggregator gates every leg transitively, and adding or renaming legs never forces
