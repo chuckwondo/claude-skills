@@ -885,6 +885,40 @@ with CxC is acceptable, and links point to the GitHub repo.
   §A14 caveat applies. Provenance: the user asked for the render; the verification runs and the excluded
   case were the render session's.
 
+### 29. (this session, 2026-08-17) Three nominations, three declines: the corpus's most-saturated cell got loud, and it was wrong three times
+
+- **Believed:** beat 28 handed the render's three candidates to a non-author triage expecting the usual
+  split, something lands, something waits, something dies. The field note had done its own classification
+  work honestly (two coverage gaps and a wording gap), so the triage looked like a confirmation with
+  delivery notes attached.
+- **Broke on all three at once.** Every classification was overturned, and none of the three landed a word
+  in SKILL.md. The two "coverage gaps" both named the sounding that covers them in their own sentences,
+  which is the *wording* branch by the protocol's own definition, and the run-target one contradicted how
+  its four nearest ancestors (A1(h), A1(j), A1(k), A9) were filed: all four added run targets to that same
+  enumeration under a section header reading "behavior/notes, **not the sounding count**". The LBYL
+  candidate died a step earlier, at the lane check, and then died again on coverage: numpy's own stub
+  declares `__float__ -> float` on a method that always raises, so `mypy --strict` reports success on
+  `float(np.timedelta64(1, "s"))`, which makes it 1e's §A12 shape seen from the consumer side of a
+  third-party declaration rather than something homeless. The third candidate's *diagnosis* was disproven
+  rather than its finding: it blamed a first-person asymmetry in the park doctrine, but the plan under
+  review was self-authored, so that doctrine applied verbatim and was simply not applied.
+- **The one thing worth landing came from the audit, not the candidates.** §A11's judge-against-ideal half
+  was booked at ×1; the recurrence audit found an unbooked prior five days *earlier* than the instance the
+  item cites (`#147`, where the model self-critiqued it in the rule's own words), which with `#189` makes
+  ×3 across guide, design and plan altitude, and retires the item's guide-mode-specific title. The
+  survivors of candidates 1 and 3 are two faces of that same salience problem, so they were filed as held
+  riders inside that one row rather than as rows of their own.
+- **Lesson, and it is about the corpus:** a burst of nominations from `self-plumbed clean python` deserves
+  the same suspicion as its usual silence. That cell is the one CORPUS.md already distrusts, and after four
+  external audits each nominated zero, three new gaps from one self-authored session is better explained as
+  misclassification than as a hole the adversarial batch missed. Two mechanical lessons rode along: the
+  proposed differential mechanic has a silent failure mode (an editable-install `.pth` makes a bad
+  `PYTHONPATH` load HEAD, so two independent operators compared a revision against itself), and running a
+  candidate is how you test it, since resolving the diff's *deleted* line reproduced the baseline the
+  candidate claimed only a worktree could reach. Provenance: the user asked for the triage; the
+  reconstruction, the refutations and the §A11 correction came from a thirteen-agent non-author pass whose
+  every load-bearing claim this session re-ran; the author it overturned was this model.
+
 ## The transferable method
 
 *The checklist for building any skill that encodes **judgment** rather than a mechanical check,

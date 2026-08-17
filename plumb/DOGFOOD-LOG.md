@@ -2477,9 +2477,9 @@ contributor's diff). Those two are the only existing non-`self` data.*
   `NdArray.from_numpy(np.array([np.timedelta64(1,"D")], dtype=object), ("x",))` dies
   in the gap probe *before* any converter runs, for every `data_type`.
 
-  **The breaking case + downstream trace (diff headline, 5b): a regression in a file
-  the diff never touched.** No changed line to read, so the case is the same input
-  run through both revisions, tabulated on two axes:
+  **The breaking case + downstream trace (diff headline, 5b): a behavior change in a
+  function the diff never touched.** No changed line in the consumer to read, so the
+  case is the same input run through both revisions, tabulated on two axes:
 
   ```text
                   in-memory          after JSON round trip
@@ -2493,8 +2493,12 @@ contributor's diff). Those two are the only existing non-`self` data.*
   (`datetime64[ns]`), because `xarray.py:781` keys off the declared reference system,
   `data = _parse_times(column, system.calendar)`. Nothing declares a duration axis.
   **Downstream trace:** `to_xarray(from_xarray(ds))["lead"].dtype` changed for anyone
-  pairing the bridges without serializing, and `to_xarray` appears nowhere in the
-  diff.
+  pairing the bridges without serializing, and no changed line sits in `to_xarray`
+  (defined at `xarray.py:100`, while every hunk lands in the `from_xarray` half at
+  `xarray.py:1900-2023`) or anywhere in `pandas.py`, which the diff does not touch at
+  all. *(Corrected 2026-08-17 by the triage below: this paragraph first read "a
+  regression in a file the diff never touched", which is false, `xarray.py` is in the
+  diff.)*
 
   **Verification status: re-run here, by a non-author, on both revisions.** The
   mechanics the field note recommends were used to check the field note:
@@ -2590,3 +2594,95 @@ contributor's diff). Those two are the only existing non-`self` data.*
   `Unhomed: 1.` The probe-then-call LBYL shape (an attribute test standing in for a
   successful call), second sighting in this entry alone (`range.py` gap probe, fixed;
   `xarray.py:2091`, parked).
+
+  **TRIAGED 2026-08-17 (same day, second session, non-author; nothing landed in
+  SKILL.md).** All three candidates are **DECLINED as framed**, and all three of the
+  field note's own classifications were overturned: two "coverage gaps" that are not
+  coverage gaps under the protocol's own definition, and one wording gap whose stated
+  diagnosis the run disproves. Method, following the 2026-07-26 precedent: three blind
+  reconstructions (never shown the author's classification), three recurrence audits,
+  six adversarial refuters (two lenses per candidate, defaulting to refuted), and one
+  delivery review, with every load-bearing claim re-run in the subject repo by this
+  session rather than read.
+
+  **(1) "The previous revision" as a sixth run target: DECLINED, one clause held as a
+  watch.** Not a coverage gap. The protocol reserves that branch for "no sounding
+  covers the shape", and the candidate names its own home in its own sentence; the
+  finding itself homes to **5b** (verified by a single-tree probe with no baseline at
+  all: on `a6918a9`, `cov == msgspec.json.decode(msgspec.json.encode(cov),
+  type=Coverage)` is `False`, and on `9791bbf` it is `True`, which is "a round-trip
+  that doesn't round-trip" stated exactly) and its cause to **1e**. The four nearest
+  ancestors, A1(h), A1(j), A1(k) and A9, all added run targets to this same
+  enumeration and every one was filed in §A, whose header says "behavior/notes, **not
+  the sounding count**". The necessity claim also failed on a run: the diff *does*
+  contain the producer line (`- values = np.atleast_1d(coord.values).tolist()`), and
+  resolving it to the value it produces (A1(m)) and pushing that through the untouched
+  consumer (A1(h)) reproduced the baseline row from the branch alone, cell for cell,
+  with no worktree. Two independent operators were then bitten by the proposed
+  mechanic's own failure mode: an editable-install `.pth` makes a bad `PYTHONPATH`
+  silently load HEAD, so the move can compare a revision against itself and say
+  nothing. **Held, not landed:** *the incumbent is neither an excuse nor an oracle, its
+  observed behavior is not the definition of correct while evidence is being
+  gathered*, a rider on the judge-against-ideal Working note, ×1, filed beside §A11.
+
+  **(2) The probe-then-call (LBYL) shape: DECLINED, out of lane, and it was never
+  homeless.** MISS-TRIAGE step 1 disposes of it: the entire remedy is one predicate
+  body (`hasattr(v, "__float__") and not math.isfinite(v)` becoming a `try` with
+  `except TypeError: return False`), no type appeared, no seam moved, so step 2, the
+  only step that can mint an `Unhomed:`, never runs. And the coverage claim is false on
+  its own terms: numpy's stub declares `def __float__(self: timedelta64[int], /) ->
+  float` at `numpy/__init__.pyi:5398` for a method that always raises, so
+  `mypy --strict` on `float(np.timedelta64(1, "s"))` reveals `float` and reports
+  "Success". That is **1e**'s always-raises-annotated-with-its-nominal-return-type
+  Smell (the §A12 landing) seen from the consumer side of a third-party declaration,
+  and `hasattr` is merely the runtime spelling of the same lie. The `xarray.py:2091`
+  sibling is a *latent idiom, not a second sighting*: run-confirmed, every value that
+  reaches that branch has a working `isoformat`, and the two that would raise do not
+  carry the attribute at all. **Read this entry's `Unhomed: 1.` as `none`** (the log is
+  append-only, so the count is corrected here rather than rewritten above): saturation
+  holds. Logged as one more clean deferral beside §D's partition row. Two residues,
+  both ×1 and both held: the 1e consumer-side clause above, and a **6** instance, since
+  the guard's own comment justifies itself with a false API claim ("A genuine `"nan"`
+  string converts to no float at all", while `float("nan")` is a float and
+  `np.str_("nan")` even carries `__float__`).
+
+  **(3) Auditing a plan's own park list: DECLINED as framed, because the diagnosis is
+  wrong, and it produced the one thing the maintainer did not already have.** The
+  candidate rests on a first-person asymmetry (the skill teaches plumb to classify
+  *its own* park and never turns the lens outward), but the #189 plan was
+  **self-authored**, as this entry says twice, so the park doctrine applied verbatim in
+  the person it is already written in and simply was not applied. That is the
+  application-lapse branch, where one instance is a watch. Landing the "outward"
+  framing would write a disproven diagnosis into the skill, and a clause of the form "a
+  park justified by provenance is a finding" would contradict DOGFOOD-LOG:917-926,
+  where a park warranted by "it was in the approved plan" is recorded as **correct**
+  (the live distinction is ratification by the decider versus dead precedent). Two
+  further checks: the park's premise is factually **true** (nav lists 0001 to 0014
+  only, so six consecutive ADRs were unlisted), which is why sounding 6 *closes* the
+  item rather than opening it, the fallacy being normative rather than factual; and
+  sounding 10's existing "resolve a default to the value it produces" sinks the park in
+  one config line, run-verified (`--strict` exits 0 with the omissions at `info`, and
+  exits 1 once `validation.nav.omitted_files` is `warn`). **Held, not landed:** three
+  words into the "Affirmed" note's list of un-run assertions, *a plan's own scope
+  exclusion*, gated on a second instance where the plan is not self-authored.
+
+  **What the triage did land, in the ledger only: §A11 was understated.** An unbooked
+  prior sits at DOGFOOD-LOG:1526 (2026-07-19, `#147`), where the model placed a check
+  by pattern-matching two checks it had landed days earlier and self-critiqued it in
+  the rule's own words ("judge against the ideal, not the incumbent, turned inward,
+  where the incumbent is a pattern *I* set two issues ago"). With that prior and this
+  run, the judge-against-ideal half stands at **×3 across guide, design and plan
+  altitude**, not ×1, and the note under-fires wherever the incumbent is not a line of
+  code in front of the reviewer, so A11's guide-mode-specific title no longer fits.
+  Whether ×3 tips it from watch to land-ready is a maintainer call. Candidate 1's held
+  rider is the same salience problem seen from the evidence-gathering side and is filed
+  in that one row rather than a new one, since two rows for one problem is the
+  sounding-2 violation both §A11's and §A14's declines turned on.
+
+  **Two live covjson bugs surfaced by the triage, reported to the maintainer and not
+  filed:** `NdArray.from_numpy(np.array([np.void(b"ab")], dtype=object), ("x",),
+  data_type="string")` still raises `ValueError: could not convert string to float`
+  from `_is_nonfinite` at `range.py:1096`, because the landed EAFP fix catches
+  `TypeError` only; and the object-dtype duration path returns `"1 days"` where the
+  typed array returns `"P1D"` (the render's own finding, above). Both are code-review's
+  lane, which is the partition holding exactly as (2) says it should. JOURNEY beat 29.
