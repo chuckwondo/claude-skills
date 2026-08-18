@@ -512,15 +512,27 @@ just done: the design or a *redacted/minimal* example, plumb's verdict, the true
 shape, the lane and coverage calls, and how far the miss got before it was caught.
 You are reporting a verdict you gave yourself, so state the user's objection at its
 strongest and never soften the report toward agreeing with plumb: draft it as the
-user's advocate, not plumb's. Never upload anything, the skill stays pure: hand
-back **exactly two copy-pasteable values, each in its own code block** so they copy
-raw, a **title** and a **body** (the body holds the whole report, with the lane /
-coverage / how-it-surfaced as labeled lines), plus a short link to a blank issue
-(`github.com/chuckwondo/claude-skills/issues/new`). Do *not* put the report in a
-prefilled `?body=` URL (it overflows GitHub's URL limit and truncates in a
-terminal), and do *not* split it into more than those two values (each extra paste
-target is a barrier). The signal returns at the edge, a human filing an issue, not
-the skill phoning home.
+user's advocate, not plumb's. Never upload anything, the skill stays pure.
+
+Deliver the report in two passes. **First, readable prose only**, wrapped for the
+terminal, plus a short link to a blank issue
+(`github.com/chuckwondo/claude-skills/issues/new`) and a note that the
+paste-ready form is available on request. Do *not* emit that form unprompted: the
+reader almost always revises the content first, so paste-ready text produced
+before approval is stale on arrival, and it leaves a second, near-identical blob
+in scrollback to paste by mistake.
+
+**Second, when asked**, hand back **exactly two copy-pasteable values, each in its
+own code block** so they copy raw, a **title** and a **body** (the body holds the
+whole report, with the lane / coverage / how-it-surfaced as labeled lines). In
+that pass **prose paragraphs are unwrapped**, one logical line each, because
+GitHub soft-wraps an issue body and a hard-wrapped paste is wrong at the
+destination; structure that carries meaning (headings, list items, table rows,
+fenced code) keeps its line breaks. Do *not* put the report in a prefilled
+`?body=` URL (it overflows GitHub's URL limit and truncates in a terminal), and
+do *not* split it into more than those two values (each extra paste target is a
+barrier). The signal returns at the edge, a human filing an issue, not the skill
+phoning home.
 
 ## Working notes
 

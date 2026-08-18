@@ -919,6 +919,40 @@ with CxC is acceptable, and links point to the GitHub repo.
   reconstruction, the refutations and the §A11 correction came from a thirteen-agent non-author pass whose
   every load-bearing claim this session re-ran; the author it overturned was this model.
 
+### 30. (this session, 2026-08-18) The report path's first external run: two paste values, and neither the timing nor the wrapping was specified
+
+- **Believed:** the MISS-TRIAGE handoff was finished. Its stated concern was paste *targets* ("do not split
+  it into more than those two values, each extra paste target is a barrier"), and the instruction to "hand
+  back exactly two copy-pasteable values, each in its own code block" read as complete: emit a title, emit a
+  body, link a blank issue, done.
+- **Broke on the first external run** (a covjson-msgspec session that used plumb on a plan, found the pass
+  had missed the plan's load-bearing flaw, and reported it). Two defects, neither about paste-target count.
+  (1) **Timing.** The report was drafted, read, and then revised three times on the user's instruction
+  (em-dash characters against house style, `i.e.`/`e.g.` without their commas, and too much assumed context
+  for a reader who was not in the session). Any paste-ready text emitted alongside the first draft would
+  have been stale on arrival, and would have left two near-identical blobs in scrollback with the wrong one
+  older and equally pasteable. (2) **Destination formatting.** The body was wrapped at terminal width
+  because that is what reads well in a terminal, but GitHub soft-wraps an issue body and the project's
+  conventions forbid hard-wrapping one, so the paste was wrong where it landed. The skill says nothing about
+  wrapping at all, and the sensible default for the medium the text is *displayed* in is wrong for the
+  medium it is *going to*.
+- **Corrected:** deliver in two passes. Readable prose first, wrapped for the terminal, with the blank-issue
+  link and a note that the paste-ready form is available on request; then, only when asked, the two values,
+  with prose paragraphs unwrapped one logical line each while headings, list items, table rows and fenced
+  code keep their breaks. The withholding reason is recorded as the *review loop* rather than courtesy,
+  because a later editor who reads it as politeness will optimize it away and restore the stale-blob
+  failure.
+- **Lesson:** the handoff's constraint had been counted in one dimension only. A value that is correct to
+  hand over is not thereby correct to hand over *now*, nor correct in the shape the display medium wants.
+  Provenance worth recording separately: every earlier field note originated in in-repo dogfooding, so this
+  is the first run of the path end to end from outside, an external project using the skill and filing
+  #22 through the documented route. It produced a defect in the reporting path itself before the report it
+  was carrying had been filed. The sounding-level finding that run carried (#22, sounding 6 firing on
+  individual claims but never on the artifact's source of truth) is a separate triage, and is not obviously
+  a fourth instance of A11's positive-masks-negative half: there the masking read is *positive*, here the
+  same sounding fired *negative* three times at instance altitude and the hits themselves produced the
+  false sense of coverage.
+
 ## The transferable method
 
 *The checklist for building any skill that encodes **judgment** rather than a mechanical check,
