@@ -223,7 +223,7 @@ contrast on the incumbent sibling; here the subject is a reachable crash and the
   follow-up" as a third park class beside "unreachable / sole trusted constructor," and state its
   resolution is a *filed issue* (links A1's verifying-is-an-action rule).
 
-### A7. Measure leverage against the work's *charter*, not only a downstream consumer *(×1, clean)*
+### A7. Measure leverage against the work's *charter*, not only a downstream consumer *(×1 clean, LANDED 2026-07-23; salience WATCH added 2026-08-18, ×1)*
 `#129`: every prior headline traced a flaw to what *consumes* it downstream; this one traced the diff
 against the stated goal of the work it closes. `#129`'s own motivation named the `subset` `IndexError`
 as "a poor diagnosis of a malformed document," and the feature shipped only the *detection* half (the
@@ -235,6 +235,24 @@ here the issue is the yardstick for *completeness*, not a lie.
 - **Proposed target:** the leverage Working note (SKILL.md:277): add a second trace target beside "what
   *consumes* it," the work's **charter** (the issue's own motivation). A half-delivered charter is a
   leverage finding even when the delivered half is flawless.
+- **Corroboration + a salience watch (2026-08-18, non-author triage of the intake's first downstream
+  report, claude-skills `#22`).** The clause landed 2026-07-23 and has fired since (`6 × charter` on the
+  covjson `#110` plan, DOGFOOD-LOG:2291). The report asked to *promote* it to a sounding or a required
+  review step, on the argument that sounding 6 has no artifact-level probe. Six plumb runs on a
+  reconstruction of the reported plan **refute the argument and support the target**: all six surfaced the
+  artifact-level flaw (a conformance matrix keyed on the library's own enforcement points, so a spec rule
+  enforced nowhere is unrepresentable), four homing it to 6 itself, so 6's probe is not missing. But rank
+  varied 1, 1, 2, 3, 3, 6 on one specimen, and the run that buried it at **sixth is the only one that never
+  traced the charter**, and the only one offering "state the provenance in the intro" as an acceptable
+  remedy. Charter-traced → top three and the remedy changes the *method*; charter-untraced → a naming nit a
+  disclaimer can close.
+- **Proposed target (HELD, watch, ×1):** raise the clause's salience out of the middle of the longest
+  Working note (SKILL.md:544), and add the rider the outlier run earns: when the finding is *the method
+  cannot produce what the charter promises*, restating provenance is not a remedy, the derivation has to
+  change. **Not land-ready on ×1:** per the MISS-TRIAGE application-lapse branch a single lapse of an
+  existing note is a salience watch; a second buried-and-disclaimed instance confirms it. Filed here rather
+  than as a new §A row per the `#189` triage's rule that two rows for one problem is the sounding-2
+  violation. Cite: DOGFOOD-LOG 2026-08-18, JOURNEY beat 31.
 
 ### A8. A decision that reverses turns prose into lies; grep the prose, ranked by what no build executes *(×3)*
 `#147`/`#147-impl`/`#139`: after a tier reversal (moving a check to construction made an
