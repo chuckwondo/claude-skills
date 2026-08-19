@@ -993,6 +993,53 @@ with CxC is acceptable, and links point to the GitHub repo.
   artifacts, and the specimen's Risks section names the exclusion under test, which is a louder cue than
   the original plan may have carried.
 
+### 32. (this session, 2026-08-19) The remedy a report asks for is a claim too: I built it, ran it, and it pointed the wrong way
+
+- **Believed:** beat 31 had just taught that a miss report's *diagnosis* is the part that does not
+  survive re-running, so `#25` looked like the same job one notch easier. Its own coverage call was
+  right on arrival (the clause it quotes is the last sentence of the "Affirmed" note, and §A11
+  already carries the signal at ×2 on WATCH), it reported the shape twice in one session, and the
+  protocol says recurrence is what tips an application lapse off watch. The expected work was:
+  reproduce the miss, then land the promotion it asks for, moving the indict-check out of the
+  Working notes and into Review mode's output contract. - **Broke, twice, and the second break is
+  the one that mattered.** *First:* the lapse barely reproduces. Fifteen blind runs on a rebuilt
+  specimen, and **14 surfaced the flaw**, most homing it to sounding **2**, the very sounding the
+  reported run used to *affirm* it. The one miss is a faithful copy of the reported shape and is
+  instructive for a reason the report could not see: it affirmed the two unimproved sites under
+  sounding **8**, not 2/DRY, so the flattering read is not bound to the sounding the report names.
+  *Second, and this is new:* **the proposed remedy is a claim, and it is runnable.** I patched
+  SKILL.md with the step the report asks for and ran that arm against control. It surfaced the
+  defect no better (ranks 1, 2, 2 against control's rank 1 in five of six), and all three runs
+  produced a *correct, well-formed* affirmation section that landed **away from the defect**:
+  `Polygon`'s O(n) scan under 8, `Point.coordinates` under 5b, purity under 4, cohesion under 3c.
+  Every entry honest, not one of them the site that mattered. Made mandatory, the check becomes a
+  section to fill, and the flattering read relocates into it instead of being caught by it. -
+  **Corrected:** DECLINED as framed, nothing in SKILL.md. Instance 1 is the application-lapse branch
+  at ×1, folded into §A11's existing PMN watch (×2 → ×3) rather than given a row of its own.
+  Instance 2 is not a lapse at all: six runs, none of which stated it, two routing the parser's
+  message text to code-review *by name* and all six outranking it with a structural finding at the
+  same site class, so the report's own "Plumb's, arguably" resolves against it and it lands as a
+  boundary note. What did land is a thing the report never claimed: a controlled contrast, the same
+  diff with the commit body's *why* sentence present and stripped, showed the **charter trace
+  decides rank, not presence** (rank 1 in five of eleven with it, ranks 2 and 3 in four of four
+  without, never missed either way). That is §A7's salience watch corroborated a second time, two
+  days after `#22` filed it off a single run. - **Lesson:** a report that proposes a repair hands
+  you two claims, and the skill's own sounding 10 applies to both. The *diagnosis* ("the check did
+  not fire") is the one beat 31 taught to re-run. The *prescription* ("make it a step in the output
+  contract") is the one that reads as obviously helpful and is just as testable: patch the skill,
+  run the patched arm beside control, and read what the new step actually produces. Here it produced
+  ceremony aimed at safe sites, which is the specific failure mode of turning a caution into a
+  procedure, and no amount of reading the proposal would have shown it. Declining on evidence beats
+  declining on principle: the DRY objection (a third home for one rule, the §F `A1(f)` precedent)
+  was available from the start and would have reached the same verdict for a reason that does not
+  survive a maintainer who disagrees. - **Provenance:** the user asked for the triage and holds the
+  merge gate; the triaging session is a different session of the same model that filed `#25`, so the
+  §A14 author-gate caveat stands. Runs were blind. Three limits are the triaging session's own and
+  are recorded rather than tidied: both specimens are reconstructions (the reported repo is on no
+  disk here), specimen B inherits instance 1's live defect from the shared baseline so a louder
+  sibling sat in the frame, and round 2's grader agents died on a session limit, so round 1 was
+  graded by blind graders and round 2 by the triaging session itself.
+
 ## The transferable method
 
 *The checklist for building any skill that encodes **judgment** rather than a mechanical check,
