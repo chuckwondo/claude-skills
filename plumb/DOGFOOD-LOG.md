@@ -2785,3 +2785,121 @@ contributor's diff). Those two are the only existing non-`self` data.*
   SHOULD produce no row under any method, so they are absent from the matrix in
   both directions; and `_fetch.py` and `references.py` both cite a dead
   `spec.md#92-ranges-object` anchor. `Unhomed: none.` JOURNEY beat 31.
+
+- **2026-08-19: the second downstream report through the intake, triaged and
+  DECLINED as framed (claude-skills issue #25).** `Corpus: self-plumbed · clean
+  · python · library · brownfield` (a *reconstruction*: the reported repo is not
+  on this machine and no `geometry.py` matching it exists anywhere on disk). Not
+  a review run of this repo's own work: an *incoming report* processed by
+  REFINEMENT.md's "Processing an incoming report", the second exercise of the
+  intake path end to end. The report says plumb affirmed a site under **2**/DRY
+  ("the three finiteness blocks look like triplicated knowledge but aren't ...
+  Correctly separate") and that the affirmation is what closed the analysis,
+  while the true shape was that the diff had applied its improvement to one of
+  three parallel sites, leaving `Polygon` and `MultiPoint` returning
+  byte-identical bodies for a NaN vertex and an inf vertex. It reports the shape
+  twice in one session and proposes promoting the affirm-masks-indict caution
+  out of the Working notes and into a step in Review mode's **output contract**:
+  for every site affirmed under "Not violations", name the sounding that could
+  indict it, or state that none applies.
+
+  **Coverage call, checked before anything was run.** The report calls itself
+  "covered, did not fire", and that holds: the clause it quotes is the closing
+  sentence of the "Affirmed" Working note (SKILL.md:593-597), and the signal
+  already has a home, **§A11**'s positive-masks-negative half, ×2 and on WATCH
+  since 2026-07-26. So this arrives on the **application-lapse** branch, and the
+  question the triage owes is not *is it covered* but *does the lapse reproduce,
+  and does the proposed procedure fix it*. Two prior data points frame it: the
+  note **fired correctly** on the `#189` diff pass (DOGFOOD-LOG:2443, logged
+  there as "a verbatim instance of it in the wild"), and it lapsed twice in
+  guide mode. The record was mixed before this report and is mixed after.
+
+  **Verified by construction, fifteen runs on two specimens across four arms.**
+  Both reported sites were rebuilt as small `geomodel` repos with a real
+  two-commit history, and plumb re-run blind, agents instructed to treat the
+  specimen directory as the entire world. Specimen **A** is instance 1 (three
+  parallel finiteness checks, the diff enriching only `Position`'s message);
+  **A′** is the same diff with the commit message's *why* sentence stripped;
+  **B** is instance 2 (`Polygon` gains `ring N` / `vertex M`, the parser layer
+  keeps unindexed vertex faults). Arms: `live` = `/plumb` invoked as the
+  installed skill; `ctrl` = the same SKILL.md delivered as a file (a
+  delivery-mechanism control); `treat` = SKILL.md plus the report's proposed
+  output-contract step; `lite` = the existing clause promoted to its own
+  Working-note bullet, a cheaper remedy the report did not propose.
+
+  | specimen / arm | runs | surfaced | rank of the finding |
+  | --- | --- | --- | --- |
+  | A live | 4 | 4 | 1, 1, 1, 2 |
+  | A ctrl | 2 | 2 | 1, 2 |
+  | A treat | 3 | 3 | 1, 2, 2 |
+  | A lite | 2 | 1 | 6 (and one **miss**) |
+  | A′ live (charter stripped) | 4 | 4 | 2, 2, 3, 3 |
+  | B live | 6 | **0** | n/a |
+
+  **Instance 1 does not reproduce as a miss: 14 of 15.** Most runs homed it to
+  sounding **2**, the very sounding the reported run used to affirm it, with
+  **1b** as the co-fire and usually the headline. The single miss is the shape
+  the report describes, near-verbatim, and worth keeping for its detail: it
+  affirmed `geometry.py:55-59, 91-97` (exactly `MultiPoint`'s and `Polygon`'s
+  finiteness blocks) as "parked as defensible" under sounding **8**, named no
+  indicting sounding, and closed the site. So the affirmation-closes-the-site
+  shape is real and it is **rare**, and it is not bound to 2/DRY: the flattering
+  read arrived under a different sounding than the one the report names.
+
+  **The charter contrast, the one genuinely new result.** A′ is the same diff
+  with the commit body's motivation removed, and it separates *what finds the
+  flaw* from *what ranks it*: with the charter, rank 1 in five of eleven;
+  without it, rank 2 or 3 in four of four, never rank 1, and never missed. The
+  charter trace decides **rank**, not presence. That is a second, independent
+  corroboration of the §A7 charter-salience watch the `#22` triage filed two
+  days earlier, reached from the other direction: `#22` read it off one run that
+  never traced the charter, this one is a controlled contrast on one diff with
+  the charter sentence present and absent.
+
+  **The proposed remedy was built and run, and it does not buy anything (the
+  load-bearing result).** The `treat` arm surfaced the defect at ranks 1, 2, and
+  2, no better than `live`+`ctrl`, which reached rank 1 in five of six. All
+  three `treat` runs emitted a well-formed affirmation section, and in all three
+  it landed **away from the defect**: `Polygon`'s O(n) scan indicted under
+  **8**, `Point.coordinates` under **5b**, and Point / `frozen=True` / module
+  purity / cohesion under 1a, 4 and 3c. Every entry was honest analysis with a
+  real reason the sounding did not fire, and not one of them was the site that
+  mattered. Made mandatory, the check becomes a section to fill, and the
+  flattering read relocates into it rather than being caught by it. This is the
+  empirical argument against promotion, and it is stronger than the DRY one (a
+  third home for a rule that already has one), which the §F `A1(f)` precedent
+  would have supplied anyway. Second-order: the one run that reproduced the
+  reported miss came from the `lite` arm, so promoting the clause for salience
+  is not sufficient either, at n=2.
+
+  **Instance 2 is a lane call, not a lapse.** None of the six B runs stated the
+  parser-layer defect. The two round-1 runs routed the parser's message text to
+  code-review *by name* (one calling it "a line-level message bug"), and all six
+  ranked a structural finding at the same site class above it: the parser hands
+  raw `tuple[float, ...]` to the containers, so every per-vertex rule is
+  re-derived per container. One run reached the report's own point from the far
+  side and made the fix subsume it: the index-carrying "relocates to
+  `parser._vertices`, which is already the one place that walks the array and
+  can wrap the `Position` construction with the index it is holding." Under
+  MISS-TRIAGE step 1 that is the partition holding, which settles the report's
+  own "Plumb's, arguably" against it.
+
+  **Verdict: DECLINED as framed; nothing landed in SKILL.md.** Instance 1 is the
+  application-lapse branch at ×1, which the protocol makes a watch, and it folds
+  into §A11's existing PMN watch (×2 → ×3) rather than opening a row, per the
+  `#189` triage's rule that two rows for one problem is the sounding-2
+  violation. Instance 2 is a correct deferral and is recorded as a boundary
+  note, not a miss. The promotion the report asks for is declined on evidence
+  rather than on principle: it was built, run three times, and produced a
+  correct section pointed at the wrong sites.
+
+  **Limits, stated because they bound the verdict.** The reviewed artifact is
+  gone and both specimens are reconstructions, so a *catch* on them is weaker
+  evidence than a *miss* would have been (the `#22` limit, verbatim). Specimen B
+  inherits instance 1's live defect from the shared baseline, so a louder
+  sibling sat in the frame: the clean signal for instance 2 is the two explicit
+  code-review routings, not all six runs. Three runs died mid-flight (machine
+  sleep) and round 2's grader agents died on a session limit, so round 1 was
+  graded by blind graders and round 2 by the triaging session itself, which is
+  the weaker provenance of the two. The `ctrl` and `lite` arms are n=2.
+  `Unhomed: none.` JOURNEY beat 32.

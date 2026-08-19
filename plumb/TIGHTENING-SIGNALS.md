@@ -223,7 +223,7 @@ contrast on the incumbent sibling; here the subject is a reachable crash and the
   follow-up" as a third park class beside "unreachable / sole trusted constructor," and state its
   resolution is a *filed issue* (links A1's verifying-is-an-action rule).
 
-### A7. Measure leverage against the work's *charter*, not only a downstream consumer *(×1 clean, LANDED 2026-07-23; salience WATCH added 2026-08-18, ×1)*
+### A7. Measure leverage against the work's *charter*, not only a downstream consumer *(×1 clean, LANDED 2026-07-23; salience WATCH added 2026-08-18, ×2 as of 2026-08-19, the second instance controlled)*
 `#129`: every prior headline traced a flaw to what *consumes* it downstream; this one traced the diff
 against the stated goal of the work it closes. `#129`'s own motivation named the `subset` `IndexError`
 as "a poor diagnosis of a malformed document," and the feature shipped only the *detection* half (the
@@ -253,6 +253,15 @@ here the issue is the yardstick for *completeness*, not a lie.
   existing note is a salience watch; a second buried-and-disclaimed instance confirms it. Filed here rather
   than as a new §A row per the `#189` triage's rule that two rows for one problem is the sounding-2
   violation. Cite: DOGFOOD-LOG 2026-08-18, JOURNEY beat 31.
+
+- **Corroboration, controlled (2026-08-19, non-author triage of claude-skills `#25`): the charter
+  trace decides RANK, not presence.** `#22` filed this watch off an observation, one buried run
+  being the only one that never traced the charter. `#25`'s triage tested it directly: the same diff
+  was reviewed blind with the commit body's *why* sentence present and with it stripped, nothing
+  else changed. With the charter, rank 1 in five of eleven runs; without it, rank 2 or 3 in four of
+  four, never rank 1 and never missed. So the clause is not what *finds* the flaw, it is what
+  *ranks* it, which sharpens the watch: the cost of low salience here is a load-bearing finding
+  shipped in the tail, where a reader stops. Cite: DOGFOOD-LOG 2026-08-19 (`#25`), JOURNEY beat 32.
 
 ### A8. A decision that reverses turns prose into lies; grep the prose, ranked by what no build executes *(×3)*
 `#147`/`#147-impl`/`#139`: after a tier reversal (moving a check to construction made an
@@ -289,7 +298,7 @@ type, ask whether it is *stricter* than that type; if so, only a positive-only g
 - **Proposed target:** a rider on sounding 1, or a Working note. Niche (×1) but a real soundness trap,
   not style.
 
-### A11. Judge-against-the-ideal and positive-masks-negative under-fire wherever the incumbent is not a line of code in front of you *(judge-against-ideal ×3 as of 2026-08-17, across guide, design and plan altitude; positive-masks-negative ×2 as of 2026-07-26; WATCH: application lapse of existing notes, not a coverage gap)*
+### A11. Judge-against-the-ideal and positive-masks-negative under-fire wherever the incumbent is not a line of code in front of you *(judge-against-ideal ×3 as of 2026-08-17, across guide, design and plan altitude; positive-masks-negative ×3 as of 2026-08-19, record MIXED; WATCH: application lapse of existing notes, not a coverage gap, and the proposed promotion is DECLINED on evidence)*
 2026-07-24 virtualizarr-data-pipelines validation run (external CDK template): on an EXTERNAL target the
 model twice anchored to the incumbent at *design* altitude, and the user caught both. (1) It recommended a
 redesign partly because it "matches how the sample already thinks", the exact thing "judge against the
@@ -341,6 +350,35 @@ twist: an external target removed the author-under-runs bias, yet the anchor sti
   DOGFOOD-LOG:917-926, where a park warranted by "it was in the approved plan" is recorded as *correct*
   (the live line is ratification by the decider versus dead precedent). Cite: DOGFOOD-LOG 2026-08-17
   (`#189`) + its TRIAGED paragraph, JOURNEY beat 29.
+
+- **Corroboration + a declined promotion (2026-08-19, non-author triage of claude-skills `#25`, the
+  second downstream report): the PMN half is ×3, its record is MIXED, and the remedy the report
+  asked for was built and run.** The report gives two instances of a site affirmed and thereby
+  closed, and proposes promoting the counter-question out of the "Affirmed" Working note
+  (SKILL.md:593-597) into a step in Review mode's *output contract*: for every site affirmed under
+  "Not violations", name the sounding that could indict it, or state that none applies. Three
+  findings, in leverage order.
+  (a) **The promotion is DECLINED on evidence, not on principle.** SKILL.md was patched with the
+  proposed step and run as a treatment arm beside control on the same specimen. It surfaced the
+  defect no better (ranks 1, 2, 2 against control's rank 1 in five of six) and all three runs
+  produced a *correct, well-formed* affirmation section that landed **away from the defect**:
+  `Polygon`'s O(n) scan indicted under **8**, `Point.coordinates` under **5b**, purity under **4**,
+  cohesion under **3c**. Made mandatory, the check becomes a section to fill and the flattering read
+  relocates into it. This outranks the DRY objection that was available anyway (a third home for one
+  rule, the §F `A1(f)` note-defending-a-note precedent), because a maintainer can disagree with the
+  DRY argument and cannot disagree with the run.
+  (b) **The lapse is real and rare, and it is not bound to 2/DRY.** 14 of 15 blind runs on the
+  reconstruction surfaced the flaw, most homing it to sounding **2**, the sounding the reported run
+  used to *affirm* it. The one miss affirmed the two unimproved sites under sounding **8** ("parked
+  as defensible"), so the sounding that carries the flattering read is not the one the report names,
+  and any wording keyed to 2/DRY would have missed this instance. Set against the note *firing
+  correctly* on the `#189` diff pass (DOGFOOD-LOG:2443), the record is **mixed**, which is what a
+  salience watch looks like from the inside.
+  (c) **The report's second instance is not a lapse.** Six runs on the second specimen, none stating
+  it, two routing the parser's message text to code-review *by name*, and all six outranking it with
+  a structural finding at the same site class. That is MISS-TRIAGE step 1 holding, so it is recorded
+  as a boundary note rather than as instance ×4. Cite: DOGFOOD-LOG 2026-08-19 (`#25`), JOURNEY beat
+  32.
 
 ### A12. Sound typing fires on an always-raising function annotated with its nominal return type, not `NoReturn` *(×1, LANDED 2026-07-25)*
 `#157` `ValidationReport`: a `__bool__` that only raises (a 1a guard making ambiguous truthiness
