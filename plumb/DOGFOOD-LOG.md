@@ -2686,3 +2686,102 @@ contributor's diff). Those two are the only existing non-`self` data.*
   `TypeError` only; and the object-dtype duration path returns `"1 days"` where the
   typed array returns `"P1D"` (the render's own finding, above). Both are code-review's
   lane, which is the partition holding exactly as (2) says it should. JOURNEY beat 29.
+
+- **2026-08-18: the first downstream report through the intake, triaged and
+  DECLINED as framed (claude-skills issue #22).** `Corpus: self-plumbed · clean ·
+  python · library · brownfield` (covjson-msgspec, the subject of the reported
+  run). Not a review run of this repo's own work: an *incoming report* processed
+  by REFINEMENT.md's "Processing an incoming report", and the first exercise of
+  the whole intake path end to end (self-capture line → issue → non-author
+  triage → this entry). The report claims plumb's plan-pass on covjson `#150`
+  (a conformance matrix documenting every spec rule the library honors) fired
+  sounding **6** three times on individual citation defects and never asked the
+  artifact-level question: *what is the source of truth for the deliverable, and
+  can it produce what the charter asks for?* The plan built its row set from the
+  library's 37 `Issue` variants and construction checks, a method that cannot
+  surface a spec rule enforced nowhere, while the issue's acceptance criteria
+  presumed gaps would be found and filed. It proposes (1) an artifact-level probe
+  for 6, and (2) promoting the charter trace from a Working note to a sounding.
+
+  **Ground truth, verified before triaging the claim.** `#150`'s charter really
+  does presume discovery ("if writing the matrix surfaces a genuine gap, spin it
+  off as its own issue", plus the matching acceptance criterion), and the
+  spec-first walk really did produce twelve unenforced rules: covjson `#192`
+  (the specification's only SHALL NOT, coordinate-identifier uniqueness), `#193`,
+  `#194`, and `#195` collecting nine more, every one verified there by
+  constructing the document and getting zero issues from
+  `validate(check_values=True)`. `#200` records the two docstrings asserting
+  `Spec 2: ... MUST` over a section carrying no RFC 2119 keyword at all. The
+  report's facts hold.
+
+  **Verified by construction, six runs (the load-bearing step).** The reviewed
+  plan no longer exists, so the case was reconstructed. Three agents blind to the
+  report were asked to plan `#150` from the issue text and the repo: **3 of 3
+  chose the spec as the denominator unprompted**, including the one instructed to
+  enumerate from enforcement points, which added a reverse spec sweep of its own
+  accord. Plan A stated the missed insight outright at plan time ("covering only
+  what we enforce produces a matrix that cannot answer *is anything missing?*"),
+  and two of the three independently re-found `#192`. So the correct method was
+  reachable from the charter alone, not a hindsight artifact. That third plan,
+  with its spec-side sweep stripped on instruction, became the specimen; plumb
+  review mode then ran on it six times under three conditions:
+
+  | run | condition | rank of the shape | homed to | charter traced | remedy |
+  | --- | --- | --- | --- | --- | --- |
+  | R2 | blind (saw sibling scratch artifacts) | **1** | 6 | yes, "AC 7 unreachable" | invert the join |
+  | R1 | blind, same dir, did not use them | **6 of 8** | 7 | **no** | disclaimer *or* fix |
+  | R3 | clean room | **3** | 6 (charter) | yes | bounded spec pass |
+  | R4 | clean room | **3** | 6 (source shape) | yes | bounded join |
+  | S1 | wrote the plan, plumbed itself | **2** | 1d | yes | fix the key |
+  | S2 | wrote the plan, plumbed itself | **1** | 6 | yes | invert the key |
+
+  **Six for six**, three as the headline, and three verified by *running*: R3
+  constructed a domain whose `composite` axis re-declares `x` and `y`, got
+  `ok: True` with zero issues, and so reproduced `#192` from the specimen alone.
+
+  **Verdict: DECLINED as framed; nothing landed in SKILL.md.** Suggestion 1 is
+  falsified on its own terms: 6 produced exactly the artifact-level probe in four
+  of six runs, so this is neither a coverage gap (saturation holds, nomination
+  stays closed) nor the wording gap the report describes. It is the
+  **application-lapse** branch, ×1, which the protocol makes a watch. Suggestion
+  2 asks to promote a note that *already landed* (§A7, 2026-07-23, the charter
+  clause in the leverage Working note) and has fired since (`6 × charter` on the
+  `#110` plan), so the promotion argument as stated does not hold either.
+  **Self-authorship is also disconfirmed as the cause:** both self-plumb runs
+  caught it, at ranks 1 and 2, S2 indicting its own plan by name ("my own plan
+  half-saw this and then parked the fix in step 11, last, where time pressure
+  eats it").
+
+  **What the runs did support, which is not what the report argued.** The single
+  run that buried the finding at 6th is the *only* one that never traced the
+  charter, and the only one offering "state the provenance in the intro" as an
+  acceptable remedy. Charter-traced → top three and the remedy changes the
+  *method*; charter-untraced → a naming nit fixable by disclaimer. Two candidates,
+  both ×1, both **HELD** (this session is a different session of the same model
+  that filed the report, so the §A14 author-gate caveat applies): (a) **charter
+  salience**, the clause sits mid-bullet inside the longest Working note and is
+  the thing doing the ranking work; (b) a **rider**, sharper of the two: when the
+  finding is *the method cannot produce what the charter promises*, restating
+  provenance is not a remedy, the derivation has to change. Filed under §A7
+  rather than as a new row, per the `#189` triage's rule that two rows for one
+  problem is the sounding-2 violation.
+
+  **Limits, stated because they bound the verdict.** The original plan is gone;
+  the specimen is a reconstruction, and its Risks section names the very
+  exclusion under test, a louder cue than the original may have carried, so a
+  *catch* on this specimen is weaker evidence than a *miss* would have been. Runs
+  R1 and R2 shared a scratch directory with the earlier spec-first artifacts (a
+  design error by the triaging session); R2 confirmed on questioning that it read
+  `rules.txt` and `extract.py` but never the sibling plans, and volunteered a
+  correction to its own provenance sentence. The clean pair carries the weight
+  and agrees with the rest.
+
+  **Four covjson findings surfaced by the triage, reported to the maintainer and
+  not filed here** (code-review's and the library's lane, the partition holding):
+  Spec 3's "each integer MUST be unique within the object" passes clean on a
+  duplicated `categoryEncoding` code; Spec 6.4's "MUST equal the referenced
+  domain's `domainType`" is unenforced though `resolve_references` exists for
+  exactly that case; Section 10's media-type SHALL and Section 9's `Accept`
+  SHOULD produce no row under any method, so they are absent from the matrix in
+  both directions; and `_fetch.py` and `references.py` both cite a dead
+  `spec.md#92-ranges-object` anchor. `Unhomed: none.` JOURNEY beat 31.

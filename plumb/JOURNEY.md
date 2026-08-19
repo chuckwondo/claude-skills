@@ -953,6 +953,46 @@ with CxC is acceptable, and links point to the GitHub repo.
   same sounding fired *negative* three times at instance altitude and the hits themselves produced the
   false sense of coverage.
 
+### 31. (this session, 2026-08-18) The first downstream report: its facts held, its diagnosis inverted, and only re-running the skill could tell
+
+- **Believed:** beat 29 had already taught that a field note's own classification gets overturned, so
+  `#22` arrived looking like the easy case: a report whose *facts* were checkable in a public tracker
+  (a charter that presumes gaps, twelve unenforced rules filed as covjson `#192`/`#193`/`#194`/`#195`,
+  two false `MUST` citations in `#200`), pre-answering lane and coverage, and diagnosing itself as a
+  wording-and-altitude gap in sounding 6. The expected shape of the work was verify the miss, then land
+  a sharpening: give 6 an artifact-level probe beside its per-claim one.
+- **Broke, on the one step that cannot be done by reading.** The reviewed plan no longer existed, so the
+  case had to be rebuilt and the skill re-run on it. Six runs on the reconstruction, blind to the report:
+  **all six surfaced the shape**, four homing it to sounding **6** itself, three verifying by *running*
+  (one reproduced covjson `#192` from the specimen alone). The claim "6 checks individual claims, not the
+  artifact's source of truth" is a property of one run, not of the sounding. The second hypothesis died
+  in the same batch: both self-authored runs, which wrote the plan and then plumbed it, caught it at
+  ranks 1 and 2, one of them naming its own park ("my own plan half-saw this and then parked the fix in
+  step 11, last, where time pressure eats it"). And a cheaper upstream check, run first, had already
+  shown the flaw was reachable before any review question: **3 of 3 agents asked to plan the same charter
+  chose the spec as the denominator unprompted**, including the one instructed to enumerate from code,
+  which added a reverse spec sweep on its own.
+- **Corrected:** DECLINED as framed, nothing in SKILL.md, recorded as the application-lapse branch at ×1.
+  What survived is the thing the six runs *disagreed* about: rank. The same specimen produced ranks
+  1, 1, 2, 3, 3 and 6, and the single run that buried it at sixth is the only one that never traced the
+  **charter**, and the only one offering "state the provenance in the intro" as an acceptable remedy. So
+  the live signal is the salience of a clause that landed a month ago (§A7), not a missing probe, and it
+  is ×1 and HELD.
+- **Lesson:** a *miss* report is the one report class whose central claim survives no amount of reading.
+  The run is gone, the artifact is gone, and the report's account of *why* the skill missed is authored by
+  the party least able to see it. Rebuild a specimen and re-run the skill on it *several times*, because a
+  single pass is one draw from a distribution: presence-or-absence was never the variable here, rank was.
+  A report saying "the skill is missing X" and a run saying "the skill ranked X sixth" ask for different
+  repairs, and only re-running separates them. The corollary for the intake: verifying a miss costs a
+  reconstruction, so the report field that actually earns its keep is whatever makes reconstruction
+  possible (the artifact, or enough of it), not the reporter's diagnosis.
+- **Provenance:** the user asked for the triage and holds the merge gate; the triaging session is a
+  different session of the same model that filed `#22`, so the §A14 author-gate caveat stands. The
+  planners and reviewers were blind. Two design errors were the triaging session's own and are recorded
+  rather than tidied: the first two review runs shared a scratch directory with the earlier spec-first
+  artifacts, and the specimen's Risks section names the exclusion under test, which is a louder cue than
+  the original plan may have carried.
+
 ## The transferable method
 
 *The checklist for building any skill that encodes **judgment** rather than a mechanical check,
