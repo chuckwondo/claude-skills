@@ -1084,6 +1084,34 @@ with CxC is acceptable, and links point to the GitHub repo.
   author-gate caveat stands. Seven live covjson defects fell out of the runs and
   went to the maintainer, two of them found independently by two agents.
 
+### 34. (this session, 2026-08-20) Three declines in a row is a fact about the method, not about the reports
+
+- **Believed:** the intake was working. Three downstream reports had arrived, each had been triaged
+  by reconstructing the case and re-running blind, and each had been declined on evidence rather
+  than on principle, with limits recorded rather than tidied. That reads as diligence. - **Broke,
+  on a question I did not ask myself:** the maintainer asked why the field keeps producing reports
+  that triage cannot reproduce. Four things fall out of it, and the arithmetic is the sharp one.
+  **Zero hits in `n` runs bounds the rate at `1 - 0.05^(1/n)`**, which is 39% at n=6 and 35% at
+  n=7, so every arm run so far is consistent with a true failure rate of a third of sessions, and
+  "does not reproduce" has been carrying weight it cannot bear. `#25` measured the one real rate the
+  log owns, **1 in 15**, which is exactly the size of thing a six-run arm reliably misses. Worse,
+  the intake selects *for* rare events (people file when surprised), so a non-reproduction is the
+  expected outcome of a *true* report. And the reconstruction rebuilds the artifact while the
+  failure lived in the **session**: a long context reviewing work it had just done itself and
+  already believed finished, which is precisely what a fresh blind agent on a clean specimen cannot
+  be. - **Corrected:** REFINEMENT.md's "Processing an incoming report" gains "Reading the runs":
+  report the bound rather than a verdict, add a self-authored arm as standard, grade rank rather
+  than mere presence (the metric the field actually experiences), split the disposition into
+  *observation* and *prescription*, and track the intake's landings-to-declines ratio, which stands
+  at **0 for 3**. - **Lesson:** the skill's own sounding 6 turned on its own runbook. "Does not
+  reproduce" is a quantitative claim, and the log had been asserting it from a run count the way a
+  docstring asserts a MUST from memory. A method that can only produce declines is not a filter, and
+  the tell was available the whole time in the ledger: every report's *facts* held and only its
+  *diagnosis* failed, which is what confabulated self-explanation over a real observation looks
+  like. - **Provenance:** entirely user-caught. Three triaging sessions of the model wrote careful
+  limits sections, and not one of them asked whether the arms could detect the thing they were
+  looking for; the maintainer asked in one sentence.
+
 ## The transferable method
 
 *The checklist for building any skill that encodes **judgment** rather than a mechanical check,

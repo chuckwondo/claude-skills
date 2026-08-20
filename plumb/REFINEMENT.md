@@ -169,7 +169,9 @@ consolidated here so it is committed, not memory-only:
    *ranked-low / parked when load-bearing* (sharpen the leverage-trace), OR an **application lapse**
    (recurrence means the wording is not salient enough; one instance is a watch, not a landing).
 3. **Verify the miss is real before landing.** Construct the case and confirm plumb *should* have
-   caught it. A confirmed coverage/wording miss OUTRANKS queued §A landings.
+   caught it. A confirmed coverage/wording miss OUTRANKS queued §A landings. The runs *are* the
+   evidence, so read them by "Reading the runs" below: an arm that comes back empty bounds the failure
+   rate, it does not refute the report.
 
 Why a miss is high-leverage: it is a *false-negative* channel, orthogonal to fire-frequency, so it
 bypasses corpus bias (a clean corpus surfaces a gap by *missing*, not *firing*). A miss is a reversal
@@ -233,6 +235,49 @@ symlink; the model does the drafting and the human holds the merge gate.
 The report is a reputation-plausible claim like any other ("plumb missed X"), so the human who holds
 ground truth verifies and merges while the model fetches, triages, constructs-and-runs, and drafts the
 branch. This is the same human-in-the-loop that caught the model throughout the build.
+
+## Reading the runs: what a null result can and cannot say
+
+Added 2026-08-20, after the maintainer asked why three consecutive reports died in triage
+(`#22`, `#25`, `#27`, all DECLINED as framed, nothing ever landing in SKILL.md from the intake).
+The reports' *facts* held every time; what failed to survive re-running was their *diagnosis*. That
+pattern is partly real and partly an artifact of how the triage measures, and the difference matters,
+because a method that can only produce declines is not a filter, it is a rubber stamp with extra steps.
+
+1. **Report the bound, not the verdict.** Zero hits in `n` runs does not mean "does not happen"; it
+   bounds the rate at `1 - 0.05^(1/n)` with 95% confidence. That is **39%** at n=6, **35%** at n=7,
+   26% at n=10, 18% at n=15, 14% at n=20. So every triage run so far is consistent with a true failure
+   rate of up to roughly a third of sessions, which for a review skill would be severe. Write the bound
+   into the entry ("n=7, zero hits, rate ≤35%") instead of "does not reproduce". The one measured rate
+   the log owns is `#25`'s, **1 in 15** (point estimate 7%, interval running to about 32%), and it is
+   the right prior for how rare a real reported failure can be.
+2. **The intake selects for tail events by construction.** A user files when something *surprised*
+   them, and surprising means rare. Triage measures the mode. The two are mismatched no matter how
+   careful either is, so a non-reproduction is the *expected* outcome of a true report, not evidence
+   against it.
+3. **The specimen is the session, not only the artifact.** A reconstruction rebuilds the diff or plan
+   and hands it to a fresh agent with a clean context. The field run was usually a long session
+   reviewing work it had *just done itself* and already believed was finished (`#27`'s report says so
+   outright: the pass ran only because `/plumb` was invoked after the work was complete and verified).
+   Every difference removes a condition that plausibly caused the failure. **Add a self-authored arm as
+   standard:** have the agent do the work first, then review its own output in the same context.
+   `#22` did this by accident and its two self-plumb runs were the most informative in the set.
+4. **Grade what the field experienced.** The arms grade *did the finding appear anywhere in the
+   output*. A reader experiences *did I act on it*, which is rank, and whether the closing `net:` line
+   names it. Grading presence when the complaint is about salience is why "the cue decides rank, not
+   presence" keeps falling out of these triages as a byproduct rather than as the thing measured.
+5. **Split the disposition.** "DECLINED as framed" collapses two different judgments. Prefer stating
+   them separately: the *observation* (confirmed, and at what rate) and the *prescription* (declined,
+   and on what evidence). A model explaining its own behavior is confabulating even when the behavior
+   it reports is real, so expect the diagnosis to fail while the observation holds.
+6. **Watch the decline streak itself.** The triaging model is a session of the same model that filed
+   the report, evaluating a skill it also maintains, so a run of declines is exactly what motivated
+   reasoning would produce. Track landings-versus-declines from the intake as a ratio. It stands at
+   **0 for 3**. A long streak is a prompt to audit the method, not a certificate of the skill's health.
+
+**Intake improvement this implies:** the self-capture line hands back a *summary*. Attaching the run's
+actual review output would let a triage grade the real thing rather than a re-creation, which removes
+most of item 3's problem at its source.
 
 ## Files in this skill
 
