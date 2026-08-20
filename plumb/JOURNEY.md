@@ -1040,6 +1040,50 @@ with CxC is acceptable, and links point to the GitHub repo.
   sibling sat in the frame, and round 2's grader agents died on a session limit, so round 1 was
   graded by blind graders and round 2 by the triaging session itself.
 
+### 33. (this session, 2026-08-20) A report about a run that worked: the protocol has no slot for "right, and worded wrong"
+
+- **Believed:** `#22` and `#25` had taught that a report's *diagnosis* is the part
+  that does not survive re-running, so `#27` looked like the third of a kind, one
+  more coverage-versus-wording call to settle with blind runs. Its own coverage
+  line even pre-answered the cheap steps. The expected work was to confirm a
+  wording gap and land the sharpened clause, since the reporter concedes the
+  finding fired and only objects that the sentence does not say what it found. -
+  **Broke, before a single run.** The report describes **no defect at all**.
+  Sounding 6 fired, ranked first, homed correctly, and drove ADR-0022 plus two
+  follow-up issues, all of it verified in the covjson repo. MISS-TRIAGE step 2
+  splits on *did not fire*; there is no branch for *fired, was right, and the
+  reporter objects to the wording anyway*, which is why the report had to invent
+  a category ("coverage, by adjacency") to file itself under. The claim is a
+  counterfactual about a **different reader**, and a counterfactual reader cannot
+  be triaged, only constructed. - **Corrected:** built that reader. Seven blind
+  runs, and for the first time in the three reports the reviewed artifact still
+  existed, so the specimen is the real commit and not a reconstruction: a
+  truncated clone with the remedy commit absent from the object database. **Seven
+  for seven** surfaced the artifact-level finding, all seven homed to 6, and
+  **zero** discharged the clause as report hygiene. Three did the hygiene half in
+  full, one of them fetching the spec and verifying all 18 anchors and every added
+  quotation verbatim, and ranked the repo question above it anyway. DECLINED as
+  framed, nothing in SKILL.md. Two things landed instead: §A14 gains the mirror of
+  its own gap at ×1, and §A7's watch is corroborated a third time and *broadened*,
+  because the cue removed here is not the charter but a claim the artifact makes
+  about itself. - **Lesson:** a report can be factually impeccable and still
+  describe no defect, and the tell is that its category does not exist. When the
+  objection is to *wording* rather than to an outcome, the run that prompted it
+  proves nothing either way, because that run had a cue the objection is not
+  about: the artifact's own closing sentence, "Every quotation is verbatim against
+  the pinned revision," which three of four runs quoted as their hook. The
+  testable move is to delete the cue and re-run, which turns "would a reader miss
+  this?" into a measurement. It also produced the honest counter-reading the
+  decline has to carry: rank fell from 1 to 3 without the cue, and that may be
+  *correct* ranking rather than lost salience, since a commit asserting a pin it
+  does not have is genuinely more load-bearing than the same silent gap. -
+  **Provenance:** the user asked for the triage and holds the merge gate. Runs
+  were blind and each had a private copy of the specimen. The grading is the
+  triaging session's own, the weaker provenance, and the no-cue arm is n=3. The
+  report is model-authored and this session is the same model, so the §A14
+  author-gate caveat stands. Seven live covjson defects fell out of the runs and
+  went to the maintainer, two of them found independently by two agents.
+
 ## The transferable method
 
 *The checklist for building any skill that encodes **judgment** rather than a mechanical check,
