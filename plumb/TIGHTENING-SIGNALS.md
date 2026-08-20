@@ -223,7 +223,7 @@ contrast on the incumbent sibling; here the subject is a reachable crash and the
   follow-up" as a third park class beside "unreachable / sole trusted constructor," and state its
   resolution is a *filed issue* (links A1's verifying-is-an-action rule).
 
-### A7. Measure leverage against the work's *charter*, not only a downstream consumer *(×1 clean, LANDED 2026-07-23; salience WATCH added 2026-08-18, ×2 as of 2026-08-19, the second instance controlled)*
+### A7. Measure leverage against the work's *charter*, not only a downstream consumer *(×1 clean, LANDED 2026-07-23; salience WATCH added 2026-08-18, ×3 as of 2026-08-20, the second and third instances controlled, the third broadening the cue class past the charter)*
 `#129`: every prior headline traced a flaw to what *consumes* it downstream; this one traced the diff
 against the stated goal of the work it closes. `#129`'s own motivation named the `subset` `IndexError`
 as "a poor diagnosis of a malformed document," and the feature shipped only the *detection* half (the
@@ -262,6 +262,20 @@ here the issue is the yardstick for *completeness*, not a lie.
   four, never rank 1 and never missed. So the clause is not what *finds* the flaw, it is what
   *ranks* it, which sharpens the watch: the cost of low salience here is a load-bearing finding
   shipped in the tail, where a reader stops. Cite: DOGFOOD-LOG 2026-08-19 (`#25`), JOURNEY beat 32.
+
+- **Corroboration ×3, and a broadening of the cue class (2026-08-20, non-author triage of
+  claude-skills `#27`): the cue need not be the charter.** Same controlled shape as `#25`, on the
+  covjson `#200` citation diff and this time on the **real artifact** rather than a reconstruction.
+  The sentence stripped is not the work's motivation but a claim the commit makes about *itself*:
+  "Every quotation is verbatim against the pinned revision." With it, the artifact-level finding
+  ranked **1 in four of four**; without it, **1, 3, 3**, never missed. So rank-not-presence holds a
+  third time, and what moves rank generalizes from the charter to any in-artifact claim a reviewer
+  can test, which is sounding 6's own object. **The counter-reading, recorded because it bounds the
+  watch:** the demotion may be *correct* ranking rather than lost salience. A commit that asserts a
+  pin it does not have is more load-bearing than the same silent gap, and both no-cue headlines that
+  outranked it are defensible findings (an axis guard that accepts and re-emits a non-conformant
+  document; per-rule normative force kept as prose beside the `severity` field ADR-0002 defines as
+  its function). Cite: DOGFOOD-LOG 2026-08-20 (`#27`), JOURNEY beat 33.
 
 ### A8. A decision that reverses turns prose into lies; grep the prose, ranked by what no build executes *(×3)*
 `#147`/`#147-impl`/`#139`: after a tier reversal (moving a check to construction made an
@@ -414,7 +428,7 @@ principle covered it but neither 1a nor Example A named the process-boundary lim
   plus a remedy-restating rider) was reshaped by the refute pass. Corroboration: DOGFOOD-LOG 2026-07-25
   (virtualizarr PLAN.md) + its 2026-07-26 RESOLVED line, JOURNEY beat 25.
 
-### A14. MISS-TRIAGE has no disposition for a *confirmed misfire* (a sounding that fired where it should not) *(×0 observed; DECLINED as framed 2026-08-16; WATCH on the narrow form)*
+### A14. MISS-TRIAGE has no disposition for a fire that was *correct* (a misfire; or a hit the reporter disputes on wording) *(misfire ×0 observed; DECLINED as framed 2026-08-16; WATCH on the narrow form. Mirror form: a confirmed hit objected to on wording, ×1 as of 2026-08-20)*
 2026-08-16 covjson-msgspec #110 plan run: the render surfaced a 1e *scope* item (a lookup table is a type
 lie only when its values are a union of `type[...]` consumed as a type argument, and is sound when the
 values are homogeneous and the key type is annotated), observed that it fits neither branch of MISS-TRIAGE
@@ -454,6 +468,25 @@ for *misfire-prevention* candidates arriving from a run where plumb was right.
   errors at the index site (`Invalid index type ... expected type "Literal['float', 'integer', 'string']"`)
   with the value type intact (`def (Any) -> float | int | str | None`). The author-gate caveat stands: the
   triage's author authored the candidate, and the maintainer held the merge gate.
+- **The mirror form, ×1 observed (2026-08-20, non-author triage of claude-skills `#27`).** Step 2 has
+  no slot for the *opposite* of a misfire either: a sounding that fired, ranked first, and was right,
+  where the reporter objects to the **wording** that reached it. `#27` reports no defect at all (6
+  fired at rank 1 on the covjson `#200` citation diff and drove ADR-0022 plus two follow-up issues)
+  and argues that the clause which got there, *pin the exact revision under review*, is aimed at the
+  reviewer's report rather than at the artifact, so a different reader would feel it discharged and
+  never ask whether the repository records a revision. Having no branch to file under, the report
+  invented one ("coverage, by adjacency"), which is the tell. The runbook's "*plumb was right* is no
+  change at all" disposes of the **outcome** but not of the **claim**: a wording objection is not
+  about the run that prompted it, since that run had a cue the objection is not about (here the
+  commit asserting a pin the repo does not record).
+- **What the instance teaches is a method, not a clause, which is why nothing lands yet:** the
+  counterfactual reader is *constructible*. Strip the cue, re-run blind, and "would a reader miss
+  this?" becomes a measurement instead of an argument. Seven of seven surfaced the finding and all
+  seven homed it to 6, three of them after performing the reviewer-hygiene reading in full, so the
+  predicted reader does not exist on this artifact. Held here rather than given a row: both forms are
+  the same hole (step 2 splits on *did not fire*, so every disposition for a **correct fire** is
+  missing), and two rows for one problem is the sounding-2 violation this row's own decline turned
+  on. Cite: DOGFOOD-LOG 2026-08-20 (`#27`), JOURNEY beat 33.
 - Cite: DOGFOOD-LOG 2026-08-16 (#110 plan) + its TRIAGED line, JOURNEY beats 26 and 27.
 
 ---

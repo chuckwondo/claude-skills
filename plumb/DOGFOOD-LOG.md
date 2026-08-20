@@ -2903,3 +2903,103 @@ contributor's diff). Those two are the only existing non-`self` data.*
   graded by blind graders and round 2 by the triaging session itself, which is
   the weaker provenance of the two. The `ctrl` and `lite` arms are n=2.
   `Unhomed: none.` JOURNEY beat 32.
+
+- **2026-08-20: the third downstream report through the intake, triaged and
+  DECLINED as framed (claude-skills issue #27).** `Corpus: self-plumbed · clean ·
+  python · library · brownfield` (covjson-msgspec, the subject of the reported
+  run, and the first of the three reports whose reviewed artifact still exists on
+  disk). An *incoming report* processed by REFINEMENT.md's "Processing an
+  incoming report". The report says sounding **6**'s pin-the-revision clause is
+  written about the *reviewer's report* ("a finding is incomplete without the SHA
+  it is against") rather than about the *artifact*, and asks for a second clause:
+  check whether the system itself records the revision its claims are made
+  against. It states plainly that the finding did fire, at rank 1, and drove
+  ADR-0022, a CONTRIBUTING convention, and two follow-up issues.
+
+  **Ground truth, verified before triaging the claim.** covjson PR #206 is two
+  commits: `f63c973` (the reviewed diff, five citation defects, closes covjson
+  #200) and `a968e36` (the remedy: ADR-0022, the CONTRIBUTING rule,
+  `properdocs.yml`). At `f63c973` the repository holds **64** `blob/master/` spec
+  links and the revision `2061005` in **zero** files, both grep-confirmed, and
+  covjson #204 (retarget the links) and #205 (vendor the spec, check anchors)
+  were filed off the finding. One provenance correction the report does not make:
+  the dead `spec.md#92-ranges-object` anchor it offers as the finding's evidence
+  was surfaced a day earlier by the `#22` triage (DOGFOOD-LOG:2787) and is
+  *removed by the reviewed diff itself*, so that evidence was already in hand;
+  the pin claim is the run's own.
+
+  **Coverage call: the report's category does not exist, and neither branch
+  fits.** MISS-TRIAGE step 2 splits on *no sounding covers the shape* versus *a
+  sounding covers it but did not fire*. Here 6 fired, at rank 1, homed correctly,
+  and produced three artifacts. The report names its own third category
+  ("coverage, by adjacency") for *covered, fired, and the sentence does not say
+  so*. That gap is what this triage keeps; see §A14.
+
+  **Verified by construction, seven runs across two arms**, and for the first
+  time on the real artifact rather than a reconstruction. Specimen: a truncated
+  clone (`git fetch --depth=30` of `f63c973` into an empty repo), so `a968e36`
+  and the follow-ups are absent from the object database; one private copy per
+  agent, each told its directory is the entire world. Arm **cue** is the commit
+  as written. Arm **no-cue** is the identical tree with the message's closing
+  sentence, "Every quotation is verbatim against the pinned revision.", removed,
+  reflog expired and `gc --prune=now` run so the original commit is unreachable.
+
+  | arm | runs | surfaced | rank | homed to |
+  | --- | --- | --- | --- | --- |
+  | cue | 4 | 4 | 1, 1, 1, 1 | 6 ×4 |
+  | no-cue | 3 | 3 | 1, 3, 3 | 6 ×3 |
+
+  **Seven for seven, and zero discharged the clause as report hygiene.** Three
+  runs did the hygiene half in full and ranked the artifact question anyway: one
+  fetched `master` and confirmed all 18 anchors and every added quotation
+  verbatim before ranking the pin first ("the accuracy is real today and
+  unpreserved tomorrow"), two ran the touched modules' doctests (76 green). Three
+  of seven reached the remedy through the repo's own idiom, unprompted:
+  `.pre-commit-config.yaml`'s `rev-must-be-sha` hook and
+  `scripts/pin-precommit-shas.sh`, whose header states the very principle the
+  spec links break.
+
+  **Verdict: DECLINED as framed; nothing landed in SKILL.md.** The reader the
+  report predicts, who pins the SHA in the write-up, feels the clause discharged,
+  and never asks whether the repository does, appeared in none of seven runs on
+  the artifact that produced the report.
+
+  **What the runs support, which is not what the report argued: the cue moves
+  rank, not presence** (4 of 4 at rank 1 with it, 1 of 3 without, never missed).
+  Third instance of that pattern, and it *broadens* §A7's watch rather than
+  repeating it: the sentence removed here is not the charter but a claim the
+  artifact makes about *itself*, which is sounding 6's own object. Stated against
+  itself, because it bounds the reading: the demotion may be correct ranking
+  rather than lost salience. A commit asserting a pin it does not have is
+  genuinely more load-bearing than the same latent gap in silence, and the two
+  no-cue headlines that outranked it are defensible (an axis guard that accepts
+  and re-emits a non-conformant document; each rule's normative force stored as
+  prose beside the `severity` field ADR-0002 defines as its function).
+
+  **Limits, stated because they bound the verdict.** The reviewed artifact
+  survives, so the reconstruction caveat `#22` and `#25` both carried does not
+  apply here. Against that: the cue arm is loud by construction (three of its
+  four runs quote the removed sentence as their hook), so the no-cue arm's 3 of 3
+  is the stronger half of the evidence, and it is n=3. The runs were blind; the
+  grading is the triaging session's own, which is the weaker provenance. The
+  report is model-authored and this session is the same model, so the §A14
+  author-gate caveat stands and the maintainer holds the merge gate.
+
+  **Seven covjson findings surfaced by the triage, reported to the maintainer and
+  not filed here** (code-review's and the library's lane, the partition holding):
+  `Axis(values=(1.0, 2.0), num=99)` constructs, round-trips, and passes
+  `validate` clean, because `has_regular` demands all three of
+  `start`/`stop`/`num`, so a *partial* second form escapes the exclusivity guard
+  entirely (×2 runs, two different probes, reproduced at HEAD by this session);
+  ADR-0005 buys the only non-msgspec core dependency on "Spec 2 requires ... MUST"
+  at four sites, which `validation.py:798` now contradicts (×2); the new
+  `TiledNdArrayTileShapeNotPositive` derivation says the tile-count division "a
+  value of zero or less cannot satisfy" when `4 // -2` divides fine (×4); the
+  "exactly one form" retraction missed `axis.py:4`, the rendered API page, plus
+  ADR-0002, ADR-0013, and ADR-0018; `docs/concepts.md:293` and
+  `benchmarks/run.py`'s published MUST rows still carry the retracted
+  attribution; the finding types the derivations moved onto are absent from
+  `__all__` and from `docs/reference/validation.md`, so the move's stated
+  justification ("where the matrix and the docs site can reach it") is
+  undelivered (×3); and `assemble`'s Raises contract omits the template
+  `ValueError` a new docstring now leans on. `Unhomed: none.` JOURNEY beat 33.
