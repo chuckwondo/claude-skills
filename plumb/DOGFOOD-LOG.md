@@ -2985,8 +2985,10 @@ contributor's diff). Those two are the only existing non-`self` data.*
   report is model-authored and this session is the same model, so the §A14
   author-gate caveat stands and the maintainer holds the merge gate.
 
-  **Seven covjson findings surfaced by the triage, reported to the maintainer and
-  not filed here** (code-review's and the library's lane, the partition holding):
+  **Eleven covjson findings surfaced by the triage** (code-review's and the
+  library's lane, the partition holding), filed there as covjson `#208` (the axis
+  hole), `#209` (its tier question), `#210` (the citation sweep, eleven sections),
+  `#211` (the docs-site reachability), and `#212` (normative force as a value):
   `Axis(values=(1.0, 2.0), num=99)` constructs, round-trips, and passes
   `validate` clean, because `has_regular` demands all three of
   `start`/`stop`/`num`, so a *partial* second form escapes the exclusivity guard
@@ -3002,4 +3004,14 @@ contributor's diff). Those two are the only existing non-`self` data.*
   `__all__` and from `docs/reference/validation.md`, so the move's stated
   justification ("where the matrix and the docs site can reach it") is
   undelivered (×3); and `assemble`'s Raises contract omits the template
-  `ValueError` a new docstring now leans on. `Unhomed: none.` JOURNEY beat 33.
+  `ValueError` a new docstring now leans on. **Four were recovered late, on the
+  maintainer's catch** that the issue bodies had been written from this session's
+  summary of the runs rather than from the run outputs: `NdArrayShapeRank` quotes
+  half of Spec 6.2's bullet and drops its presence MUST; `TiledNdArrayShapeRank`'s
+  "as for `NdArray`" claims a parity 6.2 (MAY) and 6.3 (MUST) do not have; three
+  Common Domain Types 2.9 citations carry no locator; and the LinearRing
+  quotation is truncated without an ellipsis. All four were verified by fetching
+  the pinned revision, which is the hand check covjson `#205` exists to automate,
+  and the lapse is the field-note rule ("the concrete breaking case is the first
+  casualty of a session summarizing itself") biting *within* a session rather
+  than across one. `Unhomed: none.` JOURNEY beat 33.
