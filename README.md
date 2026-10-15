@@ -32,12 +32,13 @@ family grows, they can be bundled into a distributable plugin later.
   a library's dependency lower bounds (floors) as a deliberate, tested
   compatibility contract: the floor is the lowest version that provides the APIs
   you use *and* ships a wheel on your Python floor, proven by a blocking `uv
-  --resolution lowest-direct` CI leg on the floor Python. Covers the four traps
-  (wheels vs `requires-python`; siblings pinning a dep up; "arbitrary" is not
-  "lower it"; lockfile churn) and the Dependabot `lockfile-only` / ADR policy
-  layer. Distilled from
+  --resolution lowest-direct` CI job on the floor Python. Covers the traps
+  (wheels vs `requires-python`, sibling and group pins, "arbitrary" is not
+  "lower it", lockfile churn, a bare `uv run` undoing the floors, failures that
+  are not floor problems) and the policy layer (Dependabot `lockfile-only`, a
+  scheduled lock refresh, an ADR). Distilled from
   [uv-minimum-versions/case-study.md](uv-minimum-versions/case-study.md)
-  (covjson-msgspec #65).
+  (covjson-msgspec #65, #259).
 
 ## Case studies
 
