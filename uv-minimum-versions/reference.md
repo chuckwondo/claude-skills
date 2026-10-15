@@ -1,4 +1,4 @@
-# uv-minimum-versions -- reference
+# uv-minimum-versions: reference
 
 Details behind `SKILL.md`. The worked example is `case-study.md`.
 
@@ -89,7 +89,7 @@ Notes:
   one `lowest-direct` job.
 - **Derive the Python matrix from one source.** A small `config` job that reads
   the `Programming Language :: Python :: 3.x` classifiers from `pyproject.toml`
-  and emits them as JSON keeps the matrix from drifting from declared support;
+  and emits them as JSON keeps the matrix from drifting from declared support.
   `python-versions[0]` is then the floor.
 
 ### Gate it without per-job churn
@@ -144,14 +144,15 @@ all declare an open-ended `requires-python`:
 
 So on Python 3.12-3.14, `lowest-direct` pins these same 3.11-era versions (their
 metadata permits it) and there is no wheel. **Fix: run `lowest-direct` on the
-floor Python only; `highest` covers the newer Pythons against modern (wheeled)
-deps -- the pairing users actually run.**
+floor Python only, and let `highest` cover the newer Pythons against modern
+(wheeled) deps, the pairing users actually run.**
 
 ### 2. A sibling or a dependency group can pin a dependency higher
 
-Under an all-extras `lowest-direct` resolve, a dependency can be forced above its
-own declared floor by a *sibling* dependency's requirement. Probe it: declare the
-floor lower, delete the lock, and see whether the version actually moves.
+Under an all-extras `lowest-direct` resolve, a dependency can be forced above
+its own declared floor by a *sibling* dependency's requirement. Probe it:
+declare the floor lower, delete the lock, and see whether the version actually
+moves.
 
 - Declared `numpy>=1.23`, still resolved `numpy==1.24.0` -> xarray requires
   `>=1.24`. Declared `pandas>=1.5`, still resolved `pandas==2.1.0` -> pinned up
@@ -174,7 +175,7 @@ floor lower, delete the lock, and see whether the version actually moves.
 ### 3. "Arbitrary" is not the same as "should be lowered"
 
 The audit's job is to make each floor *defensible*, not merely *minimal*. Some
-floors are genuinely lowerable and should drop; others are best kept and simply
+floors are genuinely lowerable and should drop. Others are best kept and simply
 given a reason.
 
 - msgspec: probed 0.16, which has all the APIs used (`json.format`,
@@ -328,8 +329,8 @@ current on that date.
 ### Stop Dependabot raising floors
 
 For a library, Dependabot's default `versioning-strategy` rewrites your declared
-lower bounds on each upstream release -- narrowing user compatibility for a
-version you use nothing from. Set it to refresh the lockfile only:
+lower bounds on each upstream release, narrowing user compatibility for a
+release whose changes you do not use. Set it to refresh the lockfile only:
 
 ```yaml
 # .github/dependabot.yml
@@ -481,16 +482,16 @@ The policy is a cross-cutting decision whose rationale a reader cannot recover
 from the code, so it warrants an ADR. Record:
 
 - the floor-selection principle (lowest version with the used APIs + a wheel on
-  the Python floor);
+  the Python floor)
 - test-both-ends (`highest` full matrix + `lowest-direct` on the floor Python,
-  both blocking);
+  both blocking)
 - the Dependabot `lockfile-only` stance, and how indirect dependencies stay
-  fresh (the scheduled lock refresh);
-- the cooldown (`[tool.uv] exclude-newer`), which applies to every resolution;
+  fresh (the scheduled lock refresh)
+- the cooldown (`[tool.uv] exclude-newer`), which applies to every resolution
 - what the floor job guarantees: tests run at the installed floors, and the job
-  logs the versions it tested;
-- any declared floor the job cannot test (because of a pin), marked untested;
-- the dev floors, which must work too, because the job installs them;
+  logs the versions it tested
+- any declared floor the job cannot test (because of a pin), marked untested
+- the dev floors, which must work too, because the job installs them
 - **the named accepted cost:** `lowest-direct` holds direct dependencies low
   while resolving indirect ones to their newest releases, so a newly published
   indirect release can occasionally clash with an old direct floor and fail the
@@ -502,9 +503,9 @@ from the code, so it warrants an ADR. Record:
 
 Prior art (the only skill-form equivalent, wrong ecosystem):
 
-- `cargo-minimal-versions` -- "test Rust crates with minimum dependency
-  versions" (javimosch/supercli, via skillsmp.com). Validates the practice;
-  there is no published Python equivalent (checked anthropics/skills,
+- `cargo-minimal-versions`: "test Rust crates with minimum dependency versions"
+  (javimosch/supercli, via skillsmp.com). It validates the practice. No
+  published Python equivalent exists (checked anthropics/skills,
   claudeskills.info, skillsmp.com, mhattingpete/claude-skills-marketplace,
   awesomeclaude.ai).
 
@@ -513,18 +514,20 @@ uv / Dependabot:
 - uv resolution docs: https://docs.astral.sh/uv/reference/settings/#resolution
 - uv `UV_RESOLUTION` environment variable: https://docs.astral.sh/uv/reference/environment/#uv_resolution
 - Astral Dependabot guide: https://docs.astral.sh/uv/guides/integration/dependabot/
-- dependabot-core#12162 (uv `lockfile-only` support), #14073 (stale indirect dependencies)
+- dependabot-core#12162 (uv `lockfile-only` support), #14073 (stale indirect
+  dependencies)
 - uv `exclude-newer` setting: https://docs.astral.sh/uv/reference/settings/#exclude-newer
-- GitHub, why `GITHUB_TOKEN` events start no workflows: https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
+- GitHub, why `GITHUB_TOKEN` events do not start workflows: https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
 - peter-evans/create-pull-request, the workarounds for running CI on a bot's pull request: https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs
 
-The Python practice (established but scattered -- this skill distills it):
+The Python practice (established but scattered, and this skill distills it):
 
-- pytest-dev/pytest#13317 -- specify minimum requirements for dependencies
-- pypa/build#267 (Henry Schreiner) -- require minimum versions of dependencies
-- pypa/pip#12344, #10741 -- install the oldest available versions
-- astral-sh/uv#5492 -- resolve lowest versions of specific packages only
-- python-poetry/poetry#3527 -- lock with lowest solvable versions
-- shap/shap#3854 -- CI: test against lowest supported versions of key deps
-- psf/black#2795 -- run tests with minimum versions installed
-- jupyterlab/jupyterlab#16105 -- `dependency_type: minimum` for the min-versions check
+- pytest-dev/pytest#13317: specify minimum requirements for dependencies
+- pypa/build#267 (Henry Schreiner): require minimum versions of dependencies
+- pypa/pip#12344, #10741: install the oldest available versions
+- astral-sh/uv#5492: resolve lowest versions of specific packages only
+- python-poetry/poetry#3527: lock with lowest solvable versions
+- shap/shap#3854: in CI, test against lowest supported versions of key deps
+- psf/black#2795: run tests with minimum versions installed
+- jupyterlab/jupyterlab#16105: `dependency_type: minimum` for the min-versions
+  check

@@ -28,21 +28,22 @@ declare a floor as a hypothesis and let a blocking `uv --resolution
 lowest-direct` job prove or refute it. The floor selection and the CI job are
 one change, not two.
 
-Every rule below is a *judgment call*, not a rote step, so each carries its
-reasoning -- the mechanism and the consequence -- so you can apply it to a
+Every rule in this skill is a *judgment call*, not a rote step. Each one carries
+its reasoning (the mechanism and the consequence), so you can apply it to a
 dependency these examples do not cover. The evidence tables, exact CI YAML, and
-probe commands live in `reference.md`; the worked example is `case-study.md`.
+probe commands live in `reference.md`, and the worked example is
+`case-study.md`.
 
 ## What this is / is NOT
 
 - It IS: choosing *and verifying* lower bounds for a Python library published to
   others, so the declared minimum is real.
-- It is NOT `ponytail` (use *fewer* dependencies) -- this bounds the versions of
-  the ones you already depend on.
-- It is NOT application pinning. An app pins an exact, reproducible set; a
+- It is NOT `ponytail` (use *fewer* dependencies). This skill bounds the
+  versions of the ones you already depend on.
+- It is NOT application pinning. An app pins an exact, reproducible set, while a
   library declares the *widest* range it honestly supports. Opposite goals.
-- It is NOT upper bounds. Libraries avoid artificial ceilings; this is floors
-  only.
+- It is NOT upper bounds. Libraries avoid artificial ceilings, so this skill
+  covers floors only.
 
 ## The principle
 
@@ -50,7 +51,7 @@ Each floor is the **lowest version that both**:
 
 - **(a) provides every API you actually use**, and
 - **(b) ships a wheel for your Python floor** (e.g., 3.11), so a user on your
-  minimum Python installs it cleanly -- never a source build.
+  minimum Python installs it cleanly, never from a source build.
 
 Lower floor = wider reach. Raise a floor only by a deliberate, recorded
 decision, never by default. And a floor is a *claim* until a test installs it
@@ -59,33 +60,33 @@ and runs your suite: verify, do not assert.
 ### Why a wheel, and not "allow a source build"?
 
 This is the non-obvious half of criterion (b), and it is a real choice with real
-trade-offs, so here is the whole argument. "Allow the build" is not *wrong* -- it
+trade-offs, so here is the whole argument. "Allow the build" is not *wrong*. It
 just trades away something a library floor should not trade.
 
 **A floor is a promise of installability, and a wheel is the only thing that
-keeps that promise for everyone on your minimum Python -- not just users with a
+keeps that promise for everyone on your minimum Python, not just users with a
 build toolchain.**
 
 1. **Not everyone can build.** A source build of a compiled dependency (cftime,
-   shapely) needs a C compiler, Cython, and headers -- and for the geo stack,
-   system GEOS / PROJ that are not even pip-installable. Windows users, slim
+   shapely) needs a C compiler, Cython, and headers. The geo stack also needs
+   system GEOS / PROJ, which are not even pip-installable. Windows users, slim
    containers, and locked-down enterprise / CI environments routinely have none
    of that. A wheelless floor silently redefines your minimum as "supported *if
    you can compile C*," which is the opposite of what a low floor is for (widest
    reach). It is especially wrong for a library aimed at web / container
    deployment, where slim wheel-only images are the norm.
-2. **Builds are non-deterministic; wheels are not.** A source build compiles
+2. **Builds are non-deterministic, but wheels are not.** A source build compiles
    against whatever compiler, headers, and system libraries happen to be
    present. Making "does my library install at its minimum" depend on the
-   *user's* build environment is a weaker contract and a worse thing to test --
-   you are no longer testing version numbers, you are testing their machine.
+   *user's* build environment is a weaker contract and a worse thing to test,
+   because you would be testing their machine, not version numbers.
 3. **"Just make the build succeed" fixes the wrong thing.** You *can* make the
    build pass (uv's `[tool.uv.extra-build-dependencies]`, or installing GEOS in
    CI). That makes *your* CI pass while leaving the *user-facing* floor false: a
    user on a newer Python who pins that dependency low still finds no wheel. You
    would be validating a configuration (a source-built ancient release) that no
    real user runs. A passing check, not verification.
-4. **It is per-Python -- the same coin as "floors pair with the Python floor."**
+4. **It is per-Python, the same coin as "floors pair with the Python floor."**
    The criterion is that the floor ships a wheel on the *floor* Python. A floor
    release having no wheel for a *newer* Python is fine, because on that newer
    Python the resolver should pair you with a newer, wheeled release. This is
@@ -152,20 +153,20 @@ passes*? The first is legitimate. The second is the anti-pattern in point 3.
 release's `requires-python` metadata, and only *then* looks for an installable
 artifact: a wheel if one exists for the target interpreter and platform,
 otherwise a source build from the sdist. Those are two independent facts, and
-old releases of compiled packages get them out of sync -- they declare an
+old releases of compiled packages get them out of sync. They declare an
 open-ended `requires-python` (`>=3.8`, no upper bound) but only ever shipped
 wheels for the interpreters that existed when they were released. So when
 `lowest-direct` pins such a release on a *newer* Python, the metadata says
-"compatible," the resolver accepts it, and then there is no wheel -- so it falls
+"compatible," the resolver accepts it, and then it cannot find a wheel. It falls
 back to a source build, which fails on any runner without the full C toolchain
 (the `pkg_resources` / missing-GEOS class of error).
 
 **Consequence you carry to a new project.** A floor is only coherent paired with
-the Python floor: the declared floors are a snapshot of one era, installable by
-wheel only on that era's Python. So run `lowest-direct` on the floor Python
-only, and let `highest` cover the newer Pythons against modern (wheeled)
-versions -- the pairing real users actually get. A source build appearing in a
-`lowest-direct` run is this trap, every time.
+the Python floor, because the declared floors are a snapshot of one era,
+installable by wheel only on that era's Python. So run `lowest-direct` on the
+floor Python only, and let `highest` cover the newer Pythons against modern
+(wheeled) versions, the pairing real users actually get. A source build
+appearing in a `lowest-direct` run is this trap, every time.
 
 ### 2. A sibling or a dependency group can pin a dependency higher
 
@@ -192,7 +193,7 @@ move that group into its own project with its own lock.
 ### 3. "Arbitrary" is not the same as "should be lowered"
 
 **The real target is deliberateness, not minimization.** A floor fails the bar
-when it has no recorded reason -- not merely when it is higher than the
+when it lacks a recorded reason, not merely when it is higher than the
 theoretical minimum. Minimizing is a *means* to the end (widest honest reach),
 and it stops being worth it when the reach gained is negligible or the cost of
 vouching for an ancient version is high.
@@ -265,16 +266,17 @@ install. Raising a dev tool's floor costs users nothing.
 ## Anti-patterns
 
 - **Raising a floor to make a *newer-Python* test pass.** Narrows reach for a
-  configuration users on the old Python never hit -- you would be degrading the
+  configuration users on the old Python never hit, so you would be degrading the
   contract to satisfy a test that trap 1 says should not exist.
 - **`--resolution lowest` (floors *indirect* dependencies too).** Fails on
   third-party interactions you neither own nor can fix by editing your own
   declarations. Use `lowest-direct`, which tests the contract you actually make
   (your direct floors) while letting indirect dependencies resolve to their
   newest releases.
-- **Trusting a *local* lowest-direct pass.** Your machine may have silently built
-  a wheelless package from source (you have a compiler); a clean CI runner will
-  not, and neither will many of your users. Believe the CI job, not your laptop.
+- **Trusting a *local* lowest-direct pass.** Your machine may have silently
+  built a wheelless package from source (you have a compiler). A clean CI runner
+  will not, and neither will many of your users. Believe the CI job, not your
+  laptop.
 - **Trusting a passing floor job without checking its versions.** If it tested
   the newest releases, it passes whatever the floors are (trap 5). Check the
   logged versions on its first run and whenever its steps change.
@@ -287,7 +289,7 @@ install. Raising a dev tool's floor costs users nothing.
 The verification job tests both ends of the declared range:
 
 - **`highest`** (from the lockfile, `uv sync --locked`) across the **full Python
-  matrix** -- this is what most users get; it proves you work against current
+  matrix**. This is what most users get, and it proves you work against current
   dependencies on every supported Python.
 - **one `lowest-direct` job, the floor job** (`uv sync` with
   `UV_RESOLUTION=lowest-direct`, which cannot use `--locked`, because a

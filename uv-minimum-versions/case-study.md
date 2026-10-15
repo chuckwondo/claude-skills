@@ -15,7 +15,7 @@ Issue #65 listed three faults in the runtime dependency floors, and they are the
 faults *every* library drifts into:
 
 - **Arbitrary.** Some floors were deliberate (`xarray>=2024.10` for `DataTree`,
-  `fastapi>=0.110` for the titiler coupling); others (`msgspec>=0.18`,
+  `fastapi>=0.110` for the titiler coupling). Others (`msgspec>=0.18`,
   `geopandas>=0.14`) were set once and never justified.
 - **Untested.** CI only ever resolved the *latest* versions, so every floor was
   an unverified claim. A recent change had added new msgspec usage and nobody
@@ -78,12 +78,13 @@ cftime 1.6.1 -> (no cp311 wheels)
 cftime 1.6.2 -> cp311 wheels present
 ```
 
-cftime is Cython-compiled. 1.6.0 and 1.6.1 -- *including the version the baseline
-had just resolved* -- ship no cp311 wheel. The local pass was a lie: my machine
-had a C compiler and silently built cftime from source. On a clean runner, or
-for a user on a slim image, that install fails. So the existing `cftime>=1.6`
-was not merely arbitrary, it was **too low to be installable by wheel on the
-Python floor.** It went *up*, to `>=1.6.2` -- the audit's one real correction.
+cftime is Cython-compiled. 1.6.0 and 1.6.1, *including the version the baseline
+had just resolved*, do not ship a cp311 wheel. The local pass was a lie, because
+my machine had a C compiler and silently built cftime from source. On a clean
+runner, or for a user on a slim image, that install fails. So the existing
+`cftime>=1.6` was not merely arbitrary, it was **too low to be installable by
+wheel on the Python floor.** It went *up*, to `>=1.6.2`, the audit's one real
+correction.
 
 > **Correction (#259).** The test result here is not reliable. If the tests were
 > run with a plain `uv run`, they ran against the newest cftime, not 1.5
@@ -107,12 +108,13 @@ lower number you cannot prove is not a wider contract, it is a fiction.
 > included, until #259 corrected it (step 19).
 
 **4. msgspec stayed put on purpose.** I probed whether the core dep could drop:
-`uv run --isolated --with msgspec==0.16` confirmed 0.16 already has every API the
-library uses (`json.format`, `schema_components(ref_template=)`,
+`uv run --isolated --with msgspec==0.16` confirmed 0.16 already has every API
+the library uses (`json.format`, `schema_components(ref_template=)`,
 `structs.replace`) and ships cp311 wheels. Mechanically, the floor *could* be
-0.16. It stayed at 0.18: msgspec is a fast-moving, pre-1.0 *core* dependency,
-the reach below 0.18 is negligible, and I did not want to vouch for behavior
-that old. "Arbitrary" was fixed by writing the reason down, not by minimizing.
+0.16. It stayed at 0.18, because msgspec is a fast-moving, pre-1.0 *core*
+dependency, few users need anything older, and I did not want to vouch for
+behavior that old. "Arbitrary" was fixed by writing the reason down, not by
+minimizing.
 
 **5. geopandas stayed at 0.14.** Lowering it to 0.13 looked safe, because the
 tests passed and geopandas is pure Python, so it installs on any Python version.
@@ -151,7 +153,7 @@ ModuleNotFoundError: No module named 'pkg_resources'
 hint: `shapely` (v2.0.0) was included because `covjson-msgspec[all]` depends on `shapely`
 ```
 
-**8. The diagnosis -- and the correction to my own model.** uv resolves by
+**8. The diagnosis, and the correction to my own model.** uv resolves by
 `requires-python` metadata, *not* by wheel availability. The floor releases
 declare open-ended `requires-python` but stopped shipping wheels at their era's
 Python:
@@ -164,14 +166,14 @@ Python:
 | cftime | 1.6.2 | cp37-cp311 | >=3.7 |
 | msgspec | 0.18.0 | cp38-cp311 | >=3.8 |
 
-So on 3.14, `lowest-direct` pins shapely 2.0.0 (its metadata permits it), finds
-no wheel, and tries to build from source -- which fails. My "self-raise"
-assumption was simply false: the floors do not rise on newer Pythons, they just
+So on 3.14, `lowest-direct` pins shapely 2.0.0 (its metadata permits it), cannot
+find a wheel, and tries to build from source, which fails. My "self-raise"
+assumption was simply false. The floors do not rise on newer Pythons. They just
 become uninstallable there.
 
 **9. The fix, and the insight underneath it.** A dependency floor is only
 coherent *paired with the Python floor*. The declared floors are a 3.11-era
-snapshot; the only interpreter they ship wheels for is 3.11. So `lowest-direct`
+snapshot. The only interpreter they ship wheels for is 3.11. So `lowest-direct`
 belongs on the floor Python alone. I set the matrix to `highest` across the full
 range plus one `lowest-direct` job on the Python floor (3.11), added through a
 matrix `include` (five jobs total). Every job passed. What began as a CI failure
@@ -187,17 +189,17 @@ dropped.
 ## Phase 3: The one-line change that tried to bring friends
 
 **10. 714 lines of churn for a one-line intent.** After the floor edits, the
-`uv.lock` diff was enormous: `uv lock` had re-resolved the whole graph and bumped
-~25 stale indirect pins (ast-serialize 0.5.0 -> 0.6.0, and so on) plus rewrote
-resolution-markers. The only change I *meant* was cftime's specifier. The churn
-was unrelated upgrade risk riding in on the coattails of a policy PR.
+`uv.lock` diff was enormous: `uv lock` had re-resolved the whole graph and
+bumped ~25 stale indirect pins (ast-serialize 0.5.0 -> 0.6.0, and so on) plus
+rewrote resolution-markers. The only change I *meant* was cftime's specifier.
+The churn was unrelated upgrade risk riding in on the coattails of a policy PR.
 
 **11. Strip it to the intent.** `git checkout main -- uv.lock` to discard the
 churn, hand-edit the single line (`specifier = ">=1.6"` -> `">=1.6.2"`), then
-`uv lock --check` to confirm the lock was still consistent. Final `uv.lock` diff:
-one line. Keeping transitives fresh is Dependabot's job now (`lockfile-only`),
-not a side effect of a floor PR. (The churn reappeared once more from a stray
-`uv sync`; same discipline, discarded again.)
+`uv lock --check` to confirm the lock was still consistent. Final `uv.lock`
+diff: one line. Keeping transitives fresh is Dependabot's job now
+(`lockfile-only`), not a side effect of a floor PR. (The churn reappeared once
+more from a stray `uv sync`, and was discarded the same way.)
 
 > **Correction (#259 follow-up).** Dependabot does not keep indirect
 > dependencies fresh. Under `lockfile-only` it updates only direct dependencies
@@ -329,12 +331,12 @@ not a lower number. (Trap 3.)
 - **`--resolution lowest-direct`**: uv resolves *direct* dependencies to their
   declared floors and indirect ones to their newest releases. It is the way to
   test whether the floors work.
-- **`requires-python` vs wheel**: a resolver picks a version by `requires-python`
-  metadata, then installs a wheel *if one exists* for the target, else builds
-  from source. The two can disagree -- that gap is trap 1.
+- **`requires-python` vs wheel**: a resolver picks a version by
+  `requires-python` metadata, then installs a wheel *if one exists* for the
+  target, else builds from source. The two can disagree, and that gap is trap 1.
 - **cp311**: the wheel tag for CPython 3.11. A release without a cp311 wheel has
   to be built from source on Python 3.11.
-- **Sibling pin**: dep A's version forced up by dep B's requirement on A; below
+- **Sibling pin**: dep A's version forced up by dep B's requirement on A. Below
   it, A's own declared floor is unverifiable. A dependency group can be the
   sibling, because `uv.lock` resolves every group together.
 - **`UV_RESOLUTION`**: the environment variable version of `--resolution`. Set
