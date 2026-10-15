@@ -135,7 +135,7 @@ Evidence: the floor releases ship wheels only through cp311 (CPython 3.11), yet
 all declare an open-ended `requires-python`:
 
 | package | floor version | cp wheel tags shipped | requires-python |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | shapely | 2.0.0 | cp37-cp311 | >=3.7 |
 | numpy | 1.24.0 | cp38-cp311 | >=3.8 |
 | pandas | 2.0.0 | cp38-cp311 | >=3.8 |
@@ -511,14 +511,14 @@ Prior art (the only skill-form equivalent, wrong ecosystem):
 
 uv / Dependabot:
 
-- uv resolution docs: https://docs.astral.sh/uv/reference/settings/#resolution
-- uv `UV_RESOLUTION` environment variable: https://docs.astral.sh/uv/reference/environment/#uv_resolution
-- Astral Dependabot guide: https://docs.astral.sh/uv/guides/integration/dependabot/
+- uv resolution docs: <https://docs.astral.sh/uv/reference/settings/#resolution>
+- uv `UV_RESOLUTION` environment variable: <https://docs.astral.sh/uv/reference/environment/#uv_resolution>
+- Astral Dependabot guide: <https://docs.astral.sh/uv/guides/integration/dependabot/>
 - dependabot-core#12162 (uv `lockfile-only` support), #14073 (stale indirect
   dependencies)
-- uv `exclude-newer` setting: https://docs.astral.sh/uv/reference/settings/#exclude-newer
-- GitHub, why `GITHUB_TOKEN` events do not start workflows: https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow
-- peter-evans/create-pull-request, the workarounds for running CI on a bot's pull request: https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs
+- uv `exclude-newer` setting: <https://docs.astral.sh/uv/reference/settings/#exclude-newer>
+- GitHub, why `GITHUB_TOKEN` events do not start workflows: <https://docs.github.com/en/actions/using-workflows/triggering-a-workflow#triggering-a-workflow-from-a-workflow>
+- peter-evans/create-pull-request, the workarounds for running CI on a bot's pull request: <https://github.com/peter-evans/create-pull-request/blob/main/docs/concepts-guidelines.md#triggering-further-workflow-runs>
 
 The Python practice (established but scattered, and this skill distills it):
 
