@@ -43,7 +43,8 @@ probe commands live in `reference.md`, and the worked example is
 - It is NOT application pinning. An app pins an exact, reproducible set, while a
   library declares the *widest* range it honestly supports. Opposite goals.
 - It is NOT upper bounds. Libraries avoid artificial ceilings, so this skill
-  covers floors only.
+  covers floors only. The exception is a bound below a release known to break
+  your library (`reference.md`, When the refresh finds a broken release).
 
 ## The principle
 
@@ -141,9 +142,14 @@ passes*? The first is legitimate. The second is the anti-pattern in point 3.
    gate). A gate that has never failed is indistinguishable from a gate that
    cannot fail.
 5. **Stop the drift + record it.** Set Dependabot
-   `versioning-strategy: lockfile-only` so it never rewrites floors, schedule a
-   monthly lock refresh so indirect dependencies stay current, and record the
-   policy in an ADR.
+   `versioning-strategy: lockfile-only` so it never rewrites floors. Set
+   `[tool.uv] exclude-newer = "7 days"` in `pyproject.toml`, so no resolution
+   adopts a release less than a week old (`reference.md`, Keep indirect
+   dependencies fresh). Schedule a monthly lock refresh so indirect
+   dependencies stay current, and record the policy in an ADR. A repository
+   setting picks which workflow runs the refresh. Read it, ask the developer
+   only if it is off, and set up the workflow that results (`reference.md`,
+   Choose how the refresh runs).
 
 ## The traps (the part folklore misses)
 
@@ -222,6 +228,10 @@ change.
 A lowest-direct sync also rewrites `uv.lock`, to record the floor versions. That
 is harmless in CI, where the runner is thrown away. Locally, run the floors in a
 throwaway copy so you never commit that lock.
+
+An older uv also changes the lock whenever it re-locks, because it writes its
+own, older format revision. Require a minimum uv with
+`[tool.uv] required-version` (`reference.md`, trap 4).
 
 ### 5. A bare `uv run` undoes the floors
 
@@ -303,8 +313,8 @@ it:
 
 | End of the range | Where it lives | Tested by | Moved by |
 | --- | --- | --- | --- |
-| Floor (oldest supported) | lower bounds in `pyproject.toml` | the floor job |
-a person, by deliberate decision |
+| Floor (oldest supported) | lower bounds in `pyproject.toml` | the floor job | a person, by deliberate decision |
+| Top (newest) | versions pinned in `uv.lock` | the `highest` jobs | Dependabot and the lock refresh |
 
 Dependabot's `lockfile-only` setting enforces that split. Its pull requests
 update `uv.lock` and never touch `pyproject.toml`, and each one runs both ends:
