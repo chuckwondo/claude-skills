@@ -16,7 +16,8 @@ Contents:
 - Probes (one-off checks while auditing)
 - Operating the gate
 - The policy layer: stopping Dependabot raising floors, keeping indirect
-  dependencies fresh, and recording an architecture decision record (ADR)
+  dependencies fresh, choosing how the refresh runs, bounding a broken release
+  that a refresh finds, and recording an architecture decision record (ADR)
 - Sources
 
 ## The CI recipe
@@ -204,6 +205,32 @@ floors in a throwaway copy (see Probes) or restore the lock before committing.
 Keeping indirect dependencies fresh is the scheduled lock refresh's job (see The
 policy layer), not your floor PR's.
 
+The uv release matters too. `uv.lock` records the format `revision` of the uv
+that wrote it. uv 0.13 is the first release that writes `revision = 5`. An
+older uv still reads that lock, but it writes 3 or lower whenever it re-locks.
+titiler-covjson's lock refresh, run with an older uv, turned 5 into 3 along
+with the version updates. Require the first release that writes your lock's
+revision:
+
+```toml
+[tool.uv]
+required-version = ">=0.13"
+```
+
+An older uv then stops with "Required uv version `>=0.13` does not match the
+running version". setup-uv reads this setting, and for a minimum like this one
+it still installs the latest uv. Any other uv that locks the project must meet
+the minimum too, or it fails:
+
+- Dependabot's built-in uv, set by the `uv==` line in dependabot-core's
+  `uv/helpers/requirements.txt` (0.13.5 in October 2026)
+- a uv with a fixed version, such as the one the pre-commit `uv-lock` hook's
+  `rev` selects
+
+To find the release that introduced a revision, compare `const REVISION` in
+astral-sh/uv's `crates/uv-lock/src/lock/mod.rs` (`crates/uv-resolver/` before
+0.13) across release tags.
+
 ### 5. A bare `uv run` undoes the floors
 
 covjson-msgspec's floor job, replayed on Python 3.11:
@@ -361,6 +388,15 @@ dependencies fresh on every run, because uv sets aside a lock recorded in
 another resolution mode. The `highest` jobs install from the lock, so they test
 old indirect releases that a new install would never get.
 
+The floor job's fresh resolve covers only the Python floor. A release that
+requires a newer Python never reaches the floor job, so no CI job sees it until
+the lock moves. pint 0.26.2 requires Python 3.12 or later and breaks ucumvert,
+so on those Pythons, installing titiler-covjson with pip pulled in pint 0.26.2,
+and `import titiler_covjson` failed. titiler-covjson's floor job, on Python
+3.11, resolved pint 0.25.3, and its `highest` jobs installed 0.25.3 from the
+lock. CI stayed green until a lock refresh moved pint to 0.26.2, and then only
+the 3.12 and 3.13 `highest` jobs failed.
+
 The fix is a lock refresh, in its own pull request and never mixed into a floor
 change (trap 4):
 
@@ -370,8 +406,9 @@ uv lock --upgrade --no-build
 
 - `--upgrade` moves every locked version to the newest allowed. It never
   changes the floors in `pyproject.toml`.
-- `--no-build` stops uv from running any package's build code while resolving.
-  It works only if every locked package ships a wheel.
+- `--no-build` stops uv from building a package to read its metadata, which
+  would run that package's build code. It works only if every locked package
+  ships a wheel.
 
 Set a cooldown in `pyproject.toml`, not on the command line:
 
@@ -390,13 +427,35 @@ package in the same table, e.g.,
 `exclude-newer-package = { pkg = "2026-10-15T00:00:00Z" }`. A command-line
 override breaks the lock check the same way.
 
-Run it from a scheduled workflow rather than by hand, because a manual
-reminder slips silently. This workflow runs monthly and opens a pull request
-when the lock changes. The lock job holds only read access, so code that runs
-during resolving never sees a token that can write. Before the first run, turn
-on the repository setting "Allow GitHub Actions to create and approve pull
-requests" (Settings, then Actions, then General). Without it, `gh pr create`
-fails after the branch is already pushed, leaving a stray branch:
+### Choose how the refresh runs
+
+Schedule the refresh, because one that waits on someone remembering slips
+silently. Two workflows can run it, and one repository setting picks between
+them: "Allow GitHub Actions to create and approve pull requests" (Settings,
+then Actions, then General). Read it instead of asking:
+
+```sh
+gh api repos/<owner>/<repo>/actions/permissions/workflow \
+  --jq .can_approve_pull_request_reviews
+```
+
+- `true`: use the pull request workflow.
+- `false`, or the call fails: ask the developer whether to turn the setting on.
+  Say that the same checkbox lets every workflow in the repository approve pull
+  requests, because that is the part some maintainers refuse. An organization
+  can also turn it off for all its repositories. If it stays off, use the
+  reminder issue workflow.
+
+The pull request workflow is the default, because it fixes how the refresh
+runs (the latest uv, always with `--no-build`), and the maintainer only
+reopens, reviews, and merges. The reminder issue workflow leaves the refresh to
+a person's machine and memory.
+
+**The pull request workflow.** It runs monthly and opens a pull request when
+the lock changes. Only the lock job runs uv, and it holds only read access (the
+comment on that job says why). Without the setting,
+`gh pr create` fails after the branch is already pushed, leaving a stray
+branch:
 
 ```yaml
 name: Refresh uv.lock
@@ -409,6 +468,13 @@ on:
 permissions: {}
 
 jobs:
+  # This job runs `uv lock --upgrade`, which picks the newest allowed version of
+  # every dependency and writes uv.lock. --no-build keeps uv from running any
+  # package's build code, and as a second guard this job holds only read
+  # access. The job that holds write access never runs uv, and only commits the
+  # uv.lock this job uploads. Jobs run on separate runners, so nothing that runs
+  # here can reach the write token. Steps within one job share a runner, so code
+  # from an earlier step could reach a token scoped to a later one.
   lock:
     runs-on: ubuntu-latest
     permissions:
@@ -418,8 +484,7 @@ jobs:
         with:
           persist-credentials: false
       - uses: astral-sh/setup-uv@<sha>
-      # --no-build: never run a package's build code while resolving. The
-      # 7-day cooldown comes from [tool.uv] exclude-newer in pyproject.toml.
+      # The 7-day cooldown comes from [tool.uv] exclude-newer in pyproject.toml.
       - run: uv lock --upgrade --no-build
       - uses: actions/upload-artifact@<sha>
         with:
@@ -455,26 +520,110 @@ jobs:
             --body "Monthly uv lock --upgrade. Close and reopen this pull request to run CI."
 ```
 
-**Getting CI to run on the refresh pull request.** GitHub does not start
-workflow runs from events made with a run's own `GITHUB_TOKEN`, to prevent
-loops. So the
+**Starting CI on the refresh pull request.** GitHub does not start workflow
+runs from events made with a run's own `GITHUB_TOKEN`, to prevent loops. So the
 pull request opens with no checks, and a ruleset that requires them blocks the
-merge. That fails safe, but someone has to start CI. In order of preference:
+merge. That fails safe. Close and reopen the pull request (or open it as a
+draft and mark it ready for review), and your action starts CI. This adds no
+credential, and the open pull request is its own reminder.
 
-1. **Close and reopen the pull request** (or open it as a draft and mark it
-   ready for review). Your action triggers CI. This adds no credential, and the
-   open pull request is its own reminder.
-2. **Start CI from the refresh workflow** with `gh workflow run`, which
-   `GITHUB_TOKEN` is allowed to trigger. This needs `workflow_dispatch` in the
-   CI workflow and `actions: write` on the job. Untested: confirm once that
-   your ruleset counts checks from a dispatched run before relying on it.
-3. **A GitHub App token**, created per run with a one-hour lifetime. This needs
-   the App's private key as a secret, and anyone who holds the key can push
-   branches and open pull requests. Keep `--no-build` and the read-only lock
-   job, so the key never reaches code that runs during resolving.
+To have CI start by itself, open the pull request with a GitHub App token,
+created per run with a one-hour lifetime. That needs the App's private key as a
+secret, and anyone who holds the key can push branches and open pull requests.
+Keep `--no-build` and the read-only lock job, so the key never reaches a job
+that runs uv. A personal access token also works, but it acts as
+you and expires.
 
-A personal access token also works, but it acts as you and expires. A deploy
-key triggers only `push` workflows.
+**The reminder issue workflow.** It opens an issue that asks a maintainer to
+run the refresh, as titiler-covjson does. It needs only `issues: write`, and CI
+starts normally, because a person opens the pull request. The refresh then
+runs with that person's uv, which is how titiler-covjson's lock lost its format
+revision, so set `required-version` too (trap 4):
+
+````yaml
+name: Lock refresh reminder
+
+on:
+  schedule:
+    - cron: "0 6 1 * *" # monthly
+  workflow_dispatch:
+
+permissions: {}
+
+jobs:
+  remind:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write
+    steps:
+      - uses: actions/checkout@<sha>
+        with:
+          persist-credentials: false
+      - uses: astral-sh/setup-uv@<sha>
+      # Skip while a reminder is open, so reminders do not stack up.
+      - id: open
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          n=$(gh issue list --state open --search '"Refresh uv.lock" in:title' \
+            --json number --jq length)
+          echo "count=$n" >> "$GITHUB_OUTPUT"
+      # Preview the refresh in the issue. A failed resolve still opens the
+      # issue, with the error. This step does not receive the token, and
+      # --no-build keeps package build code from running in a job that can
+      # write issues.
+      - if: steps.open.outputs.count == '0'
+        run: |
+          {
+            cat .github/lock-refresh-issue-body.md
+            echo
+            echo '## Preview'
+            echo '```text'
+            uv lock --upgrade --dry-run --no-build 2>&1 || true
+            echo '```'
+          } > body.md
+      - if: steps.open.outputs.count == '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh issue create --title "Refresh uv.lock" --body-file body.md
+````
+
+The body file holds the steps: on a branch, run `uv lock --upgrade --no-build`,
+`uv sync --locked`, and `uv run pytest`, then open a pull request whose body
+includes `Closes #<issue>`. Merging it closes the reminder, so the next
+scheduled run opens a new one. Keep the body file to one line per paragraph,
+because GitHub renders issue bodies with hard line breaks.
+
+### When the refresh finds a broken release
+
+When a refresh fails CI because a new release of an indirect dependency breaks
+your library, new installs of your library already get that release. Bound it
+in `[project].dependencies`, even though you do not import it:
+
+```toml
+dependencies = [
+    "ucumvert>=0.3.0",
+    # pint 0.26.2 breaks ucumvert, whose pint requirement has no upper bound
+    # (https://github.com/dalito/ucumvert/issues/82). Not imported here. Drop
+    # this once a ucumvert release supports pint 0.26.2.
+    "pint<0.26.2",
+]
+```
+
+Do not use `[tool.uv] constraint-dependencies`. That setting applies only when
+uv resolves your project, so it fixes `uv.lock` and CI while pip still installs
+the broken release for users. `[project].dependencies` becomes your package's
+metadata, which every installer reads.
+
+The bound also changes what the floor job tests, because the dependency is now
+direct, and `lowest-direct` installs the oldest release that every requirement
+allows. With the bound, titiler-covjson's floor resolve installs pint 0.25, the
+floor that ucumvert 0.3.0 declares, instead of 0.25.3. uv also warns "The
+direct dependency `pint` is unpinned", which `uv sync --quiet` hides. Leave the
+floor off anyway, because the job then tests the oldest pint that ucumvert
+accepts, which users can install too, and a copied floor goes stale when
+ucumvert raises its own.
 
 ### Record it in an ADR
 
@@ -486,7 +635,7 @@ from the code, so it warrants an ADR. Record:
 - test-both-ends (`highest` full matrix + `lowest-direct` on the floor Python,
   both blocking)
 - the Dependabot `lockfile-only` stance, and how indirect dependencies stay
-  fresh (the scheduled lock refresh)
+  fresh (the scheduled lock refresh, and which workflow runs it)
 - the cooldown (`[tool.uv] exclude-newer`), which applies to every resolution
 - what the floor job guarantees: tests run at the installed floors, and the job
   logs the versions it tested
